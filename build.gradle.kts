@@ -18,10 +18,8 @@ buildscript {
     dependencies {
         val kotlinVersion by extra { "1.6.0-M1" }
         val navVersion by extra { "2.4.0-alpha09" }
-        val gradleVersion by extra { "7.0.2"}
 
-        classpath( "com.android.tools.build:gradle:$gradleVersion")
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion")
+        classpath( "com.android.tools.build:gradle:7.0.2")
         classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0-M1")
     }
 }
@@ -42,8 +40,4 @@ subprojects {
     }
     apply (plugin= "kotlin-android")
     apply (plugin= "kotlin-kapt")
-
-    dependencies {
-
-    }
 }

@@ -53,7 +53,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.0-M1")
     implementation("androidx.collection:collection-ktx:1.2.0-alpha01")
     implementation("androidx.core:core-ktx:1.7.0-beta02")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test:runner:1.4.0")
