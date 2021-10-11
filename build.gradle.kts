@@ -2,9 +2,8 @@ import java.net.URI
 
 plugins {
     `kotlin-dsl`
+    `maven-publish`
 }
-
-val compileSdk by extra { 31 }
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
@@ -16,11 +15,8 @@ buildscript {
     }
 
     dependencies {
-        val kotlinVersion by extra { "1.6.0-M1" }
-        val navVersion by extra { "2.4.0-alpha09" }
-
-        classpath( "com.android.tools.build:gradle:7.0.2")
-        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0-M1")
+        classpath("com.android.tools.build:gradle:7.0.2")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0-M1")
     }
 }
 
@@ -38,6 +34,19 @@ subprojects {
     } else {
         apply(plugin = "com.android.library")
     }
-    apply (plugin= "kotlin-android")
-    apply (plugin= "kotlin-kapt")
+    apply(plugin = "kotlin-android")
+    apply(plugin = "kotlin-kapt")
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                groupId = "com.nek12"
+                artifactId = "androidextensions"
+                version = "0.1"
+                from(components["java"])
+            }
+        }
+    }
 }

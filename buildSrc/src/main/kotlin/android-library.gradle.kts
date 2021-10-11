@@ -20,6 +20,8 @@ android {
 
     buildTypes {
         release {
+            setProperty("archivesBaseName",
+                "${rootProject.name}-${project.name}-${rootProject.version}")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -47,8 +49,6 @@ android {
         }
     }
 }
-
-
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.0-M1")
     implementation("androidx.collection:collection-ktx:1.2.0-alpha01")
