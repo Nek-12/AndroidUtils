@@ -1,8 +1,6 @@
 val roomVersion = "2.4.0-alpha04"
 
-plugins {
-    `android-library`
-}
+
 
 android {
 //    kapt {
@@ -19,5 +17,4 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
     implementation("androidx.room:room-runtime:${roomVersion}")
     kapt("androidx.room:room-compiler:${roomVersion}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
 }
