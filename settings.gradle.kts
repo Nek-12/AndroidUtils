@@ -1,5 +1,3 @@
-rootProject.name = "AndroidUtils"
-
 include(":room")
 include(":android-ktx")
 include(":material-ktx")

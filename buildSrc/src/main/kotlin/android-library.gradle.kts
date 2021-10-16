@@ -3,6 +3,7 @@ plugins {
     id("kotlin-android")
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("org.jetbrains.kotlin.kapt")
+    `maven-publish`
 }
 
 
@@ -21,7 +22,8 @@ android {
     buildTypes {
         release {
             setProperty("archivesBaseName",
-                "${rootProject.name}-${project.name}-${rootProject.version}")
+                project.name
+            )
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -56,4 +58,27 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation("androidx.work:work-testing:2.7.0-rc01")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("release") {
+            artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+            groupId = rootProject.extra["groupId"].toString()
+            artifactId = project.name
+            version = "0.1"
+
+            pom.withXml {
+                val dependenciesNode = asNode().appendNode("dependencies")
+                configurations.implementation.get().allDependencies.forEach {
+                    if (it.name != "unspecified") {
+                        val dependencyNode = dependenciesNode.appendNode("dependency")
+                        dependencyNode.appendNode("groupId", it.group)
+                        dependencyNode.appendNode("artifactId", it.name)
+                        dependencyNode.appendNode("version", it.version)
+                    }
+                }
+            }
+        }
+    }
 }

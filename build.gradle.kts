@@ -2,8 +2,10 @@ import java.net.URI
 
 plugins {
     `kotlin-dsl`
-    `maven-publish`
 }
+
+val groupId by extra { "com.nek12.androidextensions" }
+
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
@@ -33,25 +35,5 @@ subprojects {
         "app" -> apply(plugin = "com.android.application")
         "core-ktx" -> apply(plugin = "java-library")
         else -> apply(plugin= "android-library")
-    }
-
-}
-
-afterEvaluate {
-    if (!plugins.hasPlugin("com.android.application")) {
-        publishing {
-            publications {
-                create<MavenPublication>("release") {
-                    groupId = "com.nek12"
-                    artifactId = "androidextensions"
-                    version = "0.1"
-                    if (plugins.hasPlugin("java")) {
-                        from(components["java"])
-                    } else if (plugins.hasPlugin("android-library")) {
-                        from(components["android"])
-                    }
-                }
-            }
-        }
     }
 }
