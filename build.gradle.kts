@@ -4,7 +4,7 @@ plugins {
     `kotlin-dsl`
 }
 
-val groupId by extra { "com.nek12.androidextensions" }
+val groupId by extra { "com.nek12.androidutils" }
 
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.

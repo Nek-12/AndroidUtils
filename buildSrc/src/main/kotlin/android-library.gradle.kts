@@ -44,15 +44,10 @@ android {
     sourceSets.all {
         java.srcDir("src/$name/kotlin")
     }
-
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
 }
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.0-M1")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test:runner:1.4.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

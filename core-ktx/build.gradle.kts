@@ -1,5 +1,8 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+val compileKotlin: KotlinCompile by tasks
+
 plugins {
-    id ("kotlin")
+    kotlin("jvm")
     `maven-publish`
 }
 
@@ -7,6 +10,12 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 }
+
+
+compileKotlin.kotlinOptions {
+    jvmTarget = "11"
+}
+
 
 publishing {
     publications {

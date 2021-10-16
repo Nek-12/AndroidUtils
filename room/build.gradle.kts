@@ -10,8 +10,6 @@ android {
 //    }
 }
 
-
-
 dependencies {
     implementation("androidx.room:room-ktx:${roomVersion}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
