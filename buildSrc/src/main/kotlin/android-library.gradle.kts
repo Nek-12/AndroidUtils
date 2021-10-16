@@ -80,5 +80,4 @@ publishing {
 
 tasks.findByName("publishReleasePublicationToMavenLocal")!!.apply {
     dependsOn("bundleReleaseAar")
-    println("Registered dependency")
 }
