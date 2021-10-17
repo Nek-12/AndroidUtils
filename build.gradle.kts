@@ -4,8 +4,8 @@ plugins {
     `kotlin-dsl`
 }
 
-val groupId by extra { "com.nek12.androidutils" }
-
+rootProject.group = "com.nek12.androidutils"
+rootProject.version = "0.1"
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
@@ -31,9 +31,13 @@ allprojects {
 }
 
 subprojects {
+    group = rootProject.group
+    version = rootProject.version
+
     when (name) {
         "app" -> apply(plugin = "com.android.application")
         "core-ktx" -> apply(plugin = "java-library")
         else -> apply(plugin= "android-library")
     }
+
 }

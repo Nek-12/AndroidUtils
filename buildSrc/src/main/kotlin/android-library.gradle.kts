@@ -21,7 +21,8 @@ android {
 
     buildTypes {
         release {
-            setProperty("archivesBaseName",
+            setProperty(
+                "archivesBaseName",
                 project.name
             )
             isMinifyEnabled = false
@@ -59,9 +60,9 @@ publishing {
     publications {
         create<MavenPublication>("release") {
             artifact("$buildDir/outputs/aar/${project.name}-release.aar")
-            groupId = rootProject.extra["groupId"].toString()
+            groupId = rootProject.group.toString()
             artifactId = project.name
-            version = "0.1"
+            version = rootProject.version.toString()
 
             pom.withXml {
                 val dependenciesNode = asNode().appendNode("dependencies")
@@ -77,6 +78,7 @@ publishing {
         }
     }
 }
+
 
 tasks.findByName("publishReleasePublicationToMavenLocal")!!.apply {
     dependsOn("bundleReleaseAar")

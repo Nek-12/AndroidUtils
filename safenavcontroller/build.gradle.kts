@@ -1,7 +1,3 @@
-plugins {
-//    id("androidx.navigation.safeargs.kotlin")
-}
-
 
 
 dependencies {

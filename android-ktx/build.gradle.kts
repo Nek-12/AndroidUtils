@@ -1,5 +1,4 @@
-plugins {
-}
+
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.3.1")

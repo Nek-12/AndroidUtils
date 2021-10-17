@@ -1,6 +1,8 @@
 val roomVersion = "2.4.0-alpha04"
 
-
+plugins {
+    id("org.jetbrains.kotlin.kapt")
+}
 
 android {
 //    kapt {

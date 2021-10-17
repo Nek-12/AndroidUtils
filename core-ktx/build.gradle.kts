@@ -1,6 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val compileKotlin: KotlinCompile by tasks
 
+
+
 plugins {
     kotlin("jvm")
     `maven-publish`
@@ -20,9 +22,9 @@ compileKotlin.kotlinOptions {
 publishing {
     publications {
         create<MavenPublication>("release") {
-            groupId = rootProject.extra["groupId"].toString()
+            groupId = rootProject.group.toString()
             artifactId = project.name
-            version = "0.1"
+            version = rootProject.version.toString()
             from(components["java"])
         }
     }
