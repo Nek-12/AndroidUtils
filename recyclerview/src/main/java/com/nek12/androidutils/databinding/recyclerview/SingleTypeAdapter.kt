@@ -5,11 +5,12 @@ package com.nek12.androidutils.databinding.recyclerview
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
 
+@Suppress("UNCHECKED_CAST")
 open class SingleTypeAdapter<T, VB : ViewDataBinding>(
     @LayoutRes private val layout: Int,
-    itemClickListener: ItemClickListener<T>? = null,
+    itemClickListener: ItemClickListener<Item<T, VB>>? = null,
     private val binder: Binder<T, VB>? = null,
-) : GenericAdapter<T>(itemClickListener) {
+) : GenericAdapter(itemClickListener as ItemClickListener<Item<*,*>>) {
 
     fun submitData(data: List<T>, idSelector: (T) -> Long) {
         submitList(data.map { itemFromData(it, idSelector(it)) })
@@ -20,5 +21,5 @@ open class SingleTypeAdapter<T, VB : ViewDataBinding>(
 
 open class SimpleAdapter<T>(
     @LayoutRes layout: Int,
-    itemClickListener: ItemClickListener<T>? = null,
+    itemClickListener: ItemClickListener<Item<T, ViewDataBinding>>? = null,
 ) : SingleTypeAdapter<T, ViewDataBinding>(layout, itemClickListener, null)

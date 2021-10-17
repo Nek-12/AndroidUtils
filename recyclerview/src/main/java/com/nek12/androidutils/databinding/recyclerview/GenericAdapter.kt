@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.ListAdapter
  * when user clicks on a view inside the view, determine what part of the itemView was clicked by calling View.id
  */
 interface ItemClickListener<T> {
-    fun onItemClicked(view: View, item: Item<T, *>, pos: Int)
-    fun onItemLongClicked(view: View, item: Item<T, *>, pos: Int): Boolean = false
+    fun onItemClicked(view: View, item: T, pos: Int)
+    fun onItemLongClicked(view: View, item: T, pos: Int): Boolean = false
 }
 
-abstract class GenericAdapter<T>(
-    private val clickListener: ItemClickListener<T>? = null,
-) : ListAdapter<Item<T, *>, BaseHolder>(ItemDiffCallback()) {
+abstract class GenericAdapter(
+    private val clickListener: ItemClickListener<Item<*, *>>? = null,
+) : ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
     init {
         setHasStableIds(true)
@@ -63,7 +63,7 @@ private fun setLongClickListenersOnViewGroup(view: View, onClick: (v: View) -> B
 fun <T> applyListenerToAllViews(
     vh: BaseHolder,
     clickListener: ItemClickListener<T>?,
-    itemSelector: () -> Item<T, *>?
+    itemSelector: () -> T?
 ): BaseHolder {
     clickListener?.let {
         setClickListenersOnViewGroup(vh.itemView) {

@@ -4,9 +4,9 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import com.nek12.androidutils.databinding.recyclerview.*
 
-open class GenericPagingAdapter<T>(
-    private val clickListener: ItemClickListener<T>? = null,
-) : PagingDataAdapter<Item<T, *>, BaseHolder>(ItemDiffCallback()) {
+open class GenericPagingAdapter(
+    private val clickListener: ItemClickListener<Item<*, *>>? = null,
+) : PagingDataAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int = getItem(position)?.layout ?: 0
 

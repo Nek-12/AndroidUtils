@@ -39,7 +39,7 @@ data class BlankItem<VB : ViewDataBinding>(
     override val layout: Int,
 ) : Item<Unit, VB>() {
     override val data: Unit = Unit
-    override val id = 0L
+    override val id = layout.toLong()
 }
 
 data class GenericItem<T, VB : ViewDataBinding>(
