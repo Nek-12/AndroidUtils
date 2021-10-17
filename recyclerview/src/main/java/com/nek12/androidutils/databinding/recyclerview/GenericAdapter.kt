@@ -14,7 +14,7 @@ interface ItemClickListener<T> {
     fun onItemLongClicked(view: View, item: T, pos: Int): Boolean = false
 }
 
-abstract class GenericAdapter(
+open class GenericAdapter(
     private val clickListener: ItemClickListener<Item<*, *>>? = null,
 ) : ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
