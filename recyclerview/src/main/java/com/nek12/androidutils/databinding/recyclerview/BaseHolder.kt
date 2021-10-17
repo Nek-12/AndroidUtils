@@ -1,4 +1,4 @@
-package com.nek12.androidutils.recyclerview
+package com.nek12.androidutils.databinding.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

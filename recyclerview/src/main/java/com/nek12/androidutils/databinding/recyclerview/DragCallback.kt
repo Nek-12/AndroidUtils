@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.nek12.androidutils.recyclerview
+package com.nek12.androidutils.databinding.recyclerview
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView

@@ -1,8 +1,8 @@
-package com.nek12.recyclerview.genericpageadapter
+package com.nek12.recyclerview
 
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
-import com.nek12.androidutils.recyclerview.*
+import com.nek12.androidutils.databinding.recyclerview.*
 
 open class GenericPagingAdapter<T>(
     private val clickListener: ItemClickListener<T>? = null,

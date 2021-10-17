@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.nek12.androidutils.extenstions.preferences
+package com.nek12.androidutils.extensions.preferences
 
 import android.annotation.SuppressLint
 import android.content.Context

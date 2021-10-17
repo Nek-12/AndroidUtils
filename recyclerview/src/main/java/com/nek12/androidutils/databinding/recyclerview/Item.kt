@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.nek12.androidutils.recyclerview
+package com.nek12.androidutils.databinding.recyclerview
 
 import android.util.Log
 import androidx.annotation.LayoutRes
