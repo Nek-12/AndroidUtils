@@ -15,6 +15,11 @@ private fun capped(instant: Instant): Instant {
     return instants[1]
 }
 
+
+/**
+ * Type converters that provide utility conversions for you:
+ * Duration, UUID, Instant
+ */
 @TypeConverters
 @RequiresApi(Build.VERSION_CODES.O)
 class DbTypeConverters {

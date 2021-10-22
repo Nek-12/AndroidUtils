@@ -9,7 +9,20 @@ import androidx.preference.PreferenceManager
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-
+/**
+ * A sharedPreferences delegate that allows you to write one-liners for loading and saving data
+ * from/to your app's default SharedPreferences.
+ * **Despite looking innocent, this is still a shared preference implementation and thus it
+ * does heavy IO on the main thread. Do not abuse this simplicity. **
+ * example:
+ * ```
+ *  var isFirstLaunch: Boolean = booleanPreference(KEY_FIRST_LAUNCH)
+ *  if (isFirstLaunch) {  //does IO on the main thread
+ *      //...
+ *  }
+ *  isFirstLaunch = false //does IO on the main thread
+ * ```
+ */
 class PreferenceProperty<T>(
     private val key: String,
     private val defaultValue: T,

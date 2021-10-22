@@ -10,12 +10,28 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorInt
 
-fun String?.isValid(): Boolean =
-    this != null && this.isNotBlank() && !this.equals("null", true)
+/**
+ * @return Whether this string is valid
+ * Examples:
+ * - null -> false
+ * - "null" -> false
+ * - "" -> false
+ * - "NULL" -> false
+ * - "  " -> false
+ */
+val String?.isValid: Boolean
+    get() = !this.isNullOrBlank() && !this.equals("null", true)
 
-fun String?.isValidEmail(): Boolean = this.isValid() && Patterns.EMAIL_ADDRESS.matcher(this!!).matches()
+val String?.isValidEmail: Boolean
+    get() = this.isValid && Patterns.EMAIL_ADDRESS.matcher(this!!).matches()
 
-fun SpannableString.withClickableSpan(clickablePart: String, onClickListener: () -> Unit): SpannableString {
+/**
+ * Create a span with a [clickablePart] of the text, and invokes the [onClickListener] on click.
+ */
+fun SpannableString.withClickableSpan(
+    clickablePart: String,
+    onClickListener: () -> Unit
+): SpannableString {
     val clickableSpan = object : ClickableSpan() {
         override fun onClick(widget: View) = onClickListener.invoke()
     }
@@ -30,7 +46,7 @@ fun SpannableString.withClickableSpan(clickablePart: String, onClickListener: ()
 }
 
 fun TextView.setColorOfSubstring(substring: String, color: Int) {
-    if (!text?.toString().isValid() || !substring.isValid()) return
+    if (!text?.toString().isValid || !substring.isValid) return
     val spannable = SpannableString(text)
     val start = text.indexOf(substring)
     spannable.setSpan(
@@ -42,38 +58,68 @@ fun TextView.setColorOfSubstring(substring: String, color: Int) {
     text = spannable
 }
 
+/**
+ * [span] is a ..Span object like a [ForegroundColorSpan] or a [SuperscriptSpan]
+ * Spans this whole string
+ */
 fun SpannableStringBuilder.spanText(span: Any): SpannableStringBuilder {
     setSpan(span, 0, length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
     return this
 }
 
+/**
+ * [span] is a ..Span object like a [ForegroundColorSpan] or a [SuperscriptSpan]
+ * Spans this whole string
+ */
+fun String.spanText(span: Any): SpannableStringBuilder = this.toSpannable().spanText(span)
+
+
 private fun String.toSpannable() = SpannableStringBuilder(this)
 
+/**
+ * @return a span where this text has a specified foreground color
+ */
 fun String.foregroundColor(@ColorInt color: Int): SpannableStringBuilder {
     val span = ForegroundColorSpan(color)
     return toSpannable().spanText(span)
 }
-
+/**
+ * @return a span where this string has specified background color
+ */
 fun String.backgroundColor(@ColorInt color: Int): SpannableStringBuilder {
     val span = BackgroundColorSpan(color)
     return toSpannable().spanText(span)
 }
 
+/**
+ * @return a span where this string has specified relative size
+ */
 fun String.relativeSize(size: Float): SpannableStringBuilder {
     val span = RelativeSizeSpan(size)
     return toSpannable().spanText(span)
 }
 
+/**
+ * @return a span with this string as a superscript
+ */
 fun String.superscript(): SpannableStringBuilder {
     val span = SuperscriptSpan()
     return toSpannable().spanText(span)
 }
 
+/**
+ * @return a span with this text striked through
+ */
 fun String.strike(): SpannableStringBuilder {
     val span = StrikethroughSpan()
     return toSpannable().spanText(span)
 }
 
+/**
+ * If this is a valid hex color string representation, returns its R, G and B components
+ * @throws IllegalArgumentException if the color string is invalid
+ *
+ */
 fun String.hextoRGB(): Triple<Int, Int, Int> {
     var name = this
     if (!name.startsWith("#")) {
@@ -86,17 +132,21 @@ fun String.hextoRGB(): Triple<Int, Int, Int> {
     return Triple(red, green, blue)
 }
 
+/**
+ * If this is a color int, turns it into a hex string.
+ */
 fun Int.colorToHexString() = String.format("#%06X", -0x1 and this).replace("#FF", "#")
 
 
 /**
- * A class that invokes [onChanged] **after** the text changes. Also validates the query
+ * A class that invokes [onChanged] **after** the text changes. Also validates the query.
+ * @see TextWatcher
  */
 class TextChangeListener(private val onChanged: (newText: String?) -> Unit) : TextWatcher {
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable?) {
-        onChanged(s?.toString().takeIf { it.isValid() })
+        onChanged(s?.toString().takeIf { it.isValid })
     }
 }

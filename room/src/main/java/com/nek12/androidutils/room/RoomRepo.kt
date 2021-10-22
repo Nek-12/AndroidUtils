@@ -1,5 +1,23 @@
+@file:Suppress("unused")
+
 package com.nek12.androidutils.room
 
+
+/**
+ * A repository class that uses the generated [RoomDao] from the library.
+ * Example
+ * ```
+ * class EntryRepo(
+ *     private val dao: EntryDao
+ * ): RoomRepo<Entry>(dao) {
+ *     fun getAll() = dao.getAll()
+ * }
+ *
+ * ```
+ *
+ * @see RoomDao
+ * @see RoomEntity
+ */
 open class RoomRepo<T : RoomEntity>(private val dao: RoomDao<T>) {
     open suspend fun add(entity: T): Long = dao.add(entity)
     open suspend fun add(vararg entities: T) = dao.add(*entities)

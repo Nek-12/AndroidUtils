@@ -10,6 +10,7 @@ import java.time.ZonedDateTime
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.log10
+import kotlin.reflect.KProperty
 
 /**
  * @param selector is a function using which the value by which we reorder is going to be selected, must be the same
@@ -32,17 +33,38 @@ fun <T> MutableList<T>.swap(index1: Int, index2: Int): MutableList<T> {
     return this
 }
 
+@Suppress("NewApi")
 fun Calendar.setDayOfWeek(dayOfWeek: DayOfWeek) {
     //mapping 1=mon..7=sun -> 1=sun..7=mon
     val mapped: Int = if (dayOfWeek.value == 7) 1 else dayOfWeek.value + 1
     set(Calendar.DAY_OF_WEEK, mapped)
 }
 
-fun Int.length() = when (this) {
+/**
+ * The count of digits in this [Int]
+ */
+val Int.length get() = when (this) {
     0 -> 1
     else -> log10(abs(toDouble())).toInt() + 1
 }
 
 fun Boolean.toInt(): Int = if (this) 1 else 0
 
-fun Instant.toZDT(zoneId: ZoneId = ZoneId.systemDefault()): ZonedDateTime = ZonedDateTime.ofInstant(this, zoneId)
+@Suppress("NewApi")
+fun Instant.toZDT( zoneId: ZoneId = ZoneId.systemDefault()): ZonedDateTime = ZonedDateTime.ofInstant(this, zoneId)
+
+/**
+ * This is an experimental implementation of a lazy property delegate that stores its state.
+ * Mainly for extending other classes with lazy properties.
+ */
+class LazyWithReceiver<This,Return>(val initializer:This.()->Return)
+{
+    private val values = WeakHashMap<This,Return>()
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun getValue(thisRef:Any,property:KProperty<*>):Return = synchronized(values)
+    {
+        thisRef as This
+        return values.getOrPut(thisRef) {thisRef.initializer()}
+    }
+}

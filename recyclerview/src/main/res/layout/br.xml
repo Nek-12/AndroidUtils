@@ -3,7 +3,7 @@
 
     <data>
         <variable
-                name="item"
+                name="data"
                 type="Object" />
     </data>
 

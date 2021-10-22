@@ -5,6 +5,12 @@ package com.nek12.androidutils.databinding.recyclerview
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
+
+/**
+ * Let your activity / fragment / etc. implement the actions you want and handle
+ * Whatever happens after they happen. You can use it with your recyclerviews to quickly get
+ * Dragging, reordering, and swiping.
+ */
 sealed interface RecyclerViewActions {
     interface SwipeActions : RecyclerViewActions {
         fun onItemSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
@@ -17,7 +23,26 @@ sealed interface RecyclerViewActions {
     }
 }
 
-
+/**
+ * Use this callback together with [RecyclerViewActions] to get swiping, dragging and reordering.
+ *
+ * You can set [swipeEnabled] and [dragEnabled] values at runtime to disable and enable
+ * functionality as you wish.
+ * Example:
+ * ```
+ * class MyFragment: Fragment(), RecyclerViewActions.DragActions {
+ *     // ...
+ *
+ *     //inside onViewCreated:
+ *      ItemTouchHelper(DragCallback(this)).attachToRecyclerView(binding.recyclerView)
+ * }
+ * ```
+ *
+ * @param swipeEnabled set this value to enable / disable swiping. By default inferred from the
+ * interface implemented in [actions]
+ * @param dragEnabled set this value to enable/disable dragging. By default inferred from [actions]
+ *
+ */
 open class DragCallback(
     private val actions: RecyclerViewActions,
     var swipeEnabled: Boolean = actions is RecyclerViewActions.SwipeActions,

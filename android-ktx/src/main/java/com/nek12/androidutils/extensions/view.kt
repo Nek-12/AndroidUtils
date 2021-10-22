@@ -17,9 +17,20 @@ import androidx.recyclerview.widget.RecyclerView
 const val DEF_FADE_DURATION = 250L
 const val IMAGEVIEW_FADE_DURATION = 1000L
 
+/**
+ * Whether the device is in landscape mode right now
+ */
 val Fragment.isLandscape: Boolean
     get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
+/**
+ * Hides this view, optionally animating it. Default animator fades the view out
+ * @param gone should the view be gone **after** the animation ends?
+ * @param duration the animation duration
+ * @param animation a resource id that can be used to animate the view. Default is fade out
+ *
+ * @see show
+ */
 fun View.hide(
     animated: Boolean = false,
     gone: Boolean = false,
@@ -41,6 +52,10 @@ fun View.hide(
     }
 }
 
+/**
+ * Shows this view, optionally animating it. Analogous to [hide]
+ * @see hide
+ */
 fun View.show(
     animated: Boolean = false,
     duration: Long = DEF_FADE_DURATION,
@@ -57,6 +72,11 @@ fun View.show(
     }
 }
 
+/**
+ * A better API for legacy View visibility constants.
+ * You can parse a legacy value or a boolean value.
+ * [value] is a legacy value like [View.GONE]
+ */
 enum class Visibility(val value: Int) {
     VISIBLE(View.VISIBLE), HIDDEN(View.INVISIBLE), GONE(View.GONE);
 
@@ -64,10 +84,18 @@ enum class Visibility(val value: Int) {
         private val map = values().associateBy(Visibility::value)
 
         fun of(legacy: Int) = map[legacy]
+
+        /**
+         * if [isVisible] is false returns [GONE].
+         * Otherwise returns [VISIBLE]
+         */
         fun of(isVisible: Boolean) = if (isVisible) VISIBLE else GONE
     }
 }
-
+/**
+ * Like [View.getVisibility] but uses modern [Visibility] API.
+ * @see [Visibility]
+ */
 var View.currentVisibility: Visibility
     get() = Visibility.of(this.visibility)
         ?: throw IllegalArgumentException("No such visibility value")
@@ -75,6 +103,9 @@ var View.currentVisibility: Visibility
         this.visibility = value.value
     }
 
+/**
+ * Calls either [show] or [hide] depending on the [visibility] parameter
+ */
 fun View.setVisibility(
     visibility: Visibility,
     animated: Boolean = false,
@@ -87,7 +118,11 @@ fun View.setVisibility(
     }
 }
 
-
+/**
+ * Sets this recyclerview's layout manager to a grid layout manager where the columns are evenly
+ * distributed to fill the screen. If you specify 50dp as column width and your screen is
+ * 300dp-wide, for example, you will get 6 columns.
+ */
 fun RecyclerView.autoFitColumns(columnWidthDP: Int) {
     val displayMetrics = this.context.resources.displayMetrics
     val noOfColumns =
@@ -95,7 +130,9 @@ fun RecyclerView.autoFitColumns(columnWidthDP: Int) {
     this.layoutManager = GridLayoutManager(this.context, noOfColumns)
 }
 
-
+/**
+ * Execute the specified [action] for each viewholder that is currently visible.
+ */
 inline fun <reified T : RecyclerView.ViewHolder> RecyclerView.forEachVisibleHolder(
     action: (T) -> Unit,
 ) {
@@ -120,7 +157,12 @@ fun View.showKeyboard() {
     imm.showSoftInput(this, 0)
 }
 
-
+/**
+ * Animates this view as fading in. The visibility is not changed, only the alpha value.
+ * @see show
+ * @see hide
+ * @see setVisibility
+ */
 fun View.fadeIn(fadeInDuration: Long = IMAGEVIEW_FADE_DURATION) {
     (AnimatorInflater.loadAnimator(this.context, R.animator.fade_in) as AnimatorSet).apply {
         if (isRunning) return

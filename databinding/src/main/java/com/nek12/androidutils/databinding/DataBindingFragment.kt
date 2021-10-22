@@ -8,7 +8,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 
-
+/**
+ * A BaseFragment class that you're so tired of implementing each darn time in your app.
+ * Supply a [layoutRes] and [T] arguments and don't waste your time.
+ * You don't need to override [onCreateView] or inflate anything, just use your binding straight
+ * away in [onViewCreated] or in other places that are called **during the view lifecycle**.
+ * Remember, if you override [onDestroyView], call your code that used binding first, then call
+ * super.onDestroyView()
+ *
+ * @param b your new binding variable
+ * @param layoutRes a layout for this fraagment
+ */
 abstract class DataBindingFragment<T : ViewDataBinding> : Fragment() {
     protected abstract val layoutRes: Int
     private var _b: T? = null

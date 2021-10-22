@@ -15,6 +15,11 @@ import com.google.android.material.snackbar.Snackbar
 
 const val SNACKBAR_MAX_LINES = 3
 
+/**
+ * Show a snackbar and execute specified action.
+ * @param action The action to execute on pressing the button
+ * @param actionText What text to display on the action button?
+ */
 fun View.showSnackbar(
     msg: String,
     actionText: String,
@@ -29,18 +34,24 @@ fun View.showSnackbar(
     }.show()
 }
 
-fun View.showUndoSnackbar(
+/**
+ * Shows a snackbar with an action (by default "Cancel"), that you can specify actions for:
+ * @param action Is going to be called when the user clicks the snackbar action button
+ * @param onDismiss what is going to happen if the user does NOT cancel the action. This action will happen after a delay, when the snackbar disappears.
+ *
+ */
+fun View.showLazyActionSnackbar(
     msg: String,
     actionText: String = this.context.getString(android.R.string.cancel),
     duration: Int = Snackbar.LENGTH_SHORT,
     animMode: Int = Snackbar.ANIMATION_MODE_SLIDE,
-    onUndo: ((snackbar: Snackbar) -> Unit)? = null,
+    action: ((snackbar: Snackbar) -> Unit)? = null,
     onDismiss: (snackbar: Snackbar) -> Unit,
 ) {
     val snackbar = Snackbar.make(this, msg, duration).apply {
         animationMode = animMode
-        anchorView = this@showUndoSnackbar
-        setAction(actionText) { onUndo?.let { action -> action(this) } }
+        anchorView = this@showLazyActionSnackbar
+        setAction(actionText) { action?.let { action -> action(this) } }
     }
     snackbar.addCallback(object : Snackbar.Callback() {
         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -52,6 +63,12 @@ fun View.showUndoSnackbar(
     snackbar.show()
 }
 
+/**
+ * Shows a snackbar with specified message, duration and animMode.
+ * The snackbar will appear above the view this function is called on,
+ * most commonly binding.root
+ * Max number of lines of text is 3.
+ */
 fun View.showSnackbar(
     msg: String,
     duration: Int = Snackbar.LENGTH_SHORT,
@@ -67,17 +84,28 @@ fun View.showSnackbar(
     }.show()
 }
 
-
+/**
+ * Shows a snackbar with specified [msg] text, [duration] and [animMode].
+ * The snackbar will appear above the view this function is called on,
+ * most commonly binding.root
+ * Max number of lines of text is 3.
+ */
 fun View.showSnackbar(
     @StringRes msg: Int,
     duration: Int = Snackbar.LENGTH_SHORT,
     animMode: Int = Snackbar.ANIMATION_MODE_SLIDE,
 ) = showSnackbar(context.getString(msg), duration, animMode)
 
+
+/**
+ * Shows a cancelable modal material dialog with specified [message], [title] and [icon].
+ * Default icon is material info icon -> (i)
+ * You can specify behavior for clicking cancel and ok buttons.
+ */
 fun Fragment.showInfoDialog(
     message: String,
     title: String,
-    @DrawableRes icon: Int,
+    @DrawableRes icon: Int = R.drawable.ic_info_36dp,
     onCancel: ((dialog: DialogInterface) -> Unit)? = null,
     onAgree: (dialog: DialogInterface) -> Unit = {},
 ) {
@@ -93,6 +121,37 @@ fun Fragment.showInfoDialog(
     }
     d.show()
 }
+
+/**
+ * Shows a cancelable modal material dialog with specified [message], [title] and [icon].
+ * Default icon is material info icon -> (i)
+ * You can specify behavior for clicking cancel and ok buttons.
+ */
+fun Fragment.showInfoDialog(
+    @StringRes title: Int,
+    @StringRes content: Int,
+    @DrawableRes icon: Int = R.drawable.ic_info_36dp,
+    onCancel: ((dialog: DialogInterface) -> Unit)? = null,
+    onAgree: (dialog: DialogInterface) -> Unit = {},
+) {
+    showInfoDialog(
+        getString(title),
+        getString(content),
+        icon, onCancel, onAgree
+    )
+}
+
+/**
+ * Shows a modal dialog that has "Cancel" and "OK" buttons, but the "Cancel" button does nothing
+ */
+fun Fragment.showConfirmationDialog(
+    @StringRes title: Int,
+    @StringRes content: Int,
+    @DrawableRes icon: Int,
+    okAction: (dialog: DialogInterface) ->
+    Unit
+) = showInfoDialog(title, content, icon, {}, okAction)
+
 
 /**
  * @param ratio: The percentage of the screen the sheet should take, e.g. 0.6 = 60%

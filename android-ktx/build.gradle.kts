@@ -7,4 +7,5 @@ dependencies {
 //    implementation("androidx.fragment:fragment-ktx:1.4.0-alpha09")
 //    implementation("androidx.activity:activity-ktx:1.3.1")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
+    implementation(project(":core-ktx"))
 }
