@@ -1,7 +1,10 @@
 # AndroidUtils
-[![](https://jitpack.io/v/Nek-12/AndroidUtils.svg)](https://jitpack.io/#Nek-12/AndroidUtils)
+![GitHub](https://img.shields.io/github/license/Nek-12/AndroidUtils)
+![GitHub last commit](https://img.shields.io/github/last-commit/Nek-12/AndroidUtils)
+![Maintenance](https://img.shields.io/maintenance/yes/2021)
+[![Downloads on Jitpack](https://jitpack.io/v/Nek-12/AndroidUtils/month.svg)](https://jitpack.io/#Nek-12/AndroidUtils.svg)
 
-Latest version is shown here ↑
+Latest version is  [![Jitpack Version](https://jitpack.io/v/Nek-12/AndroidUtils.svg)](https://jitpack.io/#Nek-12/AndroidUtils) 
 
 Extensions available:
 ```  
@@ -189,3 +192,22 @@ If you find something that is missing, feel free to tell me about it using Githu
 * [This Medium Post](https://medium.com/@berryhuang/android-room-generic-dao-27cfc21a4912) inspired me to create a generic DAO implementation.
 * [This Medium Article](https://medium.com/android-news/using-databinding-like-a-pro-to-write-generic-recyclerview-adapter-f94cb39b65c4) inspired me to create my `recyclerview` implementation
 * Other extensions, tricks, classes and ideas were inspired by open-source community: Medium posts, StackOverflow answers, other libraries and so on. Thanks to everyone for such a valuable information!
+
+
+## License
+```
+   Copyright [2021] [Nikita Vaizin]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+```
