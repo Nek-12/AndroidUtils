@@ -12,10 +12,10 @@ import com.nek12.androidutils.databinding.DataBindingFragment
  * recyclerviews in onDestroyView. Just supply them in [selectRecyclers]
  */
 abstract class RVDataBindingFragment<T : ViewDataBinding> : DataBindingFragment<T>() {
-    abstract fun selectRecyclers(binding: T): List<RecyclerView>
+    abstract val recyclerSelector: (binding: T) -> List<RecyclerView>
 
     override fun onDestroyView() {
-        selectRecyclers(b).forEach {
+        recyclerSelector(b).forEach {
             it.adapter = null
         }
         super.onDestroyView()

@@ -26,6 +26,7 @@ abstract class DataBindingFragment<T : ViewDataBinding> : Fragment() {
         get() = _b
             ?: throw IllegalAccessException("ViewBinding is not available outside of the view lifecycle")
 
+    abstract fun onViewReady()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +35,11 @@ abstract class DataBindingFragment<T : ViewDataBinding> : Fragment() {
     ): View {
         _b = DataBindingUtil.inflate(inflater, layoutRes, container, false)
         return b.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        onViewReady()
     }
 
     override fun onDestroyView() {
