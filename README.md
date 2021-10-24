@@ -1,7 +1,10 @@
 # AndroidUtils
-[![](https://jitpack.io/v/Nek-12/AndroidUtils.svg)](https://jitpack.io/#Nek-12/AndroidUtils)
+![GitHub](https://img.shields.io/github/license/Nek-12/AndroidUtils)
+![GitHub last commit](https://img.shields.io/github/last-commit/Nek-12/AndroidUtils)
+![Maintenance](https://img.shields.io/maintenance/yes/2021)
+[![Downloads on Jitpack](https://jitpack.io/v/Nek-12/AndroidUtils/month.svg)](https://jitpack.io/#Nek-12/AndroidUtils.svg)
 
-Latest version is shown here ↑
+Latest version is  [![Jitpack Version](https://jitpack.io/v/Nek-12/AndroidUtils.svg)](https://jitpack.io/#Nek-12/AndroidUtils) 
 
 Extensions available:
 ```  
