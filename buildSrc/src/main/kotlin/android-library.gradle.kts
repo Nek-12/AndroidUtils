@@ -6,7 +6,6 @@ plugins {
     `maven-publish`
 }
 
-
 android {
     compileSdk = 31
     buildToolsVersion = "31.0.0"
@@ -78,7 +77,6 @@ publishing {
         }
     }
 }
-
 
 tasks.findByName("publishReleasePublicationToMavenLocal")!!.apply {
     dependsOn("bundleReleaseAar")

@@ -18,7 +18,7 @@ import androidx.databinding.ViewDataBinding
 open class SingleTypeAdapter<T, VB : ViewDataBinding>(
     @LayoutRes private val layout: Int,
     itemClickListener: ItemClickListener<Item<T, VB>>? = null,
-    private val binder: Binder<T, VB>? = null,
+    private val binder: RVBinder<T, VB>? = null,
 ) : GenericAdapter(itemClickListener as ItemClickListener<Item<*, *>>) {
 
     /**

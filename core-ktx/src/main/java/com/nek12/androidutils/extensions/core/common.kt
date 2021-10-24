@@ -68,3 +68,16 @@ class LazyWithReceiver<This,Return>(val initializer:This.()->Return)
         return values.getOrPut(thisRef) {thisRef.initializer()}
     }
 }
+
+
+/**
+ * @return Whether this string is valid
+ * Examples:
+ * - null -> false
+ * - "null" -> false
+ * - "" -> false
+ * - "NULL" -> false
+ * - "  " -> false
+ */
+val String?.isValid: Boolean
+    get() = !this.isNullOrBlank() && !this.equals("null", true)

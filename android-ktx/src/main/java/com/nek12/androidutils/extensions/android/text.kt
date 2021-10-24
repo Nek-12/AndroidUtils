@@ -9,19 +9,9 @@ import android.util.Patterns
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import com.nek12.androidutils.extensions.core.isValid
 import java.util.*
 
-/**
- * @return Whether this string is valid
- * Examples:
- * - null -> false
- * - "null" -> false
- * - "" -> false
- * - "NULL" -> false
- * - "  " -> false
- */
-val String?.isValid: Boolean
-    get() = !this.isNullOrBlank() && !this.equals("null", true)
 
 val String?.isValidEmail: Boolean
     get() = this.isValid && Patterns.EMAIL_ADDRESS.matcher(this!!).matches()
@@ -138,7 +128,6 @@ fun String.hextoRGB(): Triple<Int, Int, Int> {
  * If this is a color int, turns it into a hex string.
  */
 fun Int.colorToHexString() = String.format(Locale.ROOT, "#%06X", -0x1 and this).replace("#FF", "#")
-
 
 /**
  * A class that invokes [onChanged] **after** the text changes. Also validates the query.

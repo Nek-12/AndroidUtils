@@ -17,7 +17,7 @@ internal const val TAG = "GenericAdapter"
  * A lambda that is going to be called when the ViewHolder is rebound.
  * You can put here all the logic that you usually put into [Item.bind]
  */
-typealias Binder<T, VB> = (BindPayload<T, VB>) -> Unit
+typealias RVBinder<T, VB> = (BindPayload<T, VB>) -> Unit
 
 /**
  * This is the heart of the library. Use [Item]s to populate your generic recyclerview.
@@ -142,7 +142,7 @@ data class GenericItem<T, VB : ViewDataBinding>(
     override val data: T,
     override val id: Long,
     override val layout: Int,
-    val binder: Binder<T, VB>? = null,
+    val binder: RVBinder<T, VB>? = null,
 ) : Item<T, VB>() {
     override fun bind(binding: VB, bindingPos: Int) {
         binder?.invoke(BindPayload(this, binding, bindingPos))
