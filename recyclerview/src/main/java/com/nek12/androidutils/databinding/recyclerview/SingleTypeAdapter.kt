@@ -19,13 +19,21 @@ open class SingleTypeAdapter<T, VB : ViewDataBinding>(
     @LayoutRes private val layout: Int,
     itemClickListener: ItemClickListener<Item<T, VB>>? = null,
     private val binder: Binder<T, VB>? = null,
-) : GenericAdapter(itemClickListener as ItemClickListener<Item<*,*>>) {
+) : GenericAdapter(itemClickListener as ItemClickListener<Item<*, *>>) {
 
-    fun submitData(data: List<T>, idSelector: (T) -> Long) {
+    /**
+     * Like [submitList], but transforms your data objects into Items for you.
+     * **If you don't have anything to serve as an ID, let the idSelector return
+     * [Item.NO_ID] or _null_. In this case
+     * you will lose some performance, so make sure you
+     * supply the best id value possible before using NO_ID.
+     */
+    fun submitData(data: List<T>, idSelector: (T) -> Long?) {
         submitList(data.map { itemFromData(it, idSelector(it)) })
     }
 
-    fun itemFromData(item: T, id: Long): Item<T, VB> = GenericItem(item, id, layout, binder)
+    fun itemFromData(item: T, id: Long?): Item<T, VB> =
+        GenericItem(item, id ?: Item.NO_ID, layout, binder)
 }
 
 /**
@@ -42,6 +50,9 @@ open class SingleTypeAdapter<T, VB : ViewDataBinding>(
  * binding.recyclerView.adapter = adapter
  *
  * ```
+ * @see SingleTypeAdapter
+ * @see GenericAdapter
+ * @see GenericItem
  */
 open class SimpleAdapter<T>(
     @LayoutRes layout: Int,

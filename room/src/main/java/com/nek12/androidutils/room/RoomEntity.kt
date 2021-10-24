@@ -11,7 +11,7 @@ package com.nek12.androidutils.room
  *      val title: String,
  *      @PrimaryKey(autoGenerate = true)
  *      override val id: Long = 0
- *  ) : RoomEntity() {
+ *  ) : RoomEntity {
  *      companion object {
  *          const val TABLE_NAME = "entry"
  *      }
@@ -20,8 +20,8 @@ package com.nek12.androidutils.room
  * @see RoomRepo
  * @see RoomDao
  */
-abstract class RoomEntity {
-    abstract val id: Long
-    abstract override fun equals(other: Any?): Boolean
-    abstract override fun hashCode(): Int
+interface RoomEntity {
+    val id: Long
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
 }

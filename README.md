@@ -2,11 +2,6 @@
 [![](https://jitpack.io/v/Nek-12/AndroidUtils.svg)](https://jitpack.io/#Nek-12/AndroidUtils)
 
 
-**The project is in early stages of development. It is undocumented, partially broken and 
-breaking API changes happen every release. I do not recommend you use it until 1.0 release is 
-published.**
-
-
 Extensions available:
 ```
 com.github.Nek-12.AndroidUtils:recyclerview:<version>
@@ -21,7 +16,11 @@ com.github.Nek-12.AndroidUtils:room:<version>
 com.github.Nek-12.AndroidUtils:material-ktx:<version>
 ```
 
-To-Do:
-- List dependencies of each artifact
-- Add artifact with all artifacts
-- Document everything
+## Databinding RecyclerView 
+
+`com.github.Nek-12.AndroidUtils:recyclerview:<version>`
+
+If you're using databindig in your project, with this library you can forget about writing 
+adapters, viewholders and itemtouchhelpers for each of your screens over and over. 
+ 
+>>

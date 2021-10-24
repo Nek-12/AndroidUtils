@@ -4,6 +4,8 @@ package com.nek12.androidutils.databinding.recyclerview
 
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.RecyclerView
+import com.nek12.androidutils.databinding.recyclerview.Item.Companion.NO_ID
 
 internal const val CAST_MESSAGE = """
     Could not bind your Item because you provided wrong layout|type argument pair
@@ -24,7 +26,7 @@ typealias Binder<T, VB> = (BindPayload<T, VB>) -> Unit
  * yourself some time and use [SimpleAdapter] and [GenericItem].
  *
  * If you provide a wrong [layout] <-> [VB] argument pair or do not implement the [data] variable
- * in your xml, your app will crash at runtime. This is the downside of using this library,
+ * in your xml properly, your app will crash at runtime. This is the downside of using this library,
  * probably.
  *
  * If you have a single view type but want to have custom binding logic, use [SingleTypeAdapter]
@@ -45,7 +47,9 @@ typealias Binder<T, VB> = (BindPayload<T, VB>) -> Unit
  *
  * ### [id]
  * A unique (hopefully) identifier for the Item that you are trying to display. Your
- * recyclerview performance depends on how you override this parameter.
+ * recyclerview performance depends on how you override this parameter. You can use [NO_ID] in those
+ * cases when your items are so simple you have nothing to represent an id for them, but do not
+ * abuse that functionality as you degrade your list's performance by using non-unique ids
  *
  * You can use different [T] and [VB] types to implement multiple item type lists as follows:
  * Example:
@@ -70,9 +74,26 @@ typealias Binder<T, VB> = (BindPayload<T, VB>) -> Unit
  * ```
  */
 abstract class Item<T, VB : ViewDataBinding> {
+
+    /**
+     * The data that will be passed to the xml as a "data" variable
+     */
     abstract val data: T
+
+    /**
+     * If your data has nothing to use as an id, you can use [NO_ID]
+     */
     abstract val id: Long
+
+    /**
+     * Needed for diff calculation. You can use data classes to provide this field for you.
+     * It is recommended that you compare your [data] fields here.
+     */
     abstract override fun equals(other: Any?): Boolean
+
+    /**
+     * Needed for diff calculation. You can use your [data] field's hashcode
+     */
     abstract override fun hashCode(): Int
 
     @get:LayoutRes
@@ -87,6 +108,10 @@ abstract class Item<T, VB : ViewDataBinding> {
 
     @Suppress("UNCHECKED_CAST")
     private fun cast(viewDataBinding: ViewDataBinding): VB? = viewDataBinding as? VB
+
+    companion object {
+        const val NO_ID = RecyclerView.NO_ID
+    }
 }
 
 /**
@@ -102,15 +127,15 @@ data class BlankItem<VB : ViewDataBinding>(
     val alwaysRebound: Boolean = false
 ) : Item<Unit, VB>() {
     override val data: Unit get() = Unit
-    override val id get() = layout.toLong()
+    override val id: Long get() = RecyclerView.NO_ID
     override fun equals(other: Any?): Boolean = !alwaysRebound
     override fun hashCode(): Int = 31 * layout + 29 * if (alwaysRebound) 1 else 0
 }
 
 /**
  * An item that does not require for you to override the [Item] class. You can use this
- * class directly instead of Item, though that will cause problems with complicated lists. It
- * also breaks encapsulation somewhat and costs more resources.
+ * class directly instead of Item in simple cases, just do not abuse it, because it breaks
+ * encapsulation.
  * Most useful for use with [SimpleAdapter] and [SingleTypeAdapter]
  */
 data class GenericItem<T, VB : ViewDataBinding>(

@@ -22,6 +22,9 @@ import androidx.sqlite.db.SupportSQLiteQuery
 @Dao
 abstract class RoomDao<T : RoomEntity>(private val tableName: String) {
 
+    /**
+     * @return The id of a newly-inserted entity
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun add(entity: T): Long
 
@@ -49,6 +52,9 @@ abstract class RoomDao<T : RoomEntity>(private val tableName: String) {
     @Delete
     abstract suspend fun delete(entities: List<T>)
 
+    /**
+     * @return How many items were deleted
+     */
     @RawQuery
     protected abstract suspend fun deleteAll(query: SupportSQLiteQuery): Int
 
