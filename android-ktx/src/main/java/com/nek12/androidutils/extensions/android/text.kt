@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.nek12.androidutils.extensions
+package com.nek12.androidutils.extensions.android
 
 import android.graphics.Color
 import android.text.*
@@ -9,6 +9,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import java.util.*
 
 /**
  * @return Whether this string is valid
@@ -83,6 +84,7 @@ fun String.foregroundColor(@ColorInt color: Int): SpannableStringBuilder {
     val span = ForegroundColorSpan(color)
     return toSpannable().spanText(span)
 }
+
 /**
  * @return a span where this string has specified background color
  */
@@ -135,7 +137,7 @@ fun String.hextoRGB(): Triple<Int, Int, Int> {
 /**
  * If this is a color int, turns it into a hex string.
  */
-fun Int.colorToHexString() = String.format("#%06X", -0x1 and this).replace("#FF", "#")
+fun Int.colorToHexString() = String.format(Locale.ROOT, "#%06X", -0x1 and this).replace("#FF", "#")
 
 
 /**

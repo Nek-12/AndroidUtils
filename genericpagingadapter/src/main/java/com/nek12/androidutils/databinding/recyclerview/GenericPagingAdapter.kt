@@ -1,8 +1,7 @@
-package com.nek12.recyclerview
+package com.nek12.androidutils.databinding.recyclerview
 
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
-import com.nek12.androidutils.databinding.recyclerview.*
 
 /**
  * This is an implementation of a [GenericAdapter] for pagination library.

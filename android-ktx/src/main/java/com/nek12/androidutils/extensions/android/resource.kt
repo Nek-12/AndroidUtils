@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.nek12.androidutils.extensions
+package com.nek12.androidutils.extensions.android
 
 import android.app.Activity
 import android.content.Context
@@ -31,7 +31,11 @@ fun Resources.getDimenInDP(@DimenRes id: Int): Int {
  * The animation runs in loops and never stops.
  */
 fun ImageView.applyLoopingAnimatedVectorDrawable(@DrawableRes avdResId: Int) {
-    val animated = ResourcesCompat.getDrawable(resources, avdResId, context.theme) as? AnimatedVectorDrawableCompat
+    val animated = ResourcesCompat.getDrawable(
+        resources,
+        avdResId,
+        context.theme
+    ) as? AnimatedVectorDrawableCompat
     animated?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
         override fun onAnimationEnd(drawable: Drawable?) {
             this@applyLoopingAnimatedVectorDrawable.post { animated.start() }
@@ -40,7 +44,6 @@ fun ImageView.applyLoopingAnimatedVectorDrawable(@DrawableRes avdResId: Int) {
     this.setImageDrawable(animated)
     animated?.start()
 }
-
 
 /**
  * Rescales the bitmap
@@ -75,7 +78,7 @@ fun Int.asColor(context: Context) = ContextCompat.getColor(context, this)
 /**
  * Uses this int as a **resource id** to get a drawable
  */
-fun Int.asDrawable(context: Context) = ContextCompat.getDrawable(context,this)
+fun Int.asDrawable(context: Context) = ContextCompat.getDrawable(context, this)
 
 /**
  * Synchronously parses this uri and returns a bitmap.

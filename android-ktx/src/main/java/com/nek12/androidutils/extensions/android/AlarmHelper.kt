@@ -1,12 +1,8 @@
-@file:Suppress("unused")
-
-package com.nek12.androidutils.extensions
+package com.nek12.androidutils.extensions.android
 
 import android.app.*
 import android.content.Context
-import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import com.nek12.androidutils.extensions.core.Time

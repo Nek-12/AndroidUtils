@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.nek12.androidutils.extensions
+package com.nek12.androidutils.extensions.android
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
@@ -13,9 +13,11 @@ import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.nek12.androidutils.extensions.R
 
 const val DEF_FADE_DURATION = 250L
 const val IMAGEVIEW_FADE_DURATION = 1000L
+const val DEF_COLUMN_SPACING = 0.5
 
 /**
  * Whether the device is in landscape mode right now
@@ -123,10 +125,10 @@ fun View.setVisibility(
  * distributed to fill the screen. If you specify 50dp as column width and your screen is
  * 300dp-wide, for example, you will get 6 columns.
  */
-fun RecyclerView.autoFitColumns(columnWidthDP: Int) {
+fun RecyclerView.autoFitColumns(columnWidthDP: Int, columnSpacingDp: Double = DEF_COLUMN_SPACING) {
     val displayMetrics = this.context.resources.displayMetrics
     val noOfColumns =
-        ((displayMetrics.widthPixels / displayMetrics.density) / columnWidthDP + 0.5).toInt()
+        ((displayMetrics.widthPixels / displayMetrics.density) / columnWidthDP + columnSpacingDp).toInt()
     this.layoutManager = GridLayoutManager(this.context, noOfColumns)
 }
 
