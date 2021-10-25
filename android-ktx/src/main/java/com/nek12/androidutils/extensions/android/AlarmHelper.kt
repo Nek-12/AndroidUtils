@@ -1,3 +1,5 @@
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+
 package com.nek12.androidutils.extensions.android
 
 import android.app.*

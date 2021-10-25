@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
 
 
@@ -23,8 +22,9 @@ class BaseHolder(val binding: ViewDataBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: Item<*, *>) {
-        if (item.data == null || item.data is Unit) return
-        binding.setVariable(BR.data, item.data)
+        if (item.data != Unit) {
+            binding.setVariable(BR.data, item.data)
+        }
         binding.executePendingBindings()
         item.tryBind(binding, bindingAdapterPosition)
     }
