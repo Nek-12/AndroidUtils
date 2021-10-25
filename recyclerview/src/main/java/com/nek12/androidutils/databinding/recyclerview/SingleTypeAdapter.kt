@@ -19,14 +19,14 @@ open class SingleTypeAdapter<T, VB : ViewDataBinding>(
     @LayoutRes private val layout: Int,
     itemClickListener: ItemClickListener<Item<T, VB>>? = null,
     private val binder: RVBinder<T, VB>? = null,
-) : GenericAdapter(itemClickListener as ItemClickListener<Item<*, *>>) {
+) : GenericAdapter(itemClickListener as? ItemClickListener<Item<*, *>>?) {
 
     /**
      * Like [submitList], but transforms your data objects into Items for you.
      * **If you don't have anything to serve as an ID, let the idSelector return
      * [Item.NO_ID] or _null_. In this case
      * you will lose some performance, so make sure you
-     * supply the best id value possible before using NO_ID.
+     * resort to this when you truly have no other alternative.
      */
     fun submitData(data: List<T>, idSelector: (T) -> Long?) {
         submitList(data.map { itemFromData(it, idSelector(it)) })
