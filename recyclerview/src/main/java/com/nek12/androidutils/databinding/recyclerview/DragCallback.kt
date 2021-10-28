@@ -1,10 +1,9 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
 package com.nek12.androidutils.databinding.recyclerview
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-
 
 /**
  * Let your activity / fragment / etc. implement the actions you want and handle
@@ -63,14 +62,17 @@ open class DragCallback(
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder,
     ): Boolean {
-        if (actions is RecyclerViewActions.DragActions)
+        if (actions is RecyclerViewActions.DragActions) {
             actions.onItemMoved(viewHolder.absoluteAdapterPosition, target.absoluteAdapterPosition)
-
+        }
         return true
     }
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
-        if (actionState != ItemTouchHelper.ACTION_STATE_IDLE && viewHolder != null && actions is RecyclerViewActions.DragActions) {
+        if (actionState != ItemTouchHelper.ACTION_STATE_IDLE &&
+            viewHolder != null &&
+            actions is RecyclerViewActions.DragActions
+        ) {
             actions.onItemSelected(viewHolder)
         }
         super.onSelectedChanged(viewHolder, actionState)
@@ -78,13 +80,15 @@ open class DragCallback(
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
-        if (actions is RecyclerViewActions.DragActions)
+        if (actions is RecyclerViewActions.DragActions) {
             actions.onItemReleased(viewHolder)
+        }
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        if (actions is RecyclerViewActions.SwipeActions)
+        if (actions is RecyclerViewActions.SwipeActions) {
             actions.onItemSwiped(viewHolder, direction)
+        }
     }
 
     override fun isLongPressDragEnabled() = dragEnabled

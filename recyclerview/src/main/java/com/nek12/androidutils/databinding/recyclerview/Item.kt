@@ -20,7 +20,7 @@ internal const val TAG = "GenericAdapter"
 typealias RVBinder<T, VB> = (BindPayload<T, VB>) -> Unit
 
 /**
- * This is the heart of the library. Use [Item]s to populate your generic recyclerview.
+ * Use [Item]s to populate your generic recyclerview.
  * Items serve the purpose of viewHolders, adapter inner logic and encapsulate your business
  * logic. If you want a simple list with just one item type and zero custom binding logic, save
  * yourself some time and use [SimpleAdapter] and [GenericItem].
@@ -73,7 +73,7 @@ typealias RVBinder<T, VB> = (BindPayload<T, VB>) -> Unit
  * }
  * ```
  */
-abstract class Item<T, VB : ViewDataBinding> {
+abstract class Item<T, in VB : ViewDataBinding> {
 
     /**
      * The data that will be passed to the xml as a "data" variable
@@ -122,7 +122,7 @@ abstract class Item<T, VB : ViewDataBinding> {
  * @param alwaysRebound Whether this item should be rebound on **every** diffing pass. If false,
  * the item is **never** rebound.
  */
-data class BlankItem<VB : ViewDataBinding>(
+data class BlankItem<in VB : ViewDataBinding>(
     override val layout: Int,
     val alwaysRebound: Boolean = false
 ) : Item<Unit, VB>() {

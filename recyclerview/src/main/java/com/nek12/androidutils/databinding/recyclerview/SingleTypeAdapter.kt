@@ -15,7 +15,7 @@ import androidx.databinding.ViewDataBinding
  * For cases when you have multiple view types, it is recommended to use [GenericAdapter] and [Item]
  */
 @Suppress("UNCHECKED_CAST")
-open class SingleTypeAdapter<T, VB : ViewDataBinding>(
+open class SingleTypeAdapter<T, in VB : ViewDataBinding>(
     @LayoutRes private val layout: Int,
     itemClickListener: ItemClickListener<Item<T, VB>>? = null,
     private val binder: RVBinder<T, VB>? = null,

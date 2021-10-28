@@ -7,7 +7,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 
-
 /**
  * The generic databinding ViewHolder class that is used internally in the library.
  * This class is created and managed internally. What you're searching for is [Item] probably.
@@ -18,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
  * item is called exactly "data" and the type is of the first type argument for your [Item] class
  * implementation (i.e. the type of the "data" field).**
  */
-class BaseHolder(val binding: ViewDataBinding) :
+class BaseHolder(private val binding: ViewDataBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: Item<*, *>) {

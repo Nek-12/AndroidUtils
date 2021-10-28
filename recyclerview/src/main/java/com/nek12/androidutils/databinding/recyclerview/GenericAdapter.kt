@@ -1,4 +1,5 @@
 @file:Suppress("unused")
+
 package com.nek12.androidutils.databinding.recyclerview
 
 import android.view.View
@@ -28,7 +29,7 @@ import androidx.recyclerview.widget.ListAdapter
  * @see Item
  * @see GenericAdapter
  */
-interface ItemClickListener<T> {
+interface ItemClickListener<in T : Item<*, *>> {
     fun onItemClicked(view: View, item: T, pos: Int)
     fun onItemLongClicked(view: View, item: T, pos: Int): Boolean = false
 }
@@ -73,7 +74,6 @@ open class GenericAdapter(
         }
     }
 
-
     override fun onBindViewHolder(holder: BaseHolder, position: Int) =
         holder.bind(getItem(position))
 
@@ -84,10 +84,11 @@ private fun setClickListenersOnViewGroup(view: View, onClick: (v: View) -> Unit)
     view.setOnClickListener(onClick)
     val group = view as? ViewGroup ?: return
     for (child in group.children) {
-        if (child is ViewGroup)
+        if (child is ViewGroup) {
             setClickListenersOnViewGroup(child, onClick)
-        else
+        } else {
             child.setOnClickListener(onClick)
+        }
     }
 }
 
@@ -95,14 +96,15 @@ private fun setLongClickListenersOnViewGroup(view: View, onClick: (v: View) -> B
     view.setOnLongClickListener(onClick)
     val group = view as? ViewGroup ?: return
     for (child in group.children) {
-        if (child is ViewGroup)
+        if (child is ViewGroup) {
             setLongClickListenersOnViewGroup(child, onClick)
-        else
+        } else {
             child.setOnLongClickListener(onClick)
+        }
     }
 }
 
-fun <T> applyListenerToAllViews(
+fun <T : Item<*, *>> applyListenerToAllViews(
     vh: BaseHolder,
     clickListener: ItemClickListener<T>?,
     itemSelector: () -> T?
