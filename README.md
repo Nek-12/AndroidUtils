@@ -7,17 +7,18 @@
 Latest version is  [![Jitpack Version](https://jitpack.io/v/Nek-12/AndroidUtils.svg)](https://jitpack.io/#Nek-12/AndroidUtils) 
 
 Extensions available:
-```  
-com.github.Nek-12.AndroidUtils:recyclerview:<version>  
-com.github.Nek-12.AndroidUtils:preferences-ktx:<version>  
-com.github.Nek-12.AndroidUtils:genericpagingadapter:<version>  
-com.github.Nek-12.AndroidUtils:databinding:<version>  
-com.github.Nek-12.AndroidUtils:core-ktx:<version>  
-com.github.Nek-12.AndroidUtils:android-ktx:<version>  
-com.github.Nek-12.AndroidUtils:safenavcontroller:<version>  
-com.github.Nek-12.AndroidUtils:coroutine-ktx:<version>  
-com.github.Nek-12.AndroidUtils:room:<version>  
-com.github.Nek-12.AndroidUtils:material-ktx:<version>  
+```kotlin
+val utilsVersion = "<look up 👆🏻>"
+implementation ("com.github.Nek-12.AndroidUtils:recyclerview:$utilsVersion")
+implementation ("com.github.Nek-12.AndroidUtils:preferences-ktx:$utilsVersion")
+implementation ("com.github.Nek-12.AndroidUtils:genericpagingadapter:$utilsVersion")
+implementation ("com.github.Nek-12.AndroidUtils:databinding:$utilsVersion")
+implementation ("com.github.Nek-12.AndroidUtils:core-ktx:$utilsVersion")
+implementation ("com.github.Nek-12.AndroidUtils:android-ktx:$utilsVersion")
+implementation ("com.github.Nek-12.AndroidUtils:safenavcontroller:$utilsVersion")
+implementation ("com.github.Nek-12.AndroidUtils:coroutine-ktx:$utilsVersion")
+implementation ("com.github.Nek-12.AndroidUtils:room:$utilsVersion")
+implementation ("com.github.Nek-12.AndroidUtils:material-ktx:$utilsVersion")
 ```  
 
 ## Databinding RecyclerView
@@ -32,18 +33,35 @@ adapters, viewholders and itemtouchhelpers for each of your screens, over and ov
 No problem:
 
 1. Your adapter:
-   ```  
+   ```kotlin
    private val adapter = SimpleAdapter<String>(R.layout.item_title, itemClickListener)  
    ```    
 
 2. Submitting data:
-    ```    
+    ```kotlin
     val result = listOf("Chicken", "Meat", "Milk")    
     //We do not have a good ID here, so we can just use null or Item.NO_ID    
     adapter.submitData(result) { null }   
     ```  
 
 3. Bind your data in the XML
+   ```xml
+   <?xml version="1.0" encoding="utf-8"?>
+   <layout
+           xmlns:android="http://schemas.android.com/apk/res/android"
+           xmlns:app="http://schemas.android.com/apk/res-auto">
+
+       <data>
+           <variable name="data"  type="String"/>
+       </data>
+
+       <TextView
+           android:id="@+id/text"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="@{data}"/>
+   </layout>
+   ```
 
 Two lines of code ✅
 
@@ -52,13 +70,13 @@ Two lines of code ✅
 Simple adapter does not provide custom binding logic or accessing your binding inside itemClickListener, so let's use SingleTypeAdapter
 
 1. Adapter:
-   ```  
+   ```kotlin 
    val adapter = SingleTypeAdapter<CheckBoxData>(R.layout.item_checkbox, itemClickListener) {    
      it.binding.checkBox.isChecked = viewModel.isCached(it.data)  
    }  
    ```  
 2. Submitting data:
-   ```  
+   ```kotlin  
    viewModel.boxesFlow.collectOnLifecycle(viewLifecycleOwner) { data ->   
        adapter.submitData(data) { it.id } //or null if you have nothing to serve as an id  
    }  
@@ -69,7 +87,7 @@ Three lines of code ✅
 
 No problem, here's how you do it:
 1. Your adapter:
-   ```  
+   ```kotlin  
    sealed class MainMenuItem<T, VB : ViewDataBinding> : Item<T, VB>() {  
        data class Entry(  
            override val data: MenuEntryEntity,  
@@ -109,11 +127,11 @@ Not exactly three lines, but much less code than you would write otherwise ✅
 No problem!
 1. Add dependency `com.github.Nek-12.AndroidUtils:genericpagingadapter:<version>`
 2. Your adapter:
-   ```  
+   ```kotlin  
    private val adapter = GenericPagingAdapter()  
    ```  
 3. Your Items:
-   ```  
+   ```kotlin  
    val entries = Pager(PagingConfig()) {  
        entryRepo.getAllPaginated()  
    }.flow.cachedIn(viewModelScope).mapLatest { pagingData ->  
@@ -128,7 +146,7 @@ No problem!
    }  
    ```  
 4. Submitting data:
-   ```  
+   ```kotlin  
    viewModel.entries.collectOnLifecycle(viewLifecycleOwner) { items ->  
         //sometimes you will have to cast items to a more generic type  
        adapter.submitData(items as PagingData<Item<*, *>>)  
@@ -147,7 +165,7 @@ TBD:
 
 No problem!
 1. Your Entity:
-   ```  
+   ```kotlin  
    @Entity(tableName = Entry.TABLE_NAME)  
    data class Entry(  
        @PrimaryKey(autoGenerate = true) //you still have to annotate everything properly!  
@@ -159,14 +177,14 @@ No problem!
    }  
    ```  
 2. Your DAO:
-   ```  
+   ```kotlin  
    abstract class EntryDao : RoomDao<Entry>(Entry.TABLE_NAME) {  
        @Query("SELECT * FROM $Entry.TABLE_NAME")  
        abstract fun getAll(): Flow<List<Entry>> //you have to write async queries for yourself   
    }  
    ```  
 3. Your Repo:
-   ```  
+   ```kotlin  
    class EntryRepo(private val dao: EntryDao) : RoomRepo<Entry>(dao) {  
        fun getAll() = dao.getAll()  
    }  
