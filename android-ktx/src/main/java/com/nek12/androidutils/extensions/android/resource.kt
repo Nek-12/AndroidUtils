@@ -83,7 +83,7 @@ fun Int.asDrawable(context: Context) = ContextCompat.getDrawable(context, this)
 /**
  * Synchronously parses this uri and returns a bitmap.
  */
-@Deprecated("Main thread heavy operation", ReplaceWith("An asynchronous loading api"))
+@Deprecated("Main thread heavy operation")
 fun Activity.uriToBitmap(uri: Uri): Bitmap? {
     val bytes = contentResolver.openInputStream(uri)?.readBytes()
     return if (bytes == null) null else BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
