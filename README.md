@@ -148,7 +148,7 @@ No problem!
 4. Submitting data:
    ```kotlin  
    viewModel.entries.collectOnLifecycle(viewLifecycleOwner) { items ->  
-        //sometimes you will have to cast items to a more generic type  
+        //Sometimes you will have to cast items to a more generic type  
        adapter.submitData(items as PagingData<Item<*, *>>)  
    }  
    ```  
@@ -168,7 +168,8 @@ No problem!
    ```kotlin  
    @Entity(tableName = Entry.TABLE_NAME)  
    data class Entry(  
-       @PrimaryKey(autoGenerate = true) //you still have to annotate everything properly!  
+       // You still have to annotate everything properly!  
+       @PrimaryKey(autoGenerate = true) 
        override val id: Long = 0,  
    ) : RoomEntity {  
        companion object {  
@@ -179,8 +180,9 @@ No problem!
 2. Your DAO:
    ```kotlin  
    abstract class EntryDao : RoomDao<Entry>(Entry.TABLE_NAME) {  
-       @Query("SELECT * FROM $Entry.TABLE_NAME")  
-       abstract fun getAll(): Flow<List<Entry>> //you have to write async queries for yourself   
+       @Query("SELECT * FROM ${Entry.TABLE_NAME}") 
+       // You have to write async queries yourself
+       abstract fun getAll(): Flow<List<Entry>>    
    }  
    ```  
 3. Your Repo:
@@ -195,13 +197,12 @@ TBD:
 * Generic async get() methods
 
 ## Other components
-Documentation on those is still TBD, however there is not much code in them, so you can check   
-out sources or javadocs if you want more.
+Documentation on those is still TBD, however there is not much code in them, so you can check out sources or javadocs if you want more.
 * `***-ktx` artifacts will give you some useful extension functions like `collectOnLifecycle()` that I used in examples above to simplify   
-  working with sytem APIs, coroutines, and other android components.
+  working with system APIs, coroutines, and other android components.
 * `SafeNavController` - will give you a class to replace your NavController that you use with navigation library, because it has one huge flaw: The Dreaded "Destination Not Found" Exception. To avoid crashing your app at runtime, use `Fragment.findSafeNavController()` instead of `Fragment.findNavController()` and use provided methods just like you would use the usual controller.
 * `databinding` - will give you a generic DataBindingFragment class implementation. Super useful if you use `recyclerview` or databinding already. Extend that class and override your layout id. No need to null out binding, inflate anything, just initialize your fragment logic in the `onViewReady()`.
-* `preferences-ktx `- will give you property delegates that automatically read data from shared prefs and write to them.
+* `preferences-ktx `- will give you property delegates that automatically read data from shared prefs and write to them. Use them wisely because they still do I/O on the main thread.
 * `core-ktx` - Will give you a Time class implementation that I used in one of my projects, because there is still no analogue on the internet. If you need to manipulate time values efficiently or store time in the database (supported by `room` extension `DatabaseConverters` class by the way), then use `Time`. This artifact has literally zero dependencies, and does not depend on any android parts, actually.
 
 For more information and other examples see javadocs in the library code.
@@ -214,7 +215,7 @@ If you find something that is missing, feel free to tell me about it using Githu
 
 ## License
 ```
-   Copyright [2021] [Nikita Vaizin]
+   Copyright 2021 Nikita Vaizin
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
