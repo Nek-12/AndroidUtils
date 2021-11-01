@@ -22,7 +22,7 @@ private fun capped(instant: Instant): Instant {
  */
 @TypeConverters
 @RequiresApi(Build.VERSION_CODES.O)
-class DbTypeConverters {
+class RoomConverters {
     @TypeConverter
     fun toDuration(seconds: Long?): Duration? {
         return seconds?.let { Duration.ofSeconds(it) }

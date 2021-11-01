@@ -20,9 +20,10 @@ private const val VIEW_SCOPED_VALUE_EXCEPTION =
  */
 suspend fun <T> Collection<T>.forEachParallel(
     context: CoroutineContext = EmptyCoroutineContext,
-    block: suspend (T) -> Unit
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.(T) -> Unit
 ): Unit = withContext(context) {
-    map { async { block(it) } }.forEach { it.await() }
+    map { async(context, start) { this@withContext.block(it) } }.forEach { it.await() }
 }
 
 /**
@@ -30,9 +31,10 @@ suspend fun <T> Collection<T>.forEachParallel(
  */
 suspend fun <A, B> Collection<A>.mapParallel(
     context: CoroutineContext = EmptyCoroutineContext,
-    block: suspend (A) -> B
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.(A) -> B
 ): List<B> = withContext(context) {
-    map { async { block(it) } }.map { it.await() }
+    map { async(context, start) { this@withContext.block(it) } }.map { it.await() }
 }
 
 /**
