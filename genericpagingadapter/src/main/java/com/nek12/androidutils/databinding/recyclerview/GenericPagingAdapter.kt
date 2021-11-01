@@ -1,8 +1,11 @@
+@file:Suppress("unused")
+
 package com.nek12.androidutils.databinding.recyclerview
 
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 
@@ -14,6 +17,7 @@ import androidx.paging.PagingDataAdapter
  */
 open class GenericPagingAdapter(
     private val clickListener: ItemClickListener<Item<*, *>>? = null,
+    private val lifecycleOwner: LifecycleOwner? = null
 ) : PagingDataAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int = getItem(position)?.layout ?: 0
@@ -23,7 +27,7 @@ open class GenericPagingAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder {
-        val vh = BaseHolder.inflate(parent, viewType)
+        val vh = BaseHolder.inflate(parent, viewType, lifecycleOwner)
         return applyListenerToAllViews(vh, clickListener) {
             getItem(vh.bindingAdapterPosition)
         }

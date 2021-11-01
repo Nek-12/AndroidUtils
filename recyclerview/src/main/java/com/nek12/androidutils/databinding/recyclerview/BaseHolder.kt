@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.nek12.androidutils.databinding.recyclerview.BR
-
 
 /**
  * The generic databinding ViewHolder class that is used internally in the library.
@@ -35,12 +35,14 @@ class BaseHolder(private val binding: ViewDataBinding) :
     companion object {
         fun inflate(
             parent: ViewGroup,
-            @LayoutRes layout: Int
+            @LayoutRes layout: Int,
+            lifecycleOwner: LifecycleOwner? = null,
         ): BaseHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = DataBindingUtil.inflate<ViewDataBinding>(
                 layoutInflater, layout, parent, false
             )
+            binding.lifecycleOwner = lifecycleOwner
             return BaseHolder(binding)
         }
     }

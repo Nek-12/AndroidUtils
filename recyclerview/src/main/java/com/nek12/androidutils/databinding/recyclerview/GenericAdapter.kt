@@ -5,6 +5,7 @@ package com.nek12.androidutils.databinding.recyclerview
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
 
 /**
@@ -59,6 +60,7 @@ interface ItemClickListener<in T : Item<*, *>> {
  */
 open class GenericAdapter(
     private val clickListener: ItemClickListener<Item<*, *>>? = null,
+    private val lifecycleOwner: LifecycleOwner? = null
 ) : ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
     init {
@@ -68,7 +70,7 @@ open class GenericAdapter(
     override fun getItemId(position: Int): Long = currentList[position].id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder {
-        val vh = BaseHolder.inflate(parent, viewType)
+        val vh = BaseHolder.inflate(parent, viewType, lifecycleOwner)
         return applyListenerToAllViews(vh, clickListener) {
             getItem(vh.bindingAdapterPosition)
         }
