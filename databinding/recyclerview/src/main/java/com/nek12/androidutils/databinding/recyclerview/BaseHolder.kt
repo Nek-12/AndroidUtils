@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import com.nek12.androidutils.databinding.recyclerview.BR
 
 /**
  * The generic databinding ViewHolder class that is used internally in the library.
