@@ -5,7 +5,7 @@ plugins {
 }
 
 rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.2.2"
+rootProject.version = "0.3.0"
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {

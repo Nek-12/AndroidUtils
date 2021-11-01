@@ -21,7 +21,6 @@ import androidx.sqlite.db.SupportSQLiteQuery
  **/
 @Dao
 abstract class RoomDao<T : RoomEntity>(private val tableName: String) {
-
     /**
      * @return The id of a newly-inserted entity
      */
@@ -52,19 +51,34 @@ abstract class RoomDao<T : RoomEntity>(private val tableName: String) {
     @Delete
     abstract suspend fun delete(entities: List<T>)
 
+    suspend fun deleteById(id: Long) {
+        val query = SimpleSQLiteQuery("DELETE FROM $tableName WHERE id = $id)")
+        delete(query)
+    }
+
     /**
      * @return How many items were deleted
      */
-    @RawQuery
-    protected abstract suspend fun deleteAll(query: SupportSQLiteQuery): Int
-
-    suspend fun deleteAll() {
-        val query = SimpleSQLiteQuery("DELETE FROM $tableName")
-        deleteAll(query)
+    suspend fun deleteById(ids: List<Long>): Int {
+        val idsQuery = buildSqlIdList(ids)
+        val query = SimpleSQLiteQuery("DELETE FROM $tableName WHERE id IN ($idsQuery);")
+        return delete(query)
     }
 
-    @RawQuery
-    protected abstract suspend fun getSync(query: SupportSQLiteQuery): List<T>?
+    /**
+     * @return How many items were deleted
+     */
+    suspend fun deleteById(vararg ids: Long): Int {
+        return deleteById(ids.toList())
+    }
+
+    /**
+     * @return How many items were deleted
+     */
+    suspend fun deleteAll(): Int {
+        val query = SimpleSQLiteQuery("DELETE FROM $tableName")
+        return delete(query)
+    }
 
     /**
      * Get an entity synchronously (suspending)
@@ -73,12 +87,28 @@ abstract class RoomDao<T : RoomEntity>(private val tableName: String) {
         return getSync(listOf(id)).firstOrNull()
     }
 
+    suspend fun getSync(vararg ids: Long): List<T> {
+        return getSync(ids.toList())
+    }
+
     suspend fun getAllSync(): List<T> {
         val query = SimpleSQLiteQuery("SELECT * FROM $tableName;")
         return getSync(query) ?: emptyList()
     }
 
     suspend fun getSync(ids: List<Long>): List<T> {
+        val idsQuery = buildSqlIdList(ids)
+        val query = SimpleSQLiteQuery("SELECT * FROM $tableName WHERE id IN ($idsQuery);")
+        return getSync(query) ?: emptyList()
+    }
+
+    @RawQuery
+    protected abstract suspend fun delete(query: SupportSQLiteQuery): Int
+
+    @RawQuery
+    protected abstract suspend fun getSync(query: SupportSQLiteQuery): List<T>?
+
+    private fun buildSqlIdList(ids: List<Long>): String {
         val result = StringBuilder()
         for (index in ids.indices) {
             if (index != 0) {
@@ -86,7 +116,6 @@ abstract class RoomDao<T : RoomEntity>(private val tableName: String) {
             }
             result.append("'").append(ids[index]).append("'")
         }
-        val query = SimpleSQLiteQuery("SELECT * FROM $tableName WHERE id IN ($result);")
-        return getSync(query) ?: emptyList()
+        return result.toString()
     }
 }
