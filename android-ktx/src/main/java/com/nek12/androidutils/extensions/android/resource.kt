@@ -2,13 +2,10 @@
 
 package com.nek12.androidutils.extensions.android
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.widget.ImageView
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
@@ -79,12 +76,3 @@ fun Int.asColor(context: Context) = ContextCompat.getColor(context, this)
  * Uses this int as a **resource id** to get a drawable
  */
 fun Int.asDrawable(context: Context) = ContextCompat.getDrawable(context, this)
-
-/**
- * Synchronously parses this uri and returns a bitmap.
- */
-@Deprecated("Main thread heavy operation")
-fun Activity.uriToBitmap(uri: Uri): Bitmap? {
-    val bytes = contentResolver.openInputStream(uri)?.readBytes()
-    return if (bytes == null) null else BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-}
