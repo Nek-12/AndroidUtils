@@ -148,8 +148,7 @@ No problem!
 4. Submitting data:
    ```kotlin  
    viewModel.entries.collectOnLifecycle(viewLifecycleOwner) { items ->  
-        //Sometimes you will have to cast items to a more generic type  
-       adapter.submitData(items as PagingData<Item<*, *>>)  
+       adapter.submitData(items)  
    }  
    ```  
 
