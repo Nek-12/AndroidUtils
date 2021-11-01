@@ -14,11 +14,11 @@ buildscript {
         google()
         mavenCentral()
         maven { url = uri("https://dl.bintray.com/kotlin/kotlin-eap") }
+        gradlePluginPortal()
     }
-
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.3")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0-RC")
+        classpath("com.android.tools.build:gradle:${Versions.gradle}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
     }
 }
 
@@ -37,7 +37,16 @@ subprojects {
     when (name) {
         "app" -> apply(plugin = "com.android.application")
         "core-ktx" -> apply(plugin = "java-library")
-        else -> apply(plugin= "android-library")
+        else -> apply(plugin = "android-library")
     }
 
+}
+
+kotlin {
+    sourceSets.main {
+        kotlin.srcDir("build/generated/ksp/main/kotlin")
+    }
+    sourceSets.test {
+        kotlin.srcDir("build/generated/ksp/test/kotlin")
+    }
 }

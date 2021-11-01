@@ -1,20 +1,12 @@
-val roomVersion = "2.4.0-alpha04"
+val roomVersion = "2.4.0-beta01"
 
 plugins {
-    id("org.jetbrains.kotlin.kapt")
-}
-
-android {
-//    kapt {
-//        arguments {
-//            arg("room.schemaLocation", "dbschema/")
-//        }
-//    }
+    id("com.google.devtools.ksp").version("1.5.31-1.0.0")
 }
 
 dependencies {
     implementation("androidx.room:room-ktx:${roomVersion}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}")
     implementation("androidx.room:room-runtime:${roomVersion}")
-    kapt("androidx.room:room-compiler:${roomVersion}")
+    ksp("androidx.room:room-compiler:${roomVersion}")
 }

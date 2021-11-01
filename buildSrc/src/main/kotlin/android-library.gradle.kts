@@ -2,7 +2,6 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("org.jetbrains.kotlin.plugin.parcelize")
-    id("org.jetbrains.kotlin.kapt")
     `maven-publish`
 }
 
@@ -46,13 +45,13 @@ android {
     }
 }
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.0-M1")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test:runner:1.4.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.work:work-testing:2.7.0-rc01")
+    androidTestImplementation("androidx.work:work-testing:2.7.0")
 }
 
 publishing {
