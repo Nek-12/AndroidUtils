@@ -29,11 +29,35 @@ open class SingleTypeAdapter<T, in VB : ViewDataBinding>(
      * resort to this when you truly have no other alternative.
      */
     fun submitData(data: List<T>, idSelector: (T) -> Long?) {
-        submitList(data.map { itemFromData(it, idSelector(it)) })
+        super.submitList(data.map { itemFromData(it, idSelector(it)) })
     }
 
     fun itemFromData(item: T, id: Long?): Item<T, VB> =
         GenericItem(item, id ?: Item.NO_ID, layout, binder)
+
+    @Deprecated(
+        "Do not use this with singleTypeAdapter",
+        ReplaceWith("submitData"),
+        DeprecationLevel.HIDDEN
+    )
+    override fun submitList(list: List<Item<*, *>>?) {
+        throw UnsupportedOperationException("Do not use with singleTypeAdapter")
+    }
+
+    @Deprecated(
+        "Do not use this with singleTypeAdapter",
+        ReplaceWith("submitData"),
+        DeprecationLevel.HIDDEN
+    )
+    override fun submitList(list: MutableList<Item<*, *>>?, commitCallback: Runnable?) {
+        throw UnsupportedOperationException("Do not use with singleTypeAdapter")
+    }
+
+    override fun getItem(pos: Int): Item<T, VB> {
+        return super.getItem(pos) as Item<T, VB>
+    }
+
+    override fun getCurrentList(): List<Item<T, VB>> = super.getCurrentList() as List<Item<T, VB>>
 }
 
 /**

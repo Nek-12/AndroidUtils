@@ -1,6 +1,9 @@
 package com.nek12.androidutils.databinding.recyclerview
 
 import android.view.ViewGroup
+import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.Lifecycle
+import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 
 /**
@@ -25,4 +28,17 @@ open class GenericPagingAdapter(
             getItem(vh.bindingAdapterPosition)
         }
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+suspend fun <T, VB : ViewDataBinding> GenericPagingAdapter.submitData(data: PagingData<Item<T, VB>>) {
+    submitData(data as PagingData<Item<*, *>>)
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T, VB : ViewDataBinding> GenericPagingAdapter.submitData(
+    lifecycle: Lifecycle,
+    data: PagingData<Item<T, VB>>
+) {
+    submitData(lifecycle, data as PagingData<Item<*, *>>)
 }
