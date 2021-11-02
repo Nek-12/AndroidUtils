@@ -2,9 +2,7 @@
 
 package com.nek12.androidutils.extensions.core
 
-import com.nek12.androidutils.extensions.core.Time.Companion.asString
 import java.io.Serializable
-import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -25,7 +23,7 @@ open class Time(
     val hour: Int,
     val minute: Int,
     val second: Int = 0,
-): Cloneable, Serializable {
+) : Cloneable, Serializable {
 
     /**
      * Get hour in am/pm format (just the number)
@@ -39,12 +37,11 @@ open class Time(
     val secondsSinceMidnight: Int
         get() = hour * 3600 + minute * 60 + second
 
-
     val minutesSinceMidnight: Double
         get() = hour * 60 + minute + second.toDouble() / 60
 
     init {
-        if (hour >= 24 || minute >= 60 || second >= 60 || hour < 0 || minute < 0 || second < 0)
+        if (hour !in 0 until 24 || minute !in 0 until 60 || second !in 0 until 60)
             throw IllegalArgumentException("Invalid time value: $hour:$minute:$second")
     }
 
@@ -66,7 +63,7 @@ open class Time(
      * toString uses asString(false) **/
     fun asString(use12h: Boolean = false): String {
         val h = if (use12h) hourAs12H else hour
-        return "${asString(h)}:${asString(minute)}:${asString(second)} ${clock.value}"
+        return "${asString(h)}:${asString(minute)}:${asString(second)}" + if (use12h) " ${clock.value}" else ""
     }
 
     /**
@@ -156,7 +153,6 @@ open class Time(
             return Time(zdt.hour, zdt.minute, zdt.second)
         }
 
-
         /**
          * Get current local time
          * @return A new Time using current timezone and timestamp.
@@ -245,6 +241,8 @@ open class Time(
                 false
             }
         }
+
+        private const val serialVersionUID = 0L
     }
 
     enum class Clock(val value: String) {

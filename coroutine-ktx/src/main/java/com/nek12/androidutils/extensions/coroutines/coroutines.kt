@@ -11,7 +11,6 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-
 private const val VIEW_SCOPED_VALUE_EXCEPTION =
     """Trying to call a viewscoped value outside of the view lifecycle."""
 
@@ -89,7 +88,6 @@ fun <T> Flow<T?>.toState(scope: CoroutineScope): StateFlow<T?> {
 fun <T> Flow<T>.toState(scope: CoroutineScope, initialValue: T): StateFlow<T> {
     return stateIn(scope, SharingStarted.WhileSubscribed(), initialValue)
 }
-
 
 /**
  * Launches the specified block as a coroutine

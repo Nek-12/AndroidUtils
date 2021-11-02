@@ -35,24 +35,6 @@ open class SingleTypeAdapter<T, in VB : ViewDataBinding>(
     fun itemFromData(item: T, id: Long?): Item<T, VB> =
         GenericItem(item, id ?: Item.NO_ID, layout, binder)
 
-    @Deprecated(
-        "Do not use this with singleTypeAdapter",
-        ReplaceWith("submitData"),
-        DeprecationLevel.HIDDEN
-    )
-    override fun submitList(list: List<Item<*, *>>?) {
-        throw UnsupportedOperationException("Do not use with singleTypeAdapter")
-    }
-
-    @Deprecated(
-        "Do not use this with singleTypeAdapter",
-        ReplaceWith("submitData"),
-        DeprecationLevel.HIDDEN
-    )
-    override fun submitList(list: MutableList<Item<*, *>>?, commitCallback: Runnable?) {
-        throw UnsupportedOperationException("Do not use with singleTypeAdapter")
-    }
-
     override fun getItem(pos: Int): Item<T, VB> {
         return super.getItem(pos) as Item<T, VB>
     }

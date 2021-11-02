@@ -27,7 +27,7 @@ fun <T, R> Iterable<T>.reorderBy(order: List<R>, selector: (T) -> R): List<T> {
 }
 
 fun <T> MutableList<T>.swap(index1: Int, index2: Int): MutableList<T> {
-    val tmp = this[index1] // 'this' corresponds to the list
+    val tmp = this[index1]
     this[index1] = this[index2]
     this[index2] = tmp
     return this
