@@ -15,7 +15,6 @@ private fun capped(instant: Instant): Instant {
     return instants[1]
 }
 
-
 /**
  * Type converters that provide utility conversions for you:
  * Duration, UUID, Instant
@@ -31,16 +30,6 @@ class RoomConverters {
     @TypeConverter
     fun fromDuration(value: Duration?): Long? {
         return value?.seconds
-    }
-
-    @TypeConverter
-    fun toUUID(uuid: String?): UUID? {
-        return uuid?.let { UUID.fromString(uuid) }
-    }
-
-    @TypeConverter
-    fun fromUUID(uuid: UUID?): String? {
-        return uuid?.toString()
     }
 
     @TypeConverter
