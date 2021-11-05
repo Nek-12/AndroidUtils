@@ -16,8 +16,8 @@ import androidx.paging.PagingDataAdapter
  * @see BaseHolder
  */
 open class GenericPagingAdapter(
-    private val clickListener: ItemClickListener<Item<*, *>>? = null,
-    private val lifecycleOwner: LifecycleOwner? = null
+    private val listener: ItemListener<Item<*, *>>? = null,
+    private val lifecycleOwner: LifecycleOwner? = null,
 ) : PagingDataAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int = getItem(position)?.layout ?: 0
@@ -27,8 +27,9 @@ open class GenericPagingAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder {
-        val vh = BaseHolder.inflate(parent, viewType, lifecycleOwner)
-        return applyListenerToAllViews(vh, clickListener) {
+        val vh = BaseHolder.inflate<ViewDataBinding>(parent, viewType, lifecycleOwner)
+        (listener as? ItemInflateListener)?.onViewHolderCreated(vh, viewType)
+        return applyListenerToAllViews(vh, listener) {
             getItem(vh.bindingAdapterPosition)
         }
     }

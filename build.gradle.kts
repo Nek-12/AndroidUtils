@@ -5,9 +5,8 @@ plugins {
 }
 
 rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.3.2"
+rootProject.version = "0.3.3"
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
 
     repositories {
@@ -39,7 +38,6 @@ subprojects {
         "core-ktx" -> apply(plugin = "java-library")
         else -> apply(plugin = "android-library")
     }
-
 }
 
 kotlin {

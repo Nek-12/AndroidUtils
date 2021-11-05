@@ -3,6 +3,7 @@
 package com.nek12.androidutils.databinding.recyclerview
 
 import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.nek12.androidutils.databinding.recyclerview.Item.Companion.NO_ID
@@ -111,6 +112,12 @@ abstract class Item<T, in VB : ViewDataBinding> {
 
     companion object {
         const val NO_ID = RecyclerView.NO_ID
+
+        fun <T, VB : ViewDataBinding> itemFromData(
+            item: T, id: Long?,
+            @LayoutRes layout: Int,
+            binder: RVBinder<T, VB>?
+        ): Item<T, VB> = GenericItem(item, id ?: NO_ID, layout, binder)
     }
 }
 
@@ -122,10 +129,10 @@ abstract class Item<T, in VB : ViewDataBinding> {
  * @param alwaysRebound Whether this item should be rebound on **every** diffing pass. If false,
  * the item is **never** rebound.
  */
-data class BlankItem<in VB : ViewDataBinding>(
+data class BlankItem(
     override val layout: Int,
     val alwaysRebound: Boolean = false
-) : Item<Unit, VB>() {
+) : Item<Unit, ViewDataBinding>() {
     override val data: Unit get() = Unit
     override val id: Long get() = RecyclerView.NO_ID
     override fun equals(other: Any?): Boolean = !alwaysRebound
@@ -142,11 +149,26 @@ data class GenericItem<T, VB : ViewDataBinding>(
     override val data: T,
     override val id: Long,
     override val layout: Int,
-    val binder: RVBinder<T, VB>? = null,
+    val binder:  RVBinder<T, VB>? = null,
 ) : Item<T, VB>() {
     override fun bind(binding: VB, bindingPos: Int) {
         binder?.invoke(BindPayload(this, binding, bindingPos))
     }
+}
+
+data class ResHeaderItem(
+    @StringRes override val data: Int,
+    override val layout: Int
+) : Item<Int, ViewDataBinding>() {
+    override val id: Long
+        get() = data.toLong()
+}
+
+data class StringHeaderItem(
+    override val data: String,
+    override val layout: Int,
+) : Item<String, ViewDataBinding>() {
+    override val id: Long = NO_ID
 }
 
 /**

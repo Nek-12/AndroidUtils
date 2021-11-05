@@ -2,17 +2,19 @@
 
 package com.nek12.androidutils.extensions.android
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.drawable.Animatable2
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.widget.ImageView
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 
 /**
  * Get dimension dp value from your xml.
@@ -27,19 +29,26 @@ fun Resources.getDimenInDP(@DimenRes id: Int): Int {
  * Set the image drawable for this [ImageView] using [avdResId], then start animating it.
  * The animation runs in loops and never stops.
  */
-fun ImageView.applyLoopingAnimatedVectorDrawable(@DrawableRes avdResId: Int) {
-    val animated = ResourcesCompat.getDrawable(
-        resources,
+@SuppressLint("UseCompatLoadingForDrawables")
+@RequiresApi(Build.VERSION_CODES.M)
+// Requires M api and does not use AppCompat because the animation won't work when using appcompat drawable, tested
+fun ImageView.applyLoopingAVD(@DrawableRes avdResId: Int) {
+    val animated = resources.getDrawable(
         avdResId,
         context.theme
-    ) as? AnimatedVectorDrawableCompat
-    animated?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
+    ) as? AnimatedVectorDrawable ?: throw IllegalArgumentException("Invalid drawable")
+    applyLoopingAVD(animated)
+}
+
+@RequiresApi(Build.VERSION_CODES.M)
+fun ImageView.applyLoopingAVD(avd: AnimatedVectorDrawable) {
+    avd.registerAnimationCallback(object : Animatable2.AnimationCallback() {
         override fun onAnimationEnd(drawable: Drawable?) {
-            this@applyLoopingAnimatedVectorDrawable.post { animated.start() }
+            this@applyLoopingAVD.post { avd.start() }
         }
     })
-    this.setImageDrawable(animated)
-    animated?.start()
+    this.setImageDrawable(avd)
+    avd.start()
 }
 
 /**

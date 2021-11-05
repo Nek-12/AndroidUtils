@@ -4,6 +4,8 @@ package com.nek12.androidutils.databinding.recyclerview
 
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.LifecycleOwner
+import com.nek12.androidutils.databinding.recyclerview.Item.Companion.itemFromData
 
 /**
  * A concrete implementation of [GenericAdapter] that is intended for use with lists that have
@@ -17,9 +19,10 @@ import androidx.databinding.ViewDataBinding
 @Suppress("UNCHECKED_CAST")
 open class SingleTypeAdapter<T, in VB : ViewDataBinding>(
     @LayoutRes private val layout: Int,
-    itemClickListener: ItemClickListener<Item<T, VB>>? = null,
+    itemClickListener: ItemListener<Item<T, VB>>? = null,
+    lifecycleOwner: LifecycleOwner? = null,
     private val binder: RVBinder<T, VB>? = null,
-) : GenericAdapter(itemClickListener as? ItemClickListener<Item<*, *>>?) {
+) : GenericAdapter(itemClickListener as? ItemListener<Item<*, *>>?, lifecycleOwner) {
 
     /**
      * Like [submitList], but transforms your data objects into Items for you.
@@ -29,11 +32,8 @@ open class SingleTypeAdapter<T, in VB : ViewDataBinding>(
      * resort to this when you truly have no other alternative.
      */
     fun submitData(data: List<T>, idSelector: (T) -> Long?) {
-        super.submitList(data.map { itemFromData(it, idSelector(it)) })
+        super.submitList(data.map { itemFromData(it, idSelector(it), layout, binder) })
     }
-
-    fun itemFromData(item: T, id: Long?): Item<T, VB> =
-        GenericItem(item, id ?: Item.NO_ID, layout, binder)
 
     override fun getItem(pos: Int): Item<T, VB> {
         return super.getItem(pos) as Item<T, VB>
@@ -62,5 +62,6 @@ open class SingleTypeAdapter<T, in VB : ViewDataBinding>(
  */
 open class SimpleAdapter<T>(
     @LayoutRes layout: Int,
-    itemClickListener: ItemClickListener<Item<T, ViewDataBinding>>? = null,
-) : SingleTypeAdapter<T, ViewDataBinding>(layout, itemClickListener, null)
+    itemClickListener: ItemListener<Item<T, ViewDataBinding>>? = null,
+    lifecycleOwner: LifecycleOwner? = null,
+) : SingleTypeAdapter<T, ViewDataBinding>(layout, itemClickListener, lifecycleOwner)

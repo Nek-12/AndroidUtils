@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
 
-typealias Inflater<T> = (inflater: LayoutInflater, container: ViewGroup?) -> T
+typealias Inflater<T> = (inflater: LayoutInflater, container: ViewGroup?, attach: Boolean) -> T
 
 const val VB_NOT_AVAILABLE_MESSAGE = "ViewBinding is not available outside view lifecycle"
 
@@ -22,7 +22,7 @@ abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
     protected val b = requireNotNull(_b) { VB_NOT_AVAILABLE_MESSAGE }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _b = inflater(inflater, container)
+        _b = inflater(inflater, container, false)
         return b.root
     }
 

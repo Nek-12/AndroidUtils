@@ -32,13 +32,13 @@ class BaseHolder(val binding: ViewDataBinding) :
     }
 
     companion object {
-        fun inflate(
+        inline fun <reified T: ViewDataBinding> inflate(
             parent: ViewGroup,
             @LayoutRes layout: Int,
             lifecycleOwner: LifecycleOwner? = null,
         ): BaseHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            val binding = DataBindingUtil.inflate<ViewDataBinding>(
+            val binding = DataBindingUtil.inflate<T>(
                 layoutInflater, layout, parent, false
             )
             binding.lifecycleOwner = lifecycleOwner

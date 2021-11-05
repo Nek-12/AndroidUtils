@@ -5,35 +5,9 @@ package com.nek12.androidutils.databinding.recyclerview
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
+import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
-
-/**
- * A clicklistener that is fired when the user clicks on **any** of the views inside your Item view.
- * For example, if the user clicks on a button, you will get this button as a [view] parameter
- * and when they click on an empty space around it you will get **root** view like ConstraintLayout.
- * Determine what part of the itemView was clicked by calling View.id.
- * If you struggle to handle [Item] generic type, create a sealed class which extends [Item].
- *
- * Example:
- * ```
- * private val listener = object : ItemClickListener<Item<*,*>> {
- *     override fun onItemClicked(view: View, item: Item<*, *>, pos: Int) {
- *          when (view.id) {
- *              R.id.edit -> editInstance(item)
- *              R.id.start -> requestStartEntryAction(pos)
- *              else -> { /* ignore layouts that do not interest us */ }
- *         }
- *     }
- * }
- * ```
- * @see Item
- * @see GenericAdapter
- */
-interface ItemClickListener<in T : Item<*, *>> {
-    fun onItemClicked(view: View, item: T, pos: Int)
-    fun onItemLongClicked(view: View, item: T, pos: Int): Boolean = false
-}
 
 /**
  * The base class for your adapter implementations. In general, you should not be required to
@@ -53,14 +27,14 @@ interface ItemClickListener<in T : Item<*, *>> {
  * now.
  *
  * @see Item
- * @see ItemClickListener
+ * @see ItemListener
  * @see SingleTypeAdapter
  * @see SimpleAdapter
  * @see GenericItem
  */
 open class GenericAdapter(
-    private val clickListener: ItemClickListener<Item<*, *>>? = null,
-    private val lifecycleOwner: LifecycleOwner? = null
+    private val listener: ItemListener<Item<*, *>>? = null,
+    private val lifecycleOwner: LifecycleOwner? = null,
 ) : ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
     init {
@@ -70,8 +44,11 @@ open class GenericAdapter(
     override fun getItemId(position: Int): Long = currentList[position].id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder {
-        val vh = BaseHolder.inflate(parent, viewType, lifecycleOwner)
-        return applyListenerToAllViews(vh, clickListener) {
+        val vh = BaseHolder.inflate<ViewDataBinding>(parent, viewType, lifecycleOwner)
+        (listener as? ItemInflateListener)?.onViewHolderCreated(vh, viewType)
+        return applyListenerToAllViews(vh, listener) {
+            //defers getting item by position using a lambda object
+            //when position is available
             getItem(vh.bindingAdapterPosition)
         }
     }
@@ -82,7 +59,8 @@ open class GenericAdapter(
     override fun getItemViewType(position: Int) = currentList[position].layout
 }
 
-private fun setClickListenersOnViewGroup(view: View, onClick: (v: View) -> Unit) {
+@PublishedApi
+internal fun setClickListenersOnViewGroup(view: View, onClick: (v: View) -> Unit) {
     view.setOnClickListener(onClick)
     val group = view as? ViewGroup ?: return
     for (child in group.children) {
@@ -94,7 +72,8 @@ private fun setClickListenersOnViewGroup(view: View, onClick: (v: View) -> Unit)
     }
 }
 
-private fun setLongClickListenersOnViewGroup(view: View, onClick: (v: View) -> Boolean) {
+@PublishedApi
+internal fun setLongClickListenersOnViewGroup(view: View, onClick: (v: View) -> Boolean) {
     view.setOnLongClickListener(onClick)
     val group = view as? ViewGroup ?: return
     for (child in group.children) {
@@ -106,27 +85,31 @@ private fun setLongClickListenersOnViewGroup(view: View, onClick: (v: View) -> B
     }
 }
 
-fun <T : Item<*, *>> applyListenerToAllViews(
+inline fun <T : Item<*, *>> applyListenerToAllViews(
     vh: BaseHolder,
-    clickListener: ItemClickListener<T>?,
-    itemSelector: () -> T?
+    clickListener: ItemListener<T>?,
+    crossinline itemSelector: () -> T?
 ): BaseHolder {
     clickListener?.let {
-        setClickListenersOnViewGroup(vh.itemView) {
-            clickListener.onItemClicked(
-                it,
-                itemSelector() ?: return@setClickListenersOnViewGroup,
-                vh.bindingAdapterPosition
-            )
-        }
-        setLongClickListenersOnViewGroup(vh.itemView) {
-            val item = itemSelector()
-            if (item == null) false else {
-                clickListener.onItemLongClicked(
+        if (clickListener is ItemClickListener<T>) {
+            setClickListenersOnViewGroup(vh.itemView) {
+                clickListener.onItemClicked(
                     it,
-                    item,
+                    itemSelector() ?: return@setClickListenersOnViewGroup,
                     vh.bindingAdapterPosition
                 )
+            }
+        }
+        if (clickListener is ItemLongClickListener<T>) {
+            setLongClickListenersOnViewGroup(vh.itemView) {
+                val item = itemSelector()
+                if (item == null) false else {
+                    clickListener.onItemLongClicked(
+                        it,
+                        item,
+                        vh.bindingAdapterPosition
+                    )
+                }
             }
         }
     }
