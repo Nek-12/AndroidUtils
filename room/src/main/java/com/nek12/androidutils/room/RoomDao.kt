@@ -7,7 +7,7 @@ import androidx.sqlite.db.SupportSQLiteQuery
 /**
  * A generic dao class that provides CRUD methods for you for free.
  * Extend this class to add your own methods.
- * Provides insert,update, delete, and getSync queries for you.
+ * Provides insert, update, delete, and getSync queries for you.
  * Implement async queries like `get(): LiveData<T>` or `get(): Flow<T>` yourself
  * Example:
  * ```

@@ -60,7 +60,10 @@ open class Time(
     }
 
     /** Same as toString but gives you a choice on whether to use 12H scheme.
-     * toString uses asString(false) **/
+     * [toString] uses asString(false)
+     * @param addSecondsIfZero If the seconds value is equal to 0, should include them in the representation? e.g.:
+     * true => "17:00:00", false => "17:00"
+     * **/
     fun asString(use12h: Boolean = false, addSecondsIfZero: Boolean = false): String {
         val h = if (use12h) hourAs12H else hour
         val builder = StringBuilder("${asString(h)}:${asString(minute)}")
