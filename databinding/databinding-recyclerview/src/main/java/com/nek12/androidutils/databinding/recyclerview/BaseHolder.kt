@@ -38,9 +38,10 @@ class BaseHolder(val binding: ViewDataBinding) :
             lifecycleOwner: LifecycleOwner? = null,
         ): BaseHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            val binding = DataBindingUtil.inflate<T>(
+            val binding: T? = DataBindingUtil.inflate(
                 layoutInflater, layout, parent, false
             )
+            requireNotNull(binding) { "Couldn't inflate binding, check your layout ID: $layout" }
             binding.lifecycleOwner = lifecycleOwner
             return BaseHolder(binding)
         }

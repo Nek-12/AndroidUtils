@@ -130,7 +130,7 @@ abstract class Item<T, in VB : ViewDataBinding> {
  * the item is **never** rebound.
  */
 data class BlankItem(
-    override val layout: Int,
+    @LayoutRes override val layout: Int,
     val alwaysRebound: Boolean = false
 ) : Item<Unit, ViewDataBinding>() {
     override val data: Unit get() = Unit

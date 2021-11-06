@@ -61,9 +61,12 @@ open class Time(
 
     /** Same as toString but gives you a choice on whether to use 12H scheme.
      * toString uses asString(false) **/
-    fun asString(use12h: Boolean = false): String {
+    fun asString(use12h: Boolean = false, addSecondsIfZero: Boolean = false): String {
         val h = if (use12h) hourAs12H else hour
-        return "${asString(h)}:${asString(minute)}:${asString(second)}" + if (use12h) " ${clock.value}" else ""
+        val builder = StringBuilder("${asString(h)}:${asString(minute)}")
+        if (addSecondsIfZero) builder.append(":${asString(second)}")
+        if (use12h) builder.append(clock.value)
+        return builder.toString()
     }
 
     /**

@@ -52,7 +52,7 @@ abstract class RoomDao<T : RoomEntity>(private val tableName: String) {
     abstract suspend fun delete(entities: List<T>)
 
     suspend fun deleteById(id: Long) {
-        val query = SimpleSQLiteQuery("DELETE FROM $tableName WHERE id = $id)")
+        val query = SimpleSQLiteQuery("DELETE FROM $tableName WHERE id = ($id);")
         delete(query)
     }
 

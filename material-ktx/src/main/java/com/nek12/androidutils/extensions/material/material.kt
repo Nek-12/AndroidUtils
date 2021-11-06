@@ -161,3 +161,9 @@ fun BottomSheetDialogFragment.setPeekHeightRatio(ratio: Double) {
     val height = requireContext().resources.displayMetrics.heightPixels.toDouble()
     dialog.behavior.setPeekHeight((height * ratio).toInt(), true)
 }
+
+val BottomSheetDialogFragment.behavior
+    get() = requireDialog().let {
+        val sheet = it as BottomSheetDialog
+        sheet.behavior
+    }
