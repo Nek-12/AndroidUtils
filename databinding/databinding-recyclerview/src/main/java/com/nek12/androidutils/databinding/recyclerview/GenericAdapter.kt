@@ -8,6 +8,7 @@ import androidx.core.view.children
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * The base class for your adapter implementations. In general, you should not be required to
@@ -17,14 +18,15 @@ import androidx.recyclerview.widget.ListAdapter
  * viewModel (or other business logic processing place), and if you need them to be created in the
  * fragment / activity itself, this is a sign that your logic could be better, in most cases.
  * This generic adapter enables all possible optimizations that can be used with RecyclerView:
- * - Item Diffing
+ * - Async Item Diffing
  * - Stable Ids
  * - ListAdapter optimizations
  *
  * So you should not worry about them now. Be aware that in some cases, item diffing and stable
- * ids support can degrade based on what you do in your items (e.g. if you provide non-unique
- * [Item.id]s or implement [Item.equals] poorly). Making a good [Item] is your sole responsibility
- * now.
+ * ids support can degrade based on what you do in your items (e.g. if you set [Item.NO_ID] as an ID
+ * or implement [Item.equals] poorly). Making a good [Item] is your sole responsibility now.
+ * Be sure to **never** supply a list of items, where [Item.id]s are **not unique**. This will crash your app sooner
+ * or later.
  *
  * @see Item
  * @see ItemListener
@@ -35,10 +37,12 @@ import androidx.recyclerview.widget.ListAdapter
 open class GenericAdapter(
     private val listener: ItemListener<Item<*, *>>? = null,
     private val lifecycleOwner: LifecycleOwner? = null,
+    private val stableIds: Boolean = true,
 ) : ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
-    init {
-        setHasStableIds(true)
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        setHasStableIds(stableIds)
+        super.onAttachedToRecyclerView(recyclerView)
     }
 
     override fun getItemId(position: Int): Long = currentList[position].id

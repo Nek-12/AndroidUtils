@@ -34,6 +34,7 @@ abstract class DataBindingFragment<T : ViewDataBinding> : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _b = DataBindingUtil.inflate(inflater, layoutRes, container, false)
+        b.lifecycleOwner = viewLifecycleOwner
         return b.root
     }
 

@@ -26,9 +26,8 @@ typealias RVBinder<T, VB> = (BindPayload<T, VB>) -> Unit
  * logic. If you want a simple list with just one item type and zero custom binding logic, save
  * yourself some time and use [SimpleAdapter] and [GenericItem].
  *
- * If you provide a wrong [layout] <-> [VB] argument pair or do not implement the [data] variable
- * in your xml properly, your app will crash at runtime. This is the downside of using this library,
- * probably.
+ * **If you provide a wrong [layout] <-> [VB] argument pair or do not implement the [data] variable
+ * in your xml properly, your app will crash at runtime or data will not get bound.**
  *
  * If you have a single view type but want to have custom binding logic, use [SingleTypeAdapter]
  * and [GenericItem] together. If you have more than one type, however, you have to implement a
@@ -43,14 +42,15 @@ typealias RVBinder<T, VB> = (BindPayload<T, VB>) -> Unit
  * entities explicitly to data classes to allow saving dynamic state and even two-way binding,
  * and to skip on implementing [equals] and [hashCode] yourself.
  *
- * You can also make [Item] a dataclass if you want. This way your [data] field will be compared,
+ * You can also make [Item] a dataclass if you want. This way your [data] field will be compared in the [equals]
  * which is convenient.
  *
  * ### [id]
- * A unique (hopefully) identifier for the Item that you are trying to display. Your
+ * A **UNIQUE** identifier for the Item that you are trying to display. Your
  * recyclerview performance depends on how you override this parameter. You can use [NO_ID] in those
  * cases when your items are so simple you have nothing to represent an id for them, but do not
- * abuse that functionality as you degrade your list's performance by using non-unique ids
+ * abuse that functionality as you degrade your list's performance, and **never** user non-unique IDs or you'll get
+ * crashes in runtime
  *
  * You can use different [T] and [VB] types to implement multiple item type lists as follows:
  * Example:
@@ -78,11 +78,15 @@ abstract class Item<T, in VB : ViewDataBinding> {
 
     /**
      * The data that will be passed to the xml as a "data" variable
+     * **Remember that your XML
+     * databinding parameter must have a variable named exactly "data" and it must have the type of
+     * your [T] type parameter!**
      */
     abstract val data: T
 
     /**
-     * If your data has nothing to use as an id, you can use [NO_ID]
+     * If your data has nothing to use as an id, you can use [NO_ID].
+     * You must either set a **unique** id or [NO_ID], or you'll get crashes at runtime!
      */
     abstract val id: Long
 
@@ -100,6 +104,9 @@ abstract class Item<T, in VB : ViewDataBinding> {
     @get:LayoutRes
     abstract val layout: Int
 
+    /**
+     * Override this function to put your custom binding logic here.
+     */
     open fun bind(binding: VB, bindingPos: Int) {}
 
     internal fun tryBind(binding: ViewDataBinding, bindingPos: Int) = bind(
@@ -111,13 +118,16 @@ abstract class Item<T, in VB : ViewDataBinding> {
     private fun cast(viewDataBinding: ViewDataBinding): VB? = viewDataBinding as? VB
 
     companion object {
+        /**
+         * A value representing that this [Item] has no unique [id]
+         */
         const val NO_ID = RecyclerView.NO_ID
 
         fun <T, VB : ViewDataBinding> itemFromData(
             item: T, id: Long?,
             @LayoutRes layout: Int,
             binder: RVBinder<T, VB>?
-        ): Item<T, VB> = GenericItem(item, id ?: NO_ID, layout, binder)
+        ): GenericItem<T, VB> = GenericItem(item, id ?: NO_ID, layout, binder)
     }
 }
 
@@ -156,6 +166,10 @@ data class GenericItem<T, VB : ViewDataBinding>(
     }
 }
 
+/**
+ * An item that has a single [data] value - a String resource. Good for usage with [textResOrString] in your layout.
+ * Set the id in the viewmodel, and do not worry about contexts and other stuff.
+ */
 data class ResHeaderItem(
     @StringRes override val data: Int,
     override val layout: Int
@@ -164,6 +178,9 @@ data class ResHeaderItem(
         get() = data.toLong()
 }
 
+/**
+ * An item that has a single [data] value - a String. Good for usage with [textResOrString] in your layout
+ */
 data class StringHeaderItem(
     override val data: String,
     override val layout: Int,
@@ -172,7 +189,7 @@ data class StringHeaderItem(
 }
 
 /**
- * You get this payload if you're using [Binder].
+ * You get this payload if you're using [RVBinder].
  * Here's the data you might need when binding.
  */
 data class BindPayload<T, VB : ViewDataBinding>(

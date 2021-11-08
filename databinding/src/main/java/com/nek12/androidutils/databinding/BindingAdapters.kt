@@ -9,6 +9,6 @@ fun textResOrString(view: TextView, data: Any) {
     view.text = when (data) {
         is String -> data
         is Int -> view.context.getString(data)
-        else -> throw IllegalArgumentException("You must only supply text resource id or a text string")
+        else -> throw IllegalArgumentException("You must only supply string resource id or a text string")
     }
 }
