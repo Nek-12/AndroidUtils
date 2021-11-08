@@ -67,7 +67,7 @@ open class Time(
     fun asString(use12h: Boolean = false, addSecondsIfZero: Boolean = false): String {
         val h = if (use12h) hourAs12H else hour
         val builder = StringBuilder("${asString(h)}:${asString(minute)}")
-        if (addSecondsIfZero) builder.append(":${asString(second)}")
+        if (addSecondsIfZero || second != 0) builder.append(":${asString(second)}")
         if (use12h) builder.append(clock.value)
         return builder.toString()
     }
