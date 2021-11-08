@@ -72,6 +72,16 @@ fun <T> Flow<T>.collectOnLifecycle(
     }
 }
 
+fun <T> Flow<T?>.collectNotNullOnLifecycle(
+    lifecycleOwner: LifecycleOwner,
+    state: Lifecycle.State = Lifecycle.State.RESUMED,
+    action: suspend (T) -> Unit,
+) {
+    collectOnLifecycle(lifecycleOwner, state) {
+        if (it != null) action(it)
+    }
+}
+
 /**
  * Convert this flow to a stateflow that will be observed on this scope and sharing is going to
  * continue while there are active subscribers. Most similar to livedata

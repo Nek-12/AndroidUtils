@@ -6,6 +6,8 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
 import android.content.res.Configuration
+import android.content.res.Resources
+import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.AnimatorRes
@@ -121,6 +123,15 @@ fun View.setVisibility(
 }
 
 /**
+ * Invisible defaults to [Visibility.GONE]. If you need to override, use [View.setVisibility(visibility: Visibility)]
+ */
+fun View.setVisibility(
+    visible: Boolean,
+    animated: Boolean = false,
+    duration: Long = DEF_FADE_DURATION
+) = setVisibility(Visibility.of(visible), animated, duration)
+
+/**
  * Sets this recyclerview's layout manager to a grid layout manager where the columns are evenly
  * distributed to fill the screen. If you specify 50dp as column width and your screen is
  * 300dp-wide, for example, you will get 6 columns.
@@ -173,3 +184,10 @@ fun View.fadeIn(fadeInDuration: Long = IMAGEVIEW_FADE_DURATION) {
         start()
     }
 }
+
+val Number.toPx
+    get() = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        this.toFloat(),
+        Resources.getSystem().displayMetrics
+    )
