@@ -4,6 +4,7 @@ package com.nek12.androidutils.databinding.recyclerview
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.core.view.children
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
@@ -118,4 +119,20 @@ inline fun <T : Item<*, *>> applyListenerToAllViews(
         }
     }
     return vh
+}
+
+
+/**
+ * Like [submitList], but transforms your data objects into Items for you.
+ * **If you don't have anything to serve as an ID, let the idSelector return
+ * [Item.NO_ID] or _null_. In this case
+ * you will lose some performance, so make sure you
+ * resort to this when you truly have no other alternative.
+ */
+inline fun <T, VB : ViewDataBinding> GenericAdapter.submitData(
+    data: List<T>,
+    @LayoutRes layout: Int,
+    crossinline idSelector: (T) -> Long?,
+    noinline binder: RVBinder<T,VB>? = null) {
+    this.submitList(data.map { Item.itemFromData(it, idSelector(it), layout, binder) })
 }

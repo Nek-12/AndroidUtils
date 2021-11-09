@@ -99,11 +99,11 @@ open class AlarmHelper(protected val context: Context) {
      * @param id is a unique int ID for each notification that you must define
      * @see createNotification
      * **/
-    fun sendNotification(notification: Notification, id: Int) {
+    open fun sendNotification(notification: Notification, id: Int) {
         notificationManager.notify(id, notification)
     }
 
-    fun createNotificationChannel(
+    open fun createNotificationChannel(
         id: String,
         name: String,
         description: String,

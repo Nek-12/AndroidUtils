@@ -50,24 +50,24 @@ interface WebClientListener {
  * [detach] it in onDestroyView.
  */
 @SuppressLint("SetJavaScriptEnabled")
-class WebClient(
+open class WebClient(
     private val allowedHosts: List<String?>,
 ) : WebViewClient(), DownloadListener {
     private var webView: WebView? = null
     var listener: WebClientListener? = null
     val url get() = webView?.url
 
-    val canGoBack: Boolean
+    open val canGoBack: Boolean
         get() = webView?.canGoBack() ?: false
 
     /**
      * Refresh current page
      */
-    fun reload() {
+    open fun reload() {
         webView?.reload()
     }
 
-    fun load(uri: Uri) {
+    open fun load(uri: Uri) {
         webView?.loadUrl(uri.toString())
     }
 
@@ -76,7 +76,7 @@ class WebClient(
      * [androidx.fragment.app.Fragment.onViewStateRestored], **if you do not save state, webView will not save it for
      * you!**
      */
-    fun restoreState(inState: Bundle) {
+    open fun restoreState(inState: Bundle) {
         webView?.restoreState(inState)
     }
 
@@ -84,7 +84,7 @@ class WebClient(
      * Call this in [androidx.fragment.app.Fragment.onSaveInstanceState] to **save webview state**. If you do not
      * call this, **webview won't save it for you!**
      */
-    fun saveState(outState: Bundle) {
+    open fun saveState(outState: Bundle) {
         webView?.saveState(outState)
         //TODO: Restore and save client-specific fields
     }
@@ -92,7 +92,7 @@ class WebClient(
     /**
      * Call this in [androidx.fragment.app.Fragment.onViewCreated]
      */
-    fun attach(webView: WebView, listener: WebClientListener): WebClient {
+    open fun attach(webView: WebView, listener: WebClientListener): WebClient {
         this.webView = webView.apply {
             settings.apply {
                 javaScriptEnabled = true
@@ -113,12 +113,12 @@ class WebClient(
      * Call this in [androidx.fragment.app.Fragment.onDestroyView]. If you do not call this, you will get crashes in
      * runtime and a memory leak!
      */
-    fun detach() {
+    open fun detach() {
         webView = null
         listener = null
     }
 
-    fun goBack() {
+    open fun goBack() {
         if (canGoBack) webView?.goBack()
     }
 
@@ -184,6 +184,6 @@ class WebClient(
     }
 
     companion object {
-        private const val TAG = "WebClient"
+        protected const val TAG = "WebClient"
     }
 }

@@ -5,7 +5,6 @@ package com.nek12.androidutils.databinding.recyclerview
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
-import com.nek12.androidutils.databinding.recyclerview.Item.Companion.itemFromData
 
 /**
  * A concrete implementation of [GenericAdapter] that is intended for use with lists that have
@@ -24,20 +23,11 @@ open class SingleTypeAdapter<T, in VB : ViewDataBinding>(
     private val binder: RVBinder<T, VB>? = null,
 ) : GenericAdapter(itemClickListener as? ItemListener<Item<*, *>>?, lifecycleOwner) {
 
-    /**
-     * Like [submitList], but transforms your data objects into Items for you.
-     * **If you don't have anything to serve as an ID, let the idSelector return
-     * [Item.NO_ID] or _null_. In this case
-     * you will lose some performance, so make sure you
-     * resort to this when you truly have no other alternative.
-     */
-    fun submitData(data: List<T>, idSelector: (T) -> Long?) {
-        super.submitList(data.map { itemFromData(it, idSelector(it), layout, binder) })
-    }
-
     override fun getItem(pos: Int): Item<T, VB> {
         return super.getItem(pos) as Item<T, VB>
     }
+
+    fun submitData(data: List<T>, idSelector: (T) -> Long?) = this.submitData(data, layout, idSelector, binder)
 
     override fun getCurrentList(): List<Item<T, VB>> = super.getCurrentList() as List<Item<T, VB>>
 }
