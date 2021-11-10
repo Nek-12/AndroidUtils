@@ -9,7 +9,6 @@ import androidx.core.view.children
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 
 /**
  * The base class for your adapter implementations. In general, you should not be required to
@@ -38,12 +37,10 @@ import androidx.recyclerview.widget.RecyclerView
 open class GenericAdapter(
     private val listener: ItemListener<Item<*, *>>? = null,
     private val lifecycleOwner: LifecycleOwner? = null,
-    private val stableIds: Boolean = true,
 ) : ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        setHasStableIds(stableIds)
-        super.onAttachedToRecyclerView(recyclerView)
+    init {
+        setHasStableIds(true)
     }
 
     override fun getItemId(position: Int): Long = currentList[position].id
@@ -123,7 +120,7 @@ inline fun <T : Item<*, *>> applyListenerToAllViews(
 
 
 /**
- * Like [submitList], but transforms your data objects into Items for you.
+ * Like [submitData], but transforms your data objects into Items for you.
  * **If you don't have anything to serve as an ID, let the idSelector return
  * [Item.NO_ID] or _null_. In this case
  * you will lose some performance, so make sure you
