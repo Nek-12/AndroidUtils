@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nek12.androidutils.extensions.R
+import kotlin.math.floor
 
 const val DEF_FADE_DURATION = 250L
 const val IMAGEVIEW_FADE_DURATION = 1000L
@@ -136,9 +137,9 @@ fun View.setVisibility(
  * 300dp-wide, for example, you will get 6 columns.
  */
 fun RecyclerView.autoFitColumns(columnWidthDP: Int, columnSpacingDp: Int) {
-    val displayMetrics = this.context.resources.displayMetrics
+    val displayMetrics = this.resources.displayMetrics
     val noOfColumns =
-        ((displayMetrics.widthPixels / displayMetrics.density) / columnWidthDP + columnSpacingDp).toInt()
+        floor((displayMetrics.widthPixels / displayMetrics.density) / (columnWidthDP.toDouble() + columnSpacingDp.toDouble())).toInt()
     this.layoutManager = GridLayoutManager(this.context, noOfColumns)
 }
 
