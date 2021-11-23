@@ -175,7 +175,7 @@ fun Fragment.showInfoDialog(
     @DrawableRes icon: Int = R.drawable.ic_info_36dp,
     onCancel: ((dialog: DialogInterface) -> Unit)? = null,
     onAgree: (dialog: DialogInterface) -> Unit = {},) {
-    showInfoDialog(
+    requireContext().showInfoDialog(
         title,
         content,
         icon, onCancel, onAgree
