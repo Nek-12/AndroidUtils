@@ -20,12 +20,12 @@ import androidx.recyclerview.widget.RecyclerView
  * item is called exactly "data" and the type is of the first type argument for your [Item] class
  * implementation (i.e. the type of the "data" field).**
  */
-class BaseHolder(val binding: ViewDataBinding) :
+class BaseHolder(val binding: ViewDataBinding, private val brVariable: Int = BR.data) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: Item<*, *>) {
         if (item.data != Unit) {
-            binding.setVariable(BR.data, item.data)
+            binding.setVariable(brVariable, item.data)
         }
         binding.executePendingBindings()
         item.tryBind(binding, bindingAdapterPosition)
@@ -36,6 +36,7 @@ class BaseHolder(val binding: ViewDataBinding) :
             parent: ViewGroup,
             @LayoutRes layout: Int,
             lifecycleOwner: LifecycleOwner? = null,
+            brVariable: Int = BR.data
         ): BaseHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding: T? = DataBindingUtil.inflate(
@@ -43,7 +44,7 @@ class BaseHolder(val binding: ViewDataBinding) :
             )
             requireNotNull(binding) { "Couldn't inflate binding, check your layout ID: $layout" }
             binding.lifecycleOwner = lifecycleOwner
-            return BaseHolder(binding)
+            return BaseHolder(binding, brVariable)
         }
     }
 }

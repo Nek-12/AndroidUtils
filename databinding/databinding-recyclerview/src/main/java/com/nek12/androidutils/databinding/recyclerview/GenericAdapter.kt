@@ -37,16 +37,18 @@ import androidx.recyclerview.widget.ListAdapter
 open class GenericAdapter(
     private val listener: ItemListener<Item<*, *>>? = null,
     private val lifecycleOwner: LifecycleOwner? = null,
+    stableIds: Boolean = true,
+    private val brVariable: Int = BR.data
 ) : ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
     init {
-        setHasStableIds(true)
+        setHasStableIds(stableIds)
     }
 
     override fun getItemId(position: Int): Long = currentList[position].id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder {
-        val vh = BaseHolder.inflate<ViewDataBinding>(parent, viewType, lifecycleOwner)
+        val vh = BaseHolder.inflate<ViewDataBinding>(parent, viewType, lifecycleOwner, brVariable)
         (listener as? ItemInflateListener)?.onViewHolderCreated(vh, viewType)
         return applyListenerToAllViews(vh, listener) {
             //defers getting item by position using a lambda object

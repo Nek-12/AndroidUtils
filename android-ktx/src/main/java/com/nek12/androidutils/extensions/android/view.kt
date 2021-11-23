@@ -19,7 +19,6 @@ import com.nek12.androidutils.extensions.R
 
 const val DEF_FADE_DURATION = 250L
 const val IMAGEVIEW_FADE_DURATION = 1000L
-const val DEF_COLUMN_SPACING = 0.5
 
 /**
  * Whether the device is in landscape mode right now
@@ -136,7 +135,7 @@ fun View.setVisibility(
  * distributed to fill the screen. If you specify 50dp as column width and your screen is
  * 300dp-wide, for example, you will get 6 columns.
  */
-fun RecyclerView.autoFitColumns(columnWidthDP: Int, columnSpacingDp: Double = DEF_COLUMN_SPACING) {
+fun RecyclerView.autoFitColumns(columnWidthDP: Int, columnSpacingDp: Int) {
     val displayMetrics = this.context.resources.displayMetrics
     val noOfColumns =
         ((displayMetrics.widthPixels / displayMetrics.density) / columnWidthDP + columnSpacingDp).toInt()
@@ -191,3 +190,6 @@ val Number.toPx
         this.toFloat(),
         Resources.getSystem().displayMetrics
     )
+
+val Fragment.screenWidthPx get() = requireActivity().resources.displayMetrics.widthPixels
+val Fragment.screenHeightPx get() = requireActivity().resources.displayMetrics.heightPixels

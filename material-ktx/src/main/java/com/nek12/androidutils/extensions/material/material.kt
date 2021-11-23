@@ -2,6 +2,7 @@
 
 package com.nek12.androidutils.extensions.material
 
+import android.content.Context
 import android.content.DialogInterface
 import android.view.View
 import android.widget.TextView
@@ -102,14 +103,14 @@ fun View.showSnackbar(
  * Default icon is material info icon -> (i)
  * You can specify behavior for clicking cancel and ok buttons.
  */
-fun Fragment.showInfoDialog(
+fun Context.showInfoDialog(
     message: String,
     title: String,
     @DrawableRes icon: Int = R.drawable.ic_info_36dp,
     onCancel: ((dialog: DialogInterface) -> Unit)? = null,
     onAgree: (dialog: DialogInterface) -> Unit = {},
 ) {
-    val d = MaterialAlertDialogBuilder(requireContext())
+    val d = MaterialAlertDialogBuilder(this)
         .setCancelable(true)
         .setIcon(icon)
         .setTitle(title)
@@ -122,12 +123,11 @@ fun Fragment.showInfoDialog(
     d.show()
 }
 
+
 /**
- * Shows a cancelable modal material dialog with specified [message], [title] and [icon].
- * Default icon is material info icon -> (i)
- * You can specify behavior for clicking cancel and ok buttons.
+ * @see [Context.showInfoDialog]
  */
-fun Fragment.showInfoDialog(
+fun Context.showInfoDialog(
     @StringRes title: Int,
     @StringRes content: Int,
     @DrawableRes icon: Int = R.drawable.ic_info_36dp,
@@ -144,13 +144,43 @@ fun Fragment.showInfoDialog(
 /**
  * Shows a modal dialog that has "Cancel" and "OK" buttons, but the "Cancel" button does nothing
  */
-fun Fragment.showConfirmationDialog(
+fun Context.showConfirmationDialog(
     @StringRes title: Int,
     @StringRes content: Int,
     @DrawableRes icon: Int,
     okAction: (dialog: DialogInterface) ->
     Unit
 ) = showInfoDialog(title, content, icon, {}, okAction)
+
+
+/**
+ * @see [Context.showInfoDialog]
+ */
+fun Fragment.showInfoDialog(
+    @StringRes title: Int,
+    @StringRes content: Int,
+    @DrawableRes icon: Int = R.drawable.ic_info_36dp,
+    onCancel: ((dialog: DialogInterface) -> Unit)? = null,
+    onAgree: (dialog: DialogInterface) -> Unit = {},
+) {
+    requireContext().showInfoDialog(content, title, icon, onCancel, onAgree)
+}
+
+/**
+ * @see [Context.showInfoDialog]
+ */
+fun Fragment.showInfoDialog(
+    title: String,
+    content: String,
+    @DrawableRes icon: Int = R.drawable.ic_info_36dp,
+    onCancel: ((dialog: DialogInterface) -> Unit)? = null,
+    onAgree: (dialog: DialogInterface) -> Unit = {},) {
+    showInfoDialog(
+        title,
+        content,
+        icon, onCancel, onAgree
+    )
+}
 
 
 /**
