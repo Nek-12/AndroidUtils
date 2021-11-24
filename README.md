@@ -20,7 +20,6 @@ implementation ("com.github.Nek-12.AndroidUtils:coroutine-ktx:$utilsVersion")
 implementation ("com.github.Nek-12.AndroidUtils:room:$utilsVersion")
 implementation ("com.github.Nek-12.AndroidUtils:material-ktx:$utilsVersion")
 implementation ("com.github.Nek-12.AndroidUtils:viewbinding:$utilsVersion")
-implementation("com.github.Nek-12.AndroidUtils:networking:$utilsVersion")
 ```  
 
 ### RecyclerView
