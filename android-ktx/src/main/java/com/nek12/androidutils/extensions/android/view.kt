@@ -194,3 +194,6 @@ val Number.toPx
 
 val Fragment.screenWidthPx get() = requireActivity().resources.displayMetrics.widthPixels
 val Fragment.screenHeightPx get() = requireActivity().resources.displayMetrics.heightPixels
+
+
+inline fun <reified T: View> T.onClick(crossinline block: (T) -> Unit) = setOnClickListener { block(it as T) }

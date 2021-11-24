@@ -20,6 +20,7 @@ implementation ("com.github.Nek-12.AndroidUtils:coroutine-ktx:$utilsVersion")
 implementation ("com.github.Nek-12.AndroidUtils:room:$utilsVersion")
 implementation ("com.github.Nek-12.AndroidUtils:material-ktx:$utilsVersion")
 implementation ("com.github.Nek-12.AndroidUtils:viewbinding:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:networking:$utilsVersion")
 ```  
 
 ### RecyclerView
@@ -27,6 +28,10 @@ For documentation on `databinding-recyclerview`, check out [this doc](docs/datab
 
 ### Room
 For documentation on `room`, check out [this one](docs/room.md)
+
+### ApiResult
+ApiResult is included in the `coroutines-ktx` artifact.  
+Read [this doc](docs/networking.md) for reference.
 
 ## Other components
 Documentation on those is still TBD, however there is not much code in them, so you can check out sources or javadocs if you want more.
