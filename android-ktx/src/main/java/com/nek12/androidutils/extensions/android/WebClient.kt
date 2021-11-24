@@ -92,12 +92,13 @@ open class WebClient(
     /**
      * Call this in [androidx.fragment.app.Fragment.onViewCreated]
      */
-    open fun attach(webView: WebView, listener: WebClientListener): WebClient {
+    open fun attach(webView: WebView, listener: WebClientListener, userAgent: String? = null): WebClient {
         this.webView = webView.apply {
             settings.apply {
                 javaScriptEnabled = true
                 loadsImagesAutomatically = true
                 useWideViewPort = true
+                userAgent?.let { userAgentString = it }
                 loadWithOverviewMode = true
                 javaScriptCanOpenWindowsAutomatically = false
                 setDownloadListener(this@WebClient)
