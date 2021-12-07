@@ -92,10 +92,14 @@ open class WebClient(
     /**
      * Call this in [androidx.fragment.app.Fragment.onViewCreated]
      */
-    open fun attach(webView: WebView, listener: WebClientListener, userAgent: String? = null): WebClient {
+    open fun attach(webView: WebView,
+                    listener: WebClientListener? = null,
+                    userAgent: String? = null,
+                    javaScriptEnabled: Boolean = true,
+    ): WebClient {
         this.webView = webView.apply {
             settings.apply {
-                javaScriptEnabled = true
+                javaScriptEnabled = javaScriptEnabled
                 loadsImagesAutomatically = true
                 useWideViewPort = true
                 userAgent?.let { userAgentString = it }
@@ -121,6 +125,19 @@ open class WebClient(
 
     open fun goBack() {
         if (canGoBack) webView?.goBack()
+    }
+
+    open fun clearHistory() {
+        webView?.clearHistory()
+    }
+
+    open fun clearAllData() {
+        webView?.clearHistory()
+        webView?.clearCache(true)
+        webView?.clearFormData()
+        WebStorage.getInstance().deleteAllData();
+        CookieManager.getInstance().removeAllCookies(null);
+        CookieManager.getInstance().flush();
     }
 
     override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
