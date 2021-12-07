@@ -99,7 +99,7 @@ open class WebClient(
     ): WebClient {
         this.webView = webView.apply {
             settings.apply {
-                javaScriptEnabled = javaScriptEnabled
+                setJavaScriptEnabled(javaScriptEnabled)
                 loadsImagesAutomatically = true
                 useWideViewPort = true
                 userAgent?.let { userAgentString = it }
