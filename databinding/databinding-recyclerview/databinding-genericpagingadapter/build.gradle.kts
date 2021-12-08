@@ -1,6 +1,6 @@
 dependencies {
     implementation(project(":databinding:databinding-recyclerview"))
-    implementation("androidx.paging:paging-runtime:3.0.1")
+    implementation("androidx.paging:paging-runtime:3.1.0")
 }
 
 plugins {
