@@ -107,17 +107,17 @@ fun Fragment.downloadFile(
 
 fun Fragment.openBrowser(url: Uri, onNotFound: (e: Exception) -> Unit) = requireContext().openBrowser(url, onNotFound)
 
-fun Context.shareAsText(uri: Uri, onAppNotFound: (e: Exception) -> Unit) {
-    val intent = Intent(Intent.ACTION_SEND, uri).apply {
-        putExtra(Intent.EXTRA_TEXT, uri.toString())
+fun Context.shareAsText(text: String, onAppNotFound: (e: Exception) -> Unit) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_TEXT, text)
         type = "text/plain"
     }
     val shareIntent = Intent.createChooser(intent, null)
     startActivityCatching(shareIntent, onAppNotFound)
 }
 
-fun Fragment.shareAsText(uri: Uri, onAppNotFound: (e: Exception) -> Unit) =
-    requireContext().shareAsText(uri, onAppNotFound)
+fun Fragment.shareAsText(text: String, onAppNotFound: (e: Exception) -> Unit) =
+    requireContext().shareAsText(text, onAppNotFound)
 
 
 fun Fragment.doOnBackPressed(action: OnBackPressedCallback) {

@@ -7,9 +7,11 @@ import android.animation.AnimatorSet
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.os.Build
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ScrollView
 import androidx.annotation.AnimatorRes
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
@@ -196,4 +198,12 @@ val Fragment.screenWidthPx get() = requireActivity().resources.displayMetrics.wi
 val Fragment.screenHeightPx get() = requireActivity().resources.displayMetrics.heightPixels
 
 
-inline fun <reified T: View> T.onClick(crossinline block: (T) -> Unit) = setOnClickListener { block(it as T) }
+inline fun <reified T : View> T.onClick(crossinline block: (T) -> Unit) = setOnClickListener { block(it as T) }
+
+fun ScrollView.scrollToView(view: View) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        scrollToDescendant(view)
+    } else {
+        scrollTo(view.scrollX, view.scrollY)
+    }
+}

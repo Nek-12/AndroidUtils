@@ -5,19 +5,18 @@ plugins {
 }
 
 rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.4.6"
+rootProject.version = "0.4.7"
 
 buildscript {
 
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://dl.bintray.com/kotlin/kotlin-eap") }
         gradlePluginPortal()
     }
     dependencies {
         classpath("com.android.tools.build:gradle:${Versions.gradle}")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
     }
 }
 
