@@ -1,8 +1,6 @@
 android {
-    android {
-        buildFeatures {
-            dataBinding = true
-        }
+    buildFeatures {
+        dataBinding = true
     }
 }
 

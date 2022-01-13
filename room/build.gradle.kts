@@ -1,7 +1,7 @@
-val roomVersion = "2.4.0-beta01"
+val roomVersion = "2.4.0"
 
 plugins {
-    id("com.google.devtools.ksp").version("1.5.31-1.0.0")
+    id("com.google.devtools.ksp").version("${Versions.kotlin}-${Versions.ksp}")
 }
 
 dependencies {
