@@ -34,17 +34,28 @@ Read [this doc](docs/networking.md) for reference.
 
 ## Other components
 Documentation on those is still TBD, however there is not much code in them, so you can check out sources or javadocs if you want more.
-* `***-ktx` artifacts will give you some useful extension functions like `collectOnLifecycle()` that I used in examples above to simplify   
+* `***-ktx` artifacts will give you some useful extension functions like `collectOnLifecycle()` that I used in examples
+  above to simplify   
   working with system APIs, coroutines, and other android components.
-* `SafeNavController` - will give you a class to replace your NavController that you use with navigation library, because it has one huge flaw: The Dreaded "Destination Not Found" Exception. To avoid crashing your app at runtime, use `Fragment.findSafeNavController()` instead of `Fragment.findNavController()` and use provided methods just like you would use the usual controller.
-* `databinding` - will give you a generic DataBindingFragment class implementation. Super useful if you use `recyclerview` or databinding already. Extend that class and override your layout id. No need to null out binding, inflate anything, just initialize your fragment logic in the `onViewReady()`.
-* `preferences-ktx `- will give you property delegates that automatically read data from shared prefs and write to them. Use them wisely because they still do I/O on the main thread.
-* `core-ktx` - Will give you a Time class implementation that I used in one of my projects, because there is still no analogue on the internet. If you need to manipulate time values efficiently or store time in the database (supported by `room` extension `DatabaseConverters` class by the way), then use `Time`. This artifact has literally zero dependencies, and does not depend on any android parts, actually.
-* `android-ktx` - Will give you multiple extension functions, and a WebClient - the WebViewClient that solves almost 
-  all problems of the usual Client + WebView pairing you may encounter, such as crashes and errors on unknown link 
-  types, no way to handle external links, security vulnerabilities, and the mess that Google made of WebViewClient 
-  callbacks (when same callback gets called 2, 3 or more times in a row. It is also not bound to the view lifecycle, 
-  so you can just attach and detach it and your data will be safe, even in ViewModel)
+* `SafeNavController` - will give you a class to replace your NavController that you use with navigation library,
+  because it has one huge flaw: The Dreaded "Destination Not Found" Exception. To avoid crashing your app at runtime,
+  use `Fragment.findSafeNavController()` instead of `Fragment.findNavController()` and use provided methods just like
+  you would use the usual controller.
+* `databinding` - will give you a generic DataBindingFragment class implementation. Super useful if you use
+* `recyclerview` or databinding already. Extend that class and override your layout id. No need to null out binding,
+* inflate anything, just initialize your fragment logic in the `onViewReady()`, using kotlin synthetics-styled syntax.
+* `preferences-ktx `- will give you property delegates that automatically read data from shared prefs and write to
+* them. Use them wisely because they still do I/O on the main thread. Just define them in whatever file as Context
+* extension properties and then use in whatever component you are in, or even with applicationContext injected by DI.
+* `core-ktx` - Will give you a Time class implementation that I used in one of my projects, because there is still no
+  analogue on the internet. If you need to manipulate time values efficiently or store time in the database (supported
+  by `room` extension `DatabaseConverters` class by the way), then use `Time`. This artifact has literally zero
+  dependencies, and does not depend on any android parts, actually.
+* `android-ktx` - Will give you multiple extension functions, and a WebClient - the WebViewClient that solves almost all
+  problems of the usual Client + WebView pairing you may encounter, such as crashes and errors on unknown link types, no
+  way to handle external links, security vulnerabilities, and the mess that Google made of WebViewClient callbacks (when
+  same callback gets called 2, 3 or more times in a row. It is also not bound to the view lifecycle, so you can just
+  attach and detach it and your data will be safe, even in ViewModel)
 
 For more information and other examples see javadocs in the library code.
 If you find something that is missing, feel free to tell me about it using Github issues.
@@ -54,10 +65,9 @@ If you find something that is missing, feel free to tell me about it using Githu
 * Other extensions, tricks, classes and ideas were inspired by open-source community: Medium posts, StackOverflow answers, other libraries and so on. Thanks to everyone for such a valuable information!
 * My job and freelance projects inspired multitude of extensions used here
 
-
 ## License
 ```
-   Copyright 2021 Nikita Vaizin
+   Copyright 2022 Nikita Vaizin
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

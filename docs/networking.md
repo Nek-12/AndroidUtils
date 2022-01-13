@@ -16,4 +16,8 @@ You can see that you get two functions to use:
 `wrap(call: (suspend () -> T)): ApiResult<T>`  
 and  
 `flow(call: suspend () -> T): Flow<ApiResult<T>>`  
-The "Flow" function first emits a `Loading` response and then executes the suspending call.
+The "Flow" function first emits a `Loading` response and then executes the suspending call. ApiResult provides robust
+interface similar to kotlin.Result class, but with another added state and integration with coroutines. Inspired by
+EitherNet ApiResult, but serving completely different purpose and doing different things, this class lets you write
+beautiful error and state handling code. Also goes along nicely with MVI and MVVM architectures. For more info, just
+check out sources.
