@@ -21,21 +21,23 @@ No problem!
    ```  
 2. Your DAO:
    ```kotlin  
-   abstract class EntryDao : RoomDao<Entry>(Entry.TABLE_NAME) {  
-       @Query("SELECT * FROM ${Entry.TABLE_NAME}") 
-       // You have to write async queries yourself
-       abstract fun getAll(): Flow<List<Entry>>    
-   }  
+   //Room will inject db parameter automatically
+   abstract class EntryDao(db: RoomDatabase) : RoomDao<Entry>(db, Entry.TABLE_NAME)
    ```  
 3. Your Repo:
    ```kotlin  
-   class EntryRepo(private val dao: EntryDao) : RoomRepo<Entry>(dao) {  
-       fun getAll() = dao.getAll()  
-   }  
+   class EntryRepo(private val dao: EntryDao) : RoomRepo<Entry>(dao) 
    ```  
 
-You got 15 functions for free, including `add`, `delete`, `update`, and `getSync` (suspending)
+You got 19 functions for free, including `add`, `delete`, `update`, and `get`
 
-TBD:
+## Advanced Usage
 
-* Generic async get() methods
+Each DAO has a `referencedTables` parameter. This is used in `get(): Flow<T>` queries to trigger flow emission when any
+of the `referencedTables` changes. For example, `@Embedded` entities.
+
+By default, emissions are triggered when just the base table changes.
+
+> What should Include in the `referencedTables` parameter?
+
+Include all @Embedded tables, all `@Relation `tables, and all `ForeignKey` tables
