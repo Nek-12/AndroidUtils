@@ -1,4 +1,4 @@
-package com.nek12.androidutils.databinding.recyclerview
+package com.nek12.androidutils.databinding
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter

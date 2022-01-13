@@ -16,10 +16,13 @@ const val VB_NOT_AVAILABLE_MESSAGE = "ViewBinding is not available outside view 
 
 abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
     abstract val inflater: Inflater<T>
-    abstract fun onViewReady()
+    abstract fun T.onViewReady()
 
     private var _b: T? = null
     protected val b = requireNotNull(_b) { VB_NOT_AVAILABLE_MESSAGE }
+
+    protected val isViewBound
+        get() = _b != null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _b = inflater(inflater, container, false)
@@ -28,7 +31,7 @@ abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onViewReady()
+        b.onViewReady()
     }
 
     override fun onDestroyView() {

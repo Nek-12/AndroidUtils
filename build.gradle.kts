@@ -37,6 +37,10 @@ subprojects {
         "core-ktx" -> apply(plugin = "java-library")
         else -> apply(plugin = "android-library")
     }
+
+    dependencies {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}")
+    }
 }
 
 kotlin {

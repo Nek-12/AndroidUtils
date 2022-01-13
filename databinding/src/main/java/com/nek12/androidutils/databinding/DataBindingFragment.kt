@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -20,13 +21,14 @@ import androidx.fragment.app.Fragment
  * @param layoutRes a layout for this fraagment
  */
 abstract class DataBindingFragment<T : ViewDataBinding> : Fragment() {
+    @get:LayoutRes
     protected abstract val layoutRes: Int
     private var _b: T? = null
     protected val b: T
         get() = _b
             ?: throw IllegalAccessException("ViewBinding is not available outside of the view lifecycle")
 
-    abstract fun onViewReady()
+    abstract fun T.onViewReady()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +42,7 @@ abstract class DataBindingFragment<T : ViewDataBinding> : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onViewReady()
+        b.onViewReady()
     }
 
     override fun onDestroyView() {

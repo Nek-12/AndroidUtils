@@ -3,18 +3,23 @@
 package com.nek12.androidutils.extensions.android
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.*
 import android.text.style.*
 import android.util.Patterns
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.core.text.HtmlCompat
 import com.nek12.androidutils.extensions.core.isValid
 import java.util.*
 
 
 val String?.isValidEmail: Boolean
-    get() = this.isValid && Patterns.EMAIL_ADDRESS.matcher(this!!).matches()
+    get() = isValid && Patterns.EMAIL_ADDRESS.matcher(this!!).matches()
+
+val String?.isValidPhone: Boolean
+    get() = isValid && Patterns.PHONE.matcher(this!!).matches()
 
 /**
  * Create a span with a [clickablePart] of the text, and invokes the [onClickListener] on click.
@@ -53,59 +58,37 @@ fun TextView.setColorOfSubstring(substring: String, color: Int) {
  * [span] is a ..Span object like a [ForegroundColorSpan] or a [SuperscriptSpan]
  * Spans this whole string
  */
-fun SpannableStringBuilder.spanText(span: Any): SpannableStringBuilder {
-    setSpan(span, 0, length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-    return this
-}
+fun CharSequence.span(span: Any): SpannableString = SpannableString(this).setSpan(span)
+
+private fun CharSequence.buildSpan() = SpannableStringBuilder(this)
+
+private val CharSequence.spannable get() = SpannableString(this)
 
 /**
  * [span] is a ..Span object like a [ForegroundColorSpan] or a [SuperscriptSpan]
  * Spans this whole string
  */
-fun String.spanText(span: Any): SpannableStringBuilder = this.toSpannable().spanText(span)
-
-
-private fun String.toSpannable() = SpannableStringBuilder(this)
-
-/**
- * @return a span where this text has a specified foreground color
- */
-fun String.foregroundColor(@ColorInt color: Int): SpannableStringBuilder {
-    val span = ForegroundColorSpan(color)
-    return toSpannable().spanText(span)
+private fun SpannableString.setSpan(span: Any?) = apply {
+    setSpan(span, 0, length, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE)
 }
 
-/**
- * @return a span where this string has specified background color
- */
-fun String.backgroundColor(@ColorInt color: Int): SpannableStringBuilder {
-    val span = BackgroundColorSpan(color)
-    return toSpannable().spanText(span)
-}
+fun CharSequence.foregroundColor(@ColorInt color: Int): SpannableString = span(ForegroundColorSpan(color))
 
-/**
- * @return a span where this string has specified relative size
- */
-fun String.relativeSize(size: Float): SpannableStringBuilder {
-    val span = RelativeSizeSpan(size)
-    return toSpannable().spanText(span)
-}
+fun CharSequence.backgroundColor(@ColorInt color: Int): SpannableString = span(BackgroundColorSpan(color))
 
-/**
- * @return a span with this string as a superscript
- */
-fun String.superscript(): SpannableStringBuilder {
-    val span = SuperscriptSpan()
-    return toSpannable().spanText(span)
-}
+fun CharSequence.relativeSize(size: Float): SpannableString = span(RelativeSizeSpan(size))
 
-/**
- * @return a span with this text striked through
- */
-fun String.strike(): SpannableStringBuilder {
-    val span = StrikethroughSpan()
-    return toSpannable().spanText(span)
-}
+fun CharSequence.superscript(): SpannableString = span(SuperscriptSpan())
+
+fun CharSequence.subscript() = span(SubscriptSpan())
+
+fun CharSequence.strike(): SpannableString = span(StrikethroughSpan())
+
+fun CharSequence.bold() = span(StyleSpan(Typeface.BOLD))
+
+fun CharSequence.italic() = span(StyleSpan(Typeface.ITALIC))
+
+fun CharSequence.underline() = span(UnderlineSpan())
 
 /**
  * If this is a valid hex color string representation, returns its R, G and B components
@@ -141,3 +124,7 @@ class TextChangeListener(private val onChanged: (newText: String?) -> Unit) : Te
         onChanged(s?.toString().takeIf { it.isValid })
     }
 }
+
+
+val String.asHTML: Spanned
+    get() = HtmlCompat.fromHtml(this, 0)

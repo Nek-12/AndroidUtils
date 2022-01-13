@@ -9,6 +9,7 @@ import java.time.ZonedDateTime
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.log10
+import kotlin.random.Random
 import kotlin.reflect.KProperty
 
 /**
@@ -36,7 +37,7 @@ fun <T> MutableList<T>.swap(index1: Int, index2: Int): MutableList<T> {
  * Returns a shallow copy of this list with the items swapped
  */
 fun <T> List<T>.swapped(index1: Int, index2: Int): List<T> {
-    val list = this.toMutableList()
+    val list = toMutableList()
     return list.swap(index1, index2)
 }
 
@@ -86,4 +87,25 @@ class LazyWithReceiver<This, Return>(val initializer: This.() -> Return) {
  * - "  " -> false
  */
 val String?.isValid: Boolean
-    get() = !this.isNullOrBlank() && !this.equals("null", true)
+    get() = !isNullOrBlank() && !equals("null", true)
+
+/**
+ * @return null if the list is empty
+ */
+fun <T> List<T>.randomElement(): T? = getOrNull(Random.nextInt(this.size))
+
+fun <T> List<T>.randomElements(count: Int): List<T> = shuffled().take(count)
+
+/**
+ * Check if this String has length in [range]
+ */
+infix fun String.spans(range: IntRange) = length in range
+
+fun Float.format(digits: Int) = "%.${digits}f".format(this)
+
+val String.isAscii: Boolean get() = toCharArray().none { it < ' ' || it > '~' }
+
+fun <T> MutableCollection<T>.replace(src: Collection<T>) {
+    clear()
+    addAll(src)
+}

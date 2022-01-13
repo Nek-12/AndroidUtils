@@ -4,13 +4,18 @@ package com.nek12.androidutils.extensions.material
 
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
@@ -187,9 +192,8 @@ fun Fragment.showInfoDialog(
  * @param ratio: The percentage of the screen the sheet should take, e.g. 0.6 = 60%
  * **/
 fun BottomSheetDialogFragment.setPeekHeightRatio(ratio: Double) {
-    val dialog = (dialog as BottomSheetDialog)
     val height = requireContext().resources.displayMetrics.heightPixels.toDouble()
-    dialog.behavior.setPeekHeight((height * ratio).toInt(), true)
+    behavior.setPeekHeight((height * ratio).toInt(), true)
 }
 
 val BottomSheetDialogFragment.behavior
@@ -197,3 +201,24 @@ val BottomSheetDialogFragment.behavior
         val sheet = it as BottomSheetDialog
         sheet.behavior
     }
+
+fun BottomSheetDialogFragment.expand() {
+    behavior.state = BottomSheetBehavior.STATE_EXPANDED
+}
+
+fun BottomSheetDialogFragment.collapse() {
+    behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+}
+
+/**
+ * Should only be called within the view lifecycle
+ */
+fun Fragment.materialColor(@AttrRes attr: Int) = requireContext().materialColor(attr)
+
+fun View.materialColor(@AttrRes attr: Int) = MaterialColors.getColor(this, attr)
+
+/**
+ * Make sure you're using context that has theme attribute set (e.g. activity)
+ */
+fun Context.materialColor(@AttrRes attr: Int, @ColorInt defValue: Int = Color.TRANSPARENT) =
+    MaterialColors.getColor(this, attr, defValue)

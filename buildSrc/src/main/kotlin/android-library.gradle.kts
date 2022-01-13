@@ -45,8 +45,6 @@ android {
     }
 }
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}")
-
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test:runner:1.4.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

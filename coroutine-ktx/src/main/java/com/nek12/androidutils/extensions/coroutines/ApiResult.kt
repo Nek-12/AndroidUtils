@@ -1,8 +1,12 @@
-@file:Suppress("MemberVisibilityCanBePrivate", "unused")
+@file:Suppress("MemberVisibilityCanBePrivate", "unused", "NOTHING_TO_INLINE")
 
 package com.nek12.androidutils.extensions.coroutines
 
+import com.nek12.androidutils.extensions.coroutines.ApiResult.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+
+class NotFinishedException : IllegalArgumentException(ApiResult.DEFAULT_LOADING_MESSAGE)
 
 /**
  * A class that wraps a result of a network call.
@@ -26,57 +30,30 @@ sealed class ApiResult<out T> {
         val message get() = e.message
     }
 
-    /**
-     * Returns [Success.result] or null in all other cases.
-     */
-    fun getOrNull(): T? {
-        return if (this is Success<T>) result else null
-    }
+    val isSuccess get() = this is Success
+    val isError get() = this is Error
+    val isLoading get() = this is Loading
 
     /**
-     * Throws [Error.e], or [UnsupportedOperationException] if the request has not been completed yet.
+     * Makes the result an error if [predicate] returns false
      */
-    fun getOrThrow(): T {
-        return when (this) {
-            is Loading -> throw UnsupportedOperationException("Request has not been completed yet")
-            is Error -> throw e
-            is Success -> result
-        }
-    }
+    inline fun errorIfNot(
+        message: String = DEFAULT_ERROR_MESSAGE,
+        crossinline predicate: (T) -> Boolean
+    ): ApiResult<T> = errorIf(message) { !predicate(it) }
 
     /**
-     * Makes this result an error if [predicate] returns non-null exception
+     * Makes this result an error if [predicate] returns true
      */
-    fun errorIf(predicate: (T) -> Exception?): ApiResult<T> {
-        return when (this) {
-            is Success -> {
-                val error = predicate(result)
-                if (error != null) {
-                    Error(error)
-                } else {
-                    this
-                }
-            }
-            else -> this
-        }
-    }
-
-    /**
-     * Makes this result an error if [predicate] returns false
-     */
-    fun errorIfNot(message: String = "Condition not satisfied", predicate: (T) -> Boolean): ApiResult<T> {
-        return when {
-            this is Success && !predicate(result) -> {
-                Error(IllegalArgumentException(message))
-            }
-            else -> this
-        }
-    }
+    inline fun errorIf(
+        message: String = DEFAULT_ERROR_MESSAGE,
+        crossinline predicate: (T) -> Boolean
+    ): ApiResult<T> = if (this is Success && predicate(result)) Error(IllegalArgumentException(message)) else this
 
     /**
      * Change the type of the result to [R] without affecting error/loading results
      */
-    inline fun <R> map(block: (T) -> R): ApiResult<R> {
+    inline fun <R> map(crossinline block: (T) -> R): ApiResult<R> {
         return when (this) {
             is Success -> Success(block(result))
             is Error -> Error(e)
@@ -94,11 +71,76 @@ sealed class ApiResult<out T> {
             }
         }
 
+        /**
+         * Emits [Loading], then executes [call] and [wrap]s it in [ApiResult]
+         */
         inline fun <T> flow(crossinline call: suspend () -> T): Flow<ApiResult<T>> {
             return kotlinx.coroutines.flow.flow {
                 emit(Loading)
                 emit(wrap(call))
             }
         }
+
+        @PublishedApi
+        internal const val DEFAULT_ERROR_MESSAGE = "Condition not satisfied"
+
+        @PublishedApi
+        internal const val DEFAULT_LOADING_MESSAGE = "ApiResult is still in Loading state"
     }
+}
+
+inline fun <R, T : R> ApiResult<T>.or(defaultValue: R): R = orElse { defaultValue }
+
+inline fun <T, R> Flow<ApiResult<T>>.map(crossinline block: (T) -> R): Flow<ApiResult<R>> = map { it.map(block) }
+
+inline fun <T> ApiResult<List<T>>.orEmpty(): List<T> = or(emptyList())
+
+inline fun <T> ApiResult<Set<T>>.orEmpty(): Set<T> = or(emptySet())
+
+inline fun <T> ApiResult<Collection<T>>.orEmpty(): Collection<T> = or(emptyList())
+
+inline fun <T> ApiResult<T>.orNull(): T? = or(null)
+
+/**
+ * Throws [ApiResult.Error.e], or [NotFinishedException] if the request has not been completed yet.
+ */
+inline fun <T> ApiResult<T>.orThrow(): T {
+    return when (this) {
+        is Loading -> throw NotFinishedException()
+        is Error -> throw e
+        is Success -> result
+    }
+}
+
+inline fun <R, T : R> ApiResult<T>.orElse(action: (e: Exception) -> R): R = when (this) {
+    is Success -> result
+    is Error -> action(e)
+    is Loading -> action(NotFinishedException())
+}
+
+inline fun <R, T> ApiResult<T>.fold(
+    onSuccess: (result: T) -> R,
+    onError: (exception: Exception) -> R,
+    noinline onLoading: (() -> R)? = null
+): R {
+    return when (this) {
+        is Success -> onSuccess(result)
+        is Error -> onError(e)
+        is Loading -> onLoading?.let { it() } ?: onError(NotFinishedException())
+    }
+}
+
+inline fun <T> ApiResult<T>.onError(block: (Exception) -> Unit): ApiResult<T> {
+    if (this is Error) block(e)
+    return this
+}
+
+inline fun <T> ApiResult<T>.onSuccess(block: (T) -> Unit): ApiResult<T> {
+    if (this is Success) block(result)
+    return this
+}
+
+inline fun <T> ApiResult<T>.onLoading(block: () -> Unit): ApiResult<T> {
+    if (this is Loading) block()
+    return this
 }

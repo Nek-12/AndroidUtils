@@ -64,14 +64,13 @@ fun Context.downloadFile(
     userAgent: String? = null,
     description: String? = null,
     mimeType: String? = null,
-    onNotFound: (e: ActivityNotFoundException /* = java.lang.Exception */) -> Unit
+    onAppNotFound: (e: ActivityNotFoundException) -> Unit
 ) {
     val request = DownloadManager.Request(url).apply {
         val cookies = CookieManager.getInstance().getCookie(url.toString())
         addRequestHeader("cookie", cookies)
         addRequestHeader("User-Agent", userAgent)
-        if (description != null)
-            setDescription(description)
+        if (description != null) setDescription(description)
         setTitle(fileName)
         setMimeType(mimeType)
         setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -79,19 +78,18 @@ fun Context.downloadFile(
     }
     try {
         ContextCompat.getSystemService(
-            this,
-            DownloadManager::class.java
+            this, DownloadManager::class.java
         )?.enqueue(request) ?: throw ActivityNotFoundException("DownloadManager not found")
     } catch (e: ActivityNotFoundException) {
-        onNotFound(e)
+        onAppNotFound(e)
         return
     }
 }
 
-fun Context.openBrowser(url: Uri, onNotFound: (e: Exception) -> Unit) {
+fun Context.openBrowser(url: Uri, onAppNotFound: (e: Exception) -> Unit) {
     //Try to let the browser handle this
     val intent = Intent(Intent.ACTION_VIEW, url)
-    startActivityCatching(intent, onNotFound)
+    startActivityCatching(intent, onAppNotFound)
 }
 
 fun Fragment.downloadFile(
@@ -100,12 +98,13 @@ fun Fragment.downloadFile(
     userAgent: String? = null,
     description: String? = null,
     mimeType: String? = null,
-    onNotFound: (e: ActivityNotFoundException /* = java.lang.Exception */) -> Unit
+    onAppNotFound: (e: ActivityNotFoundException) -> Unit
 ) {
-    requireContext().downloadFile(url, fileName, userAgent, description, mimeType, onNotFound)
+    requireContext().downloadFile(url, fileName, userAgent, description, mimeType, onAppNotFound)
 }
 
-fun Fragment.openBrowser(url: Uri, onNotFound: (e: Exception) -> Unit) = requireContext().openBrowser(url, onNotFound)
+fun Fragment.openBrowser(url: Uri, onAppNotFound: (e: Exception) -> Unit) =
+    requireContext().openBrowser(url, onAppNotFound)
 
 fun Context.shareAsText(text: String, onAppNotFound: (e: Exception) -> Unit) {
     val intent = Intent(Intent.ACTION_SEND).apply {
@@ -124,7 +123,7 @@ fun Fragment.doOnBackPressed(action: OnBackPressedCallback) {
     requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, action)
 }
 
-fun Context.sendEmail(mail: Email, onNotFound: (e: Exception) -> Unit) {
+fun Context.sendEmail(mail: Email, onAppNotFound: (e: Exception) -> Unit) {
     val sendIntent: Intent = Intent(Intent.ACTION_SEND).apply {
         //EXTRA_EMAIL should be array
         putExtra(Intent.EXTRA_EMAIL, mail.recipients?.toTypedArray())
@@ -133,11 +132,10 @@ fun Context.sendEmail(mail: Email, onNotFound: (e: Exception) -> Unit) {
         //RFC standard for email
         type = "message/rfc822"
     }
-    startActivityCatching(sendIntent, onNotFound)
+    startActivityCatching(sendIntent, onAppNotFound)
 }
 
-fun Fragment.sendEmail(mail: Email, onNotFound: (e: Exception) -> Unit) =
-    requireContext().sendEmail(mail, onNotFound)
+fun Fragment.sendEmail(mail: Email, onNotFound: (e: Exception) -> Unit) = requireContext().sendEmail(mail, onNotFound)
 
 fun Fragment.sendEmail(uri: Uri, onNotFound: (e: Exception) -> Unit) = sendEmail(Email.ofUri(uri), onNotFound)
 
@@ -150,9 +148,7 @@ data class Email(
         fun ofUri(uri: Uri): Email {
             val mail = MailTo.parse(uri)
             return Email(
-                mail.to?.split(", "),
-                mail.subject,
-                mail.body
+                mail.to?.split(", "), mail.subject, mail.body
             )
         }
     }

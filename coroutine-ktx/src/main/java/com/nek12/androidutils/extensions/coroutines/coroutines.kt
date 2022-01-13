@@ -5,7 +5,12 @@ package com.nek12.androidutils.extensions.coroutines
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlin.collections.forEach
+import kotlin.collections.map
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.properties.ReadWriteProperty
@@ -40,7 +45,7 @@ suspend fun <A, B> Collection<A>.mapParallel(
  * Notify livedata observers without changing its value
  */
 fun <T> MutableLiveData<T>.notifyObserver() {
-    this.postValue(this.value)
+    postValue(value)
 }
 
 /** Starts a new coroutine that will collect values from a flow while the lifecycle is in a
@@ -104,8 +109,9 @@ fun <T> Flow<T>.toState(scope: CoroutineScope, initialValue: T): StateFlow<T> {
  */
 fun ViewModel.launch(
     context: CoroutineContext = EmptyCoroutineContext,
+    start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit,
-) = viewModelScope.launch(context, block = block)
+) = viewModelScope.launch(context, start, block)
 
 /**
  * A lifecycle- and thread- safe implementation of [android.os.Handler.postDelayed] that was
@@ -142,4 +148,16 @@ class ViewScopedValue<T : Any> : ReadWriteProperty<Fragment, T>, DefaultLifecycl
         _value = null
         super.onDestroy(owner)
     }
+}
+
+fun CoroutineScope.launchCatching(
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    onError: (Throwable) -> Unit,
+    block: suspend CoroutineScope.() -> Unit
+): Job {
+    val handler = CoroutineExceptionHandler { _, e ->
+        onError(e)
+    }
+    return launch(dispatcher + handler, start, block)
 }
