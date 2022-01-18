@@ -15,6 +15,8 @@ typealias PreferenceProvider = (Context) -> SharedPreferences
  * A sharedPreferences delegate that allows you to write one-liners for loading and saving data
  * from/to your app's default SharedPreferences.
  * Uses [SharedPreferences.Editor.apply] that does sharedpreferences operations on background thread
+ * SharedPreferences is a Singleton object so you can easily get as many references as you want, it opens file only when you call getSharedPreferences first time, or create only one reference for it.
+ * However, if you're using custom [preferenceProvider] make sure it's not expensive to call that lambda (it is called every time you access [this] property)
  * example:
  * ```
  *  var isFirstLaunch: Boolean = booleanPreference(KEY_FIRST_LAUNCH)
@@ -61,7 +63,8 @@ fun stringPreference(
     PreferenceProperty(key, defaultValue, SharedPreferences::getString, SharedPreferences.Editor::putString, provider)
 
 fun booleanPreference(
-    key: String, defaultValue: Boolean = false,
+    key: String,
+    defaultValue: Boolean = false,
     provider: PreferenceProvider = Context::getPreferences
 ): ReadWriteProperty<Context, Boolean> =
     PreferenceProperty(key, defaultValue, SharedPreferences::getBoolean, SharedPreferences.Editor::putBoolean, provider)
@@ -79,3 +82,19 @@ fun longPreference(
     provider: PreferenceProvider = Context::getPreferences
 ): ReadWriteProperty<Context, Long> =
     PreferenceProperty(key, defaultValue, SharedPreferences::getLong, SharedPreferences.Editor::putLong, provider)
+
+/**
+ * @return [defaultValue] if base [SharedPreferences.getString] returned `null`
+ */
+@JvmName("stringPreferenceNotNull")
+fun stringPreference(
+    key: String,
+    defaultValue: String,
+    provider: PreferenceProvider = Context::getPreferences
+): ReadWriteProperty<Context, String> =
+    PreferenceProperty(
+        key,
+        defaultValue,
+        { k, default -> getString(k, default) ?: defaultValue },
+        SharedPreferences.Editor::putString, provider
+    )
