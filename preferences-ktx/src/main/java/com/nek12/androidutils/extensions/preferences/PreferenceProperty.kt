@@ -54,7 +54,8 @@ internal class ProvidedPreferenceProperty<T>(
     defaultValue: T,
     getter: SharedPreferences.(String, T) -> T,
     setter: SharedPreferences.Editor.(String, T) -> SharedPreferences.Editor,
-    private val provider: PreferenceProvider
+    private val preferences: SharedPreferences,
 ) : PreferenceProperty<Any?, T>(key, defaultValue, getter, setter) {
-    override fun getPreferences(thisRef: Any?): SharedPreferences = provider()
+
+    override fun getPreferences(thisRef: Any?): SharedPreferences = preferences
 }
