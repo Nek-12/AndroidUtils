@@ -34,16 +34,12 @@ Read [this doc](docs/networking.md) for reference.
 
 ## Other components
 Documentation on those is still TBD, however there is not much code in them, so you can check out sources or javadocs if you want more.
-* `***-ktx` artifacts will give you some useful extension functions like `collectOnLifecycle()` that I used in examples
-  above to simplify   
-  working with system APIs, coroutines, and other android components.
+
 * `SafeNavController` - will give you a class to replace your NavController that you use with navigation library,
   because it has one huge flaw: The Dreaded "Destination Not Found" Exception. To avoid crashing your app at runtime,
   use `Fragment.findSafeNavController()` instead of `Fragment.findNavController()` and use provided methods just like
   you would use the usual controller.
-* `databinding` - will give you a generic DataBindingFragment class implementation. Super useful if you use
-* `recyclerview` or databinding already. Extend that class and override your layout id. No need to null out binding,
-* inflate anything, just initialize your fragment logic in the `onViewReady()`, using kotlin synthetics-styled syntax.
+* `databinding` - will give you a generic DataBindingFragment class implementation. Super useful if you use `recyclerview` or databinding already. Extend that     class and override your layout id. No need to null out binding, inflate anything, just initialize your fragment logic in the `onViewReady()`, using kotlin synthetics-styled syntax. (`viewbinding` argifact is the same for viewbinding, as you might have guessed)
 * `preferences-ktx `- A sharedPreferences delegate that allows you to write one-liners for loading and saving data
  from/to your app's default SharedPreferences.
  Uses `SharedPreferences.Editor.apply()` that does operations on background thread and caches values.
@@ -66,6 +62,8 @@ Documentation on those is still TBD, however there is not much code in them, so 
   way to handle external links, security vulnerabilities, and the mess that Google made of WebViewClient callbacks (when
   same callback gets called 2, 3 or more times in a row. It is also not bound to the view lifecycle, so you can just
   attach and detach it and your data will be safe, even in ViewModel)
+* Other `***-ktx` artifacts will give you some useful extension functions like `collectOnLifecycle()` from coroutines-ktx that I used in examples
+  above to simplify working with system APIs, coroutines, and other android components.
 
 For more information and other examples see javadocs in the library code.
 If you find something that is missing, feel free to tell me about it using Github issues.
