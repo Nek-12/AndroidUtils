@@ -1,7 +1,7 @@
 # AndroidUtils
 ![GitHub](https://img.shields.io/github/license/Nek-12/AndroidUtils)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Nek-12/AndroidUtils)
-![Maintenance](https://img.shields.io/maintenance/yes/2021)
+![Maintenance](https://img.shields.io/maintenance/yes/2022)
 [![Downloads on Jitpack](https://jitpack.io/v/Nek-12/AndroidUtils/month.svg)](https://jitpack.io/#Nek-12/AndroidUtils.svg)
 
 Latest version is  [![Jitpack Version](https://jitpack.io/v/Nek-12/AndroidUtils.svg)](https://jitpack.io/#Nek-12/AndroidUtils) 
@@ -44,9 +44,19 @@ Documentation on those is still TBD, however there is not much code in them, so 
 * `databinding` - will give you a generic DataBindingFragment class implementation. Super useful if you use
 * `recyclerview` or databinding already. Extend that class and override your layout id. No need to null out binding,
 * inflate anything, just initialize your fragment logic in the `onViewReady()`, using kotlin synthetics-styled syntax.
-* `preferences-ktx `- will give you property delegates that automatically read data from shared prefs and write to
-* them. Use them wisely because they still do I/O on the main thread. Just define them in whatever file as Context
-* extension properties and then use in whatever component you are in, or even with applicationContext injected by DI.
+* `preferences-ktx `- A sharedPreferences delegate that allows you to write one-liners for loading and saving data
+ from/to your app's default SharedPreferences.
+ Uses `SharedPreferences.Editor.apply()` that does operations on background thread and caches values.
+ SharedPreferences is a Singleton object so you can easily get as many references as you want, if you use default shared preferences, don't worry about accessing   or creating properties.
+ However, if you're using custom sharedPreferences argument, you must manage the lifecycle yourself.  
+ example:
+     ```
+     var isFirstLaunch: Boolean = booleanPreference(KEY_FIRST_LAUNCH)
+     if (isFirstLaunch) {
+         //...
+     }
+     isFirstLaunch = false
+    ```
 * `core-ktx` - Will give you a Time class implementation that I used in one of my projects, because there is still no
   analogue on the internet. If you need to manipulate time values efficiently or store time in the database (supported
   by `room` extension `DatabaseConverters` class by the way), then use `Time`. This artifact has literally zero
