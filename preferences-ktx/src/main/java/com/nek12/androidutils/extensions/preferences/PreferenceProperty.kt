@@ -13,7 +13,6 @@ typealias PreferenceProvider = () -> SharedPreferences
  * from/to your app's default SharedPreferences.
  * Uses [SharedPreferences.Editor.apply] that does sharedpreferences operations on background thread
  * SharedPreferences is a Singleton object so you can easily get as many references as you want, it opens file only when you call getSharedPreferences first time, or create only one reference for it.
- * However, if you're using custom [preferenceProvider] make sure it's not expensive to call that lambda (it is called every time you access [this] property)
  * example:
  * ```
  *  var isFirstLaunch: Boolean = booleanPreference(KEY_FIRST_LAUNCH)

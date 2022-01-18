@@ -82,7 +82,7 @@ fun stringPreference(
     preferences
 )
 
-//Default preferences
+//------------------  Default preferences
 
 fun intPreference(
     key: String,
