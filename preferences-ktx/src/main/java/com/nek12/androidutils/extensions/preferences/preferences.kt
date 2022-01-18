@@ -9,18 +9,19 @@ import androidx.preference.PreferenceManager
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
+typealias PreferenceProvider = (Context) -> SharedPreferences
+
 /**
  * A sharedPreferences delegate that allows you to write one-liners for loading and saving data
  * from/to your app's default SharedPreferences.
- * **Despite looking innocent, this is still a shared preference implementation and thus it
- * does heavy IO on the main thread. Do not abuse this simplicity. **
+ * Uses [SharedPreferences.Editor.apply] that does sharedpreferences operations on background thread
  * example:
  * ```
  *  var isFirstLaunch: Boolean = booleanPreference(KEY_FIRST_LAUNCH)
- *  if (isFirstLaunch) {  //does IO on the main thread
+ *  if (isFirstLaunch) {
  *      //...
  *  }
- *  isFirstLaunch = false //does IO on the main thread
+ *  isFirstLaunch = false
  * ```
  */
 class PreferenceProperty<T>(
@@ -28,30 +29,53 @@ class PreferenceProperty<T>(
     private val defaultValue: T,
     private val getter: SharedPreferences.(String, T) -> T,
     private val setter: SharedPreferences.Editor.(String, T) -> SharedPreferences.Editor,
+    private val preferenceProvider: PreferenceProvider = Context::getPreferences
 ) : ReadWriteProperty<Context, T> {
 
     override fun getValue(thisRef: Context, property: KProperty<*>): T =
-        thisRef.getPreferences().getter(key, defaultValue)
+        preferenceProvider(thisRef).getter(key, defaultValue)
 
     @SuppressLint("CommitPrefEdits")
     override fun setValue(thisRef: Context, property: KProperty<*>, value: T) =
-        thisRef.getPreferences().edit().setter(key, value).apply()
-
-    private fun Context.getPreferences(): SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(this)
+        preferenceProvider(thisRef).edit().setter(key, value).apply()
 }
 
-fun intPreference(key: String, defaultValue: Int = 0): ReadWriteProperty<Context, Int> =
-    PreferenceProperty(key, defaultValue, SharedPreferences::getInt, SharedPreferences.Editor::putInt)
+/**
+ * Obtains default shared preferences for this application
+ */
+fun Context.getPreferences(): SharedPreferences =
+    PreferenceManager.getDefaultSharedPreferences(this)
 
-fun stringPreference(key: String, defaultValue: String? = null): ReadWriteProperty<Context, String?> =
-    PreferenceProperty(key, defaultValue, SharedPreferences::getString, SharedPreferences.Editor::putString)
+fun intPreference(
+    key: String,
+    defaultValue: Int = 0,
+    provider: PreferenceProvider = Context::getPreferences
+): ReadWriteProperty<Context, Int> =
+    PreferenceProperty(key, defaultValue, SharedPreferences::getInt, SharedPreferences.Editor::putInt, provider)
 
-fun booleanPreference(key: String, defaultValue: Boolean = false): ReadWriteProperty<Context, Boolean> =
-    PreferenceProperty(key, defaultValue, SharedPreferences::getBoolean, SharedPreferences.Editor::putBoolean)
+fun stringPreference(
+    key: String,
+    defaultValue: String? = null,
+    provider: PreferenceProvider = Context::getPreferences
+): ReadWriteProperty<Context, String?> =
+    PreferenceProperty(key, defaultValue, SharedPreferences::getString, SharedPreferences.Editor::putString, provider)
 
-fun floatPreference(key: String, defaultValue: Float = 0f): ReadWriteProperty<Context, Float> =
-    PreferenceProperty(key, defaultValue, SharedPreferences::getFloat, SharedPreferences.Editor::putFloat)
+fun booleanPreference(
+    key: String, defaultValue: Boolean = false,
+    provider: PreferenceProvider = Context::getPreferences
+): ReadWriteProperty<Context, Boolean> =
+    PreferenceProperty(key, defaultValue, SharedPreferences::getBoolean, SharedPreferences.Editor::putBoolean, provider)
 
-fun longPreference(key: String, defaultValue: Long = 0L): ReadWriteProperty<Context, Long> =
-    PreferenceProperty(key, defaultValue, SharedPreferences::getLong, SharedPreferences.Editor::putLong)
+fun floatPreference(
+    key: String,
+    defaultValue: Float = 0f,
+    provider: PreferenceProvider = Context::getPreferences
+): ReadWriteProperty<Context, Float> =
+    PreferenceProperty(key, defaultValue, SharedPreferences::getFloat, SharedPreferences.Editor::putFloat, provider)
+
+fun longPreference(
+    key: String,
+    defaultValue: Long = 0L,
+    provider: PreferenceProvider = Context::getPreferences
+): ReadWriteProperty<Context, Long> =
+    PreferenceProperty(key, defaultValue, SharedPreferences::getLong, SharedPreferences.Editor::putLong, provider)

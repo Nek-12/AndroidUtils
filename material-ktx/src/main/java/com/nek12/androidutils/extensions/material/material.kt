@@ -197,10 +197,7 @@ fun BottomSheetDialogFragment.setPeekHeightRatio(ratio: Double) {
 }
 
 val BottomSheetDialogFragment.behavior
-    get() = requireDialog().let {
-        val sheet = it as BottomSheetDialog
-        sheet.behavior
-    }
+    get() = (requireDialog() as BottomSheetDialog).behavior
 
 fun BottomSheetDialogFragment.expand() {
     behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -210,9 +207,6 @@ fun BottomSheetDialogFragment.collapse() {
     behavior.state = BottomSheetBehavior.STATE_COLLAPSED
 }
 
-/**
- * Should only be called within the view lifecycle
- */
 fun Fragment.materialColor(@AttrRes attr: Int) = requireContext().materialColor(attr)
 
 fun View.materialColor(@AttrRes attr: Int) = MaterialColors.getColor(this, attr)
