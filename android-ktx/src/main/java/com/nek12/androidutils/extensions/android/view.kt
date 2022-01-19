@@ -40,12 +40,12 @@ fun View.hide(
     duration: Long = DEF_FADE_DURATION,
     @AnimatorRes animation: Int = R.animator.fade_out,
 ) {
-    if (!isVisible) return
-    val visibility = if (gone) View.GONE else View.INVISIBLE
+    val targetVisibility = if (gone) View.GONE else View.INVISIBLE
+    if (this.visibility == targetVisibility) return
     if (animated) {
-        animate(animation, duration) { this.visibility = visibility }
+        animate(animation, duration) { this.visibility = targetVisibility }
     } else {
-        this.visibility = visibility
+        this.visibility = targetVisibility
     }
 }
 
@@ -58,7 +58,7 @@ fun View.show(
     duration: Long = DEF_FADE_DURATION,
     @AnimatorRes animation: Int = R.animator.fade_in,
 ) {
-    if (visibility == View.VISIBLE) return
+    if (isVisible) return
     visibility = View.VISIBLE
     if (animated) {
         animate(animation, duration)
@@ -102,7 +102,7 @@ var View.currentVisibility: Visibility
     get() = Visibility.of(this.visibility)
         ?: throw IllegalArgumentException("No such visibility value")
     set(value) {
-        this.visibility = value.value
+        visibility = value.value
     }
 
 /**
@@ -167,12 +167,11 @@ fun View.animate(
     duration: Long = DEF_FADE_DURATION,
     onEnd: ((Animator) -> Unit)? = null
 ) {
-    (AnimatorInflater.loadAnimator(this.context, animator)).apply {
-        if (isRunning) return
-        setTarget(this)
-        this.duration = duration
-        start()
+    (AnimatorInflater.loadAnimator(context, animator)).apply {
+        setTarget(this@animate) //Target view
+        this@apply.duration = duration
         onEnd?.let { doOnEnd(it) }
+        start()
     }
 }
 
@@ -200,8 +199,8 @@ fun ScrollView.scrollToView(view: View) {
 
 fun Context.getDrawableCompat(@DrawableRes id: Int) = AppCompatResources.getDrawable(this, id)!!
 
-/**
- * https://github.com/tunjid/Android-Extensions/blob/develop/view/src/main/java/com/tunjid/androidx/view/util/ViewUtil.kt
+/*
+ * Credits: https://github.com/tunjid/Android-Extensions/blob/develop/view/src/main/java/com/tunjid/androidx/view/util/ViewUtil.kt
  */
 fun ViewGroup.inflate(@LayoutRes res: Int): View =
     LayoutInflater.from(context).inflate(res, this, false)

@@ -92,10 +92,11 @@ open class WebClient(
     /**
      * Call this in [androidx.fragment.app.Fragment.onViewCreated]
      */
-    open fun attach(webView: WebView,
-                    listener: WebClientListener? = null,
-                    userAgent: String? = null,
-                    javaScriptEnabled: Boolean = true,
+    open fun attach(
+        webView: WebView,
+        listener: WebClientListener? = null,
+        userAgent: String? = null,
+        javaScriptEnabled: Boolean = true,
     ): WebClient {
         this.webView = webView.apply {
             settings.apply {
