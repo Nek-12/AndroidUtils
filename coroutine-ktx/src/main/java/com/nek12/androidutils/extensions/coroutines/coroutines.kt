@@ -4,10 +4,13 @@ package com.nek12.androidutils.extensions.coroutines
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import com.nek12.androidutils.extensions.core.ApiResult
+import com.nek12.androidutils.extensions.core.map
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlin.collections.forEach
 import kotlin.collections.map
@@ -154,10 +157,30 @@ fun CoroutineScope.launchCatching(
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
     start: CoroutineStart = CoroutineStart.DEFAULT,
     onError: (Throwable) -> Unit,
-    block: suspend CoroutineScope.() -> Unit
+    block: suspend CoroutineScope.() -> Unit,
 ): Job {
     val handler = CoroutineExceptionHandler { _, e ->
         onError(e)
     }
     return launch(dispatcher + handler, start, block)
+}
+
+/**
+ * Emits [Loading], then executes [call] and [wrap]s it in [ApiResult]
+ */
+inline fun <T> ApiResult.Companion.flow(crossinline call: suspend () -> T): Flow<ApiResult<T>> {
+    return kotlinx.coroutines.flow.flow {
+        emit(ApiResult.Loading)
+        emit(wrap(call))
+    }
+}
+
+inline fun <T, R> Flow<ApiResult<T>>.map(crossinline block: (T) -> R): Flow<ApiResult<R>> = map { it.map(block) }
+
+suspend inline fun <T> ApiResult.Companion.wrap(crossinline call: suspend () -> T): ApiResult<T> {
+    return try {
+        ApiResult.Success(call())
+    } catch (e: Exception) {
+        ApiResult.Error(e)
+    }
 }

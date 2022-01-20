@@ -1,10 +1,8 @@
 @file:Suppress("MemberVisibilityCanBePrivate", "unused", "NOTHING_TO_INLINE")
 
-package com.nek12.androidutils.extensions.coroutines
+package com.nek12.androidutils.extensions.core
 
-import com.nek12.androidutils.extensions.coroutines.ApiResult.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import com.nek12.androidutils.extensions.core.ApiResult.*
 
 class NotFinishedException : IllegalArgumentException(ApiResult.DEFAULT_LOADING_MESSAGE)
 
@@ -34,52 +32,7 @@ sealed class ApiResult<out T> {
     val isError get() = this is Error
     val isLoading get() = this is Loading
 
-    /**
-     * Makes the result an error if [predicate] returns false
-     */
-    inline fun errorIfNot(
-        message: String = DEFAULT_ERROR_MESSAGE,
-        crossinline predicate: (T) -> Boolean
-    ): ApiResult<T> = errorIf(message) { !predicate(it) }
-
-    /**
-     * Makes this result an error if [predicate] returns true
-     */
-    inline fun errorIf(
-        message: String = DEFAULT_ERROR_MESSAGE,
-        crossinline predicate: (T) -> Boolean
-    ): ApiResult<T> = if (this is Success && predicate(result)) Error(IllegalArgumentException(message)) else this
-
-    /**
-     * Change the type of the result to [R] without affecting error/loading results
-     */
-    inline fun <R> map(crossinline block: (T) -> R): ApiResult<R> {
-        return when (this) {
-            is Success -> Success(block(result))
-            is Error -> Error(e)
-            is Loading -> this
-        }
-    }
-
     companion object {
-
-        suspend inline fun <T> wrap(crossinline call: suspend () -> T): ApiResult<T> {
-            return try {
-                Success(call())
-            } catch (e: Exception) {
-                Error(e)
-            }
-        }
-
-        /**
-         * Emits [Loading], then executes [call] and [wrap]s it in [ApiResult]
-         */
-        inline fun <T> flow(crossinline call: suspend () -> T): Flow<ApiResult<T>> {
-            return kotlinx.coroutines.flow.flow {
-                emit(Loading)
-                emit(wrap(call))
-            }
-        }
 
         @PublishedApi
         internal const val DEFAULT_ERROR_MESSAGE = "Condition not satisfied"
@@ -90,8 +43,6 @@ sealed class ApiResult<out T> {
 }
 
 inline fun <R, T : R> ApiResult<T>.or(defaultValue: R): R = orElse { defaultValue }
-
-inline fun <T, R> Flow<ApiResult<T>>.map(crossinline block: (T) -> R): Flow<ApiResult<R>> = map { it.map(block) }
 
 inline fun <T> ApiResult<List<T>>.orEmpty(): List<T> = or(emptyList())
 
@@ -143,4 +94,31 @@ inline fun <T> ApiResult<T>.onSuccess(block: (T) -> Unit): ApiResult<T> {
 inline fun <T> ApiResult<T>.onLoading(block: () -> Unit): ApiResult<T> {
     if (this is Loading) block()
     return this
+}
+
+/**
+ * Makes the result an error if [predicate] returns false
+ */
+inline fun <T> ApiResult<T>.errorIfNot(
+    message: String = Companion.DEFAULT_ERROR_MESSAGE,
+    crossinline predicate: (T) -> Boolean,
+): ApiResult<T> = errorIf(message) { !predicate(it) }
+
+/**
+ * Makes this result an error if [predicate] returns true
+ */
+inline fun <T> ApiResult<T>.errorIf(
+    message: String = Companion.DEFAULT_ERROR_MESSAGE,
+    crossinline predicate: (T) -> Boolean,
+): ApiResult<T> = if (this is Success && predicate(result)) Error(IllegalArgumentException(message)) else this
+
+/**
+ * Change the type of the result to [R] without affecting error/loading results
+ */
+inline fun <T, R> ApiResult<T>.map(crossinline block: (T) -> R): ApiResult<R> {
+    return when (this) {
+        is Success -> Success(block(result))
+        is Error -> Error(e)
+        is Loading -> this
+    }
 }
