@@ -52,3 +52,10 @@ fun DayOfWeek.asString(): String = getDisplayName(TextStyle.FULL, Locale.getDefa
 fun Month.asString(): String {
     return getDisplayName(TextStyle.FULL, Locale.getDefault())
 }
+
+fun Calendar.setToMidnight() {
+    set(Calendar.HOUR_OF_DAY, 0)
+    set(Calendar.MINUTE, 0)
+    set(Calendar.SECOND, 0)
+    set(Calendar.MILLISECOND, 0)
+}

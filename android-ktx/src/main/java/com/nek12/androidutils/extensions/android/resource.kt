@@ -15,6 +15,8 @@ import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.os.ConfigurationCompat
+import java.util.*
 
 /**
  * Get dimension dp value from your xml.
@@ -85,3 +87,6 @@ fun Int.asColor(context: Context) = ContextCompat.getColor(context, this)
  * Uses this int as a **resource id** to get a drawable
  */
 fun Int.asDrawable(context: Context) = ContextCompat.getDrawable(context, this)
+
+val Resources.currentLocale: Locale
+    get() = ConfigurationCompat.getLocales(configuration).get(0)
