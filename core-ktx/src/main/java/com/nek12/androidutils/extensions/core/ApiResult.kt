@@ -25,6 +25,7 @@ sealed class ApiResult<out T> {
      * There was an error completing the request.
      */
     data class Error(val e: Exception) : ApiResult<Nothing>() {
+
         val message get() = e.message
     }
 
@@ -63,16 +64,22 @@ inline fun <T> ApiResult<T>.orThrow(): T {
     }
 }
 
+/**
+ * [Loading] will result in [NotFinishedException]
+ */
 inline fun <R, T : R> ApiResult<T>.orElse(action: (e: Exception) -> R): R = when (this) {
     is Success -> result
     is Error -> action(e)
     is Loading -> action(NotFinishedException())
 }
 
-inline fun <R, T> ApiResult<T>.fold(
+/**
+ * By default, maps [Loading] to Error witn [NotFinishedException]
+ */
+inline fun <T, R> ApiResult<T>.fold(
     onSuccess: (result: T) -> R,
     onError: (exception: Exception) -> R,
-    noinline onLoading: (() -> R)? = null
+    noinline onLoading: (() -> R)? = null,
 ): R {
     return when (this) {
         is Success -> onSuccess(result)
@@ -100,17 +107,17 @@ inline fun <T> ApiResult<T>.onLoading(block: () -> Unit): ApiResult<T> {
  * Makes the result an error if [predicate] returns false
  */
 inline fun <T> ApiResult<T>.errorIfNot(
-    message: String = Companion.DEFAULT_ERROR_MESSAGE,
+    exception: Exception,
     crossinline predicate: (T) -> Boolean,
-): ApiResult<T> = errorIf(message) { !predicate(it) }
+): ApiResult<T> = errorIf(exception) { !predicate(it) }
 
 /**
  * Makes this result an error if [predicate] returns true
  */
 inline fun <T> ApiResult<T>.errorIf(
-    message: String = Companion.DEFAULT_ERROR_MESSAGE,
+    exception: Exception,
     crossinline predicate: (T) -> Boolean,
-): ApiResult<T> = if (this is Success && predicate(result)) Error(IllegalArgumentException(message)) else this
+): ApiResult<T> = if (this is Success && predicate(result)) Error(exception) else this
 
 /**
  * Change the type of the result to [R] without affecting error/loading results
@@ -120,5 +127,27 @@ inline fun <T, R> ApiResult<T>.map(crossinline block: (T) -> R): ApiResult<R> {
         is Success -> Success(block(result))
         is Error -> Error(e)
         is Loading -> this
+    }
+}
+
+/**
+ * Change the exception of the Error response without affecting loading/success results
+ */
+inline fun <T, R : Exception> ApiResult<T>.mapError(crossinline block: (Exception) -> R): ApiResult<T> {
+    return when (this) {
+        is Success -> this
+        is Error -> Error(block(e))
+        is Loading -> this
+    }
+}
+
+/**
+ * Maps [Loading] to a [Success], not touching anything else
+ */
+inline fun <R, T : R> ApiResult<T>.mapLoading(crossinline block: () -> R): ApiResult<R> {
+    return when (this) {
+        is Success -> this
+        is Error -> this
+        is Loading -> Success(block())
     }
 }
