@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.nek12.androidutils.extensions.core.ApiResult
 import com.nek12.androidutils.extensions.core.map
+import com.nek12.androidutils.extensions.core.wrap
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -172,17 +173,9 @@ fun CoroutineScope.launchCatching(
 inline fun <T> ApiResult.Companion.flow(crossinline call: suspend () -> T): Flow<ApiResult<T>> {
     return kotlinx.coroutines.flow.flow {
         emit(ApiResult.Loading)
-        emit(wrap(call))
+        emit(wrap { call() })
     }
 }
 
 inline fun <T, R> Flow<ApiResult<T>>.map(crossinline transform: suspend (T) -> R): Flow<ApiResult<R>> =
     map { result -> result.map { transform(it) } }
-
-suspend inline fun <T> ApiResult.Companion.wrap(crossinline call: suspend () -> T): ApiResult<T> {
-    return try {
-        ApiResult.Success(call())
-    } catch (e: Exception) {
-        ApiResult.Error(e)
-    }
-}

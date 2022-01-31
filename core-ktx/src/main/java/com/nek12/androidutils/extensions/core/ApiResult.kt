@@ -36,10 +36,15 @@ sealed class ApiResult<out T> {
     companion object {
 
         @PublishedApi
-        internal const val DEFAULT_ERROR_MESSAGE = "Condition not satisfied"
-
-        @PublishedApi
         internal const val DEFAULT_LOADING_MESSAGE = "ApiResult is still in Loading state"
+    }
+}
+
+inline fun <T> Companion.wrap(call: () -> T): ApiResult<T> {
+    return try {
+        Success(call())
+    } catch (e: Exception) {
+        Error(e)
     }
 }
 
@@ -150,4 +155,19 @@ inline fun <R, T : R> ApiResult<T>.mapLoading(block: () -> R): ApiResult<R> {
         is Error -> this
         is Loading -> Success(block())
     }
+}
+
+inline fun <T> ApiResult<ApiResult<T>>.unwrap(): ApiResult<T> {
+    return fold(
+        { it },
+        { Error(it) },
+        { Loading }
+    )
+}
+
+/**
+ * Change the type of successful result to [R], also wrapping [block] in another result then folding it (handling exceptions)
+ */
+inline fun <T, R> ApiResult<T>.mapWrapping(block: (T) -> R): ApiResult<R> {
+    return map { Companion.wrap { block(it) } }.unwrap()
 }
