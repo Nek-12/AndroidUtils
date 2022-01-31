@@ -28,7 +28,7 @@ private const val VIEW_SCOPED_VALUE_EXCEPTION =
 suspend fun <T> Collection<T>.forEachParallel(
     context: CoroutineContext = EmptyCoroutineContext,
     start: CoroutineStart = CoroutineStart.DEFAULT,
-    block: suspend CoroutineScope.(T) -> Unit
+    block: suspend CoroutineScope.(T) -> Unit,
 ): Unit = withContext(context) {
     map { async(context, start) { this@withContext.block(it) } }.forEach { it.await() }
 }
@@ -39,7 +39,7 @@ suspend fun <T> Collection<T>.forEachParallel(
 suspend fun <A, B> Collection<A>.mapParallel(
     context: CoroutineContext = EmptyCoroutineContext,
     start: CoroutineStart = CoroutineStart.DEFAULT,
-    block: suspend CoroutineScope.(A) -> B
+    block: suspend CoroutineScope.(A) -> B,
 ): List<B> = withContext(context) {
     map { async(context, start) { this@withContext.block(it) } }.map { it.await() }
 }
@@ -72,8 +72,8 @@ fun <T> Flow<T>.collectOnLifecycle(
     lifecycleOwner: LifecycleOwner,
     state: Lifecycle.State = Lifecycle.State.RESUMED,
     action: suspend (T) -> Unit,
-) {
-    lifecycleOwner.lifecycleScope.launch {
+): Job {
+    return lifecycleOwner.lifecycleScope.launch {
         lifecycleOwner.lifecycle.repeatOnLifecycle(state) {
             collect { action(it) }
         }
@@ -136,6 +136,7 @@ fun LifecycleOwner.delayOnLifecycle(
  * Remember, process this value **before** calling super.onDestroyView()
  */
 class ViewScopedValue<T : Any> : ReadWriteProperty<Fragment, T>, DefaultLifecycleObserver {
+
     private var _value: T? = null
 
     override fun getValue(thisRef: Fragment, property: KProperty<*>): T =
@@ -175,7 +176,8 @@ inline fun <T> ApiResult.Companion.flow(crossinline call: suspend () -> T): Flow
     }
 }
 
-inline fun <T, R> Flow<ApiResult<T>>.map(crossinline block: (T) -> R): Flow<ApiResult<R>> = map { it.map(block) }
+inline fun <T, R> Flow<ApiResult<T>>.map(crossinline transform: suspend (T) -> R): Flow<ApiResult<R>> =
+    map { result -> result.map { transform(it) } }
 
 suspend inline fun <T> ApiResult.Companion.wrap(crossinline call: suspend () -> T): ApiResult<T> {
     return try {

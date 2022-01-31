@@ -18,32 +18,33 @@ import androidx.navigation.Navigator
  * If navigation is not possible, the operation will be simply canceled.
  */
 class SafeNavController(
-    private val navController: NavController
+    @IdRes val currentFragmentId: Int,
+    private val navController: NavController,
 ) {
 
     /**
      * @param from The navigation ID of the current fragment you want to navigate from
      * @param to The id of the fragment to navigate
      */
-    fun navigate(@IdRes from: Int, @IdRes to: Int) = navigate(from, to, null)
+    fun navigate(@IdRes to: Int) = navigate(to, null)
 
     /**
      * @param from The navigation ID of the current fragment you want to navigate from
      * @param to The id of the fragment to navigate
      * @param bundle Unsafe navigation arguments to pass
      */
-    fun navigate(@IdRes from: Int, @IdRes to: Int, bundle: Bundle?) =
-        navigate(from, to, bundle, null, null)
+    fun navigate(@IdRes to: Int, bundle: Bundle?) =
+        navigate(to, bundle, null, null)
 
     /**
      * @param from The navigation ID of the current fragment you want to navigate from
      * @param to The id of the fragment to navigate
      */
     fun navigate(
-        @IdRes from: Int, @IdRes to: Int, bundle: Bundle?,
-        navOptions: NavOptions?, navigatorExtras: Navigator.Extras?
+        @IdRes to: Int, bundle: Bundle?,
+        navOptions: NavOptions?, navigatorExtras: Navigator.Extras?,
     ) {
-        if (navController.currentDestination?.id == from) {
+        if (navController.currentDestination?.id == currentFragmentId) {
             navController.navigate(to, bundle, navOptions, navigatorExtras)
         }
     }
@@ -53,17 +54,17 @@ class SafeNavController(
      * @param directions Generated NavDirections class. Pass argunments to them if you wish.
      */
     fun navigate(
-        @IdRes from: Int, directions: NavDirections, extras: Navigator.Extras
+        directions: NavDirections, extras: Navigator.Extras,
     ) {
-        if (navController.currentDestination?.id == from) {
+        if (navController.currentDestination?.id == currentFragmentId) {
             navController.navigate(directions, extras)
         }
     }
 
     fun navigate(
-        @IdRes from: Int, directions: NavDirections
+        directions: NavDirections,
     ) {
-        if (navController.currentDestination?.id == from) {
+        if (navController.currentDestination?.id == currentFragmentId) {
             navController.navigate(directions)
         }
     }

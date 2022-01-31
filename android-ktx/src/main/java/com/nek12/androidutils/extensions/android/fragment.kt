@@ -1,5 +1,6 @@
 package com.nek12.androidutils.extensions.android
 
+import androidx.activity.addCallback
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.Configuration
@@ -15,6 +16,10 @@ val Fragment.isLandscape: Boolean
 
 fun Fragment.doOnBackPressed(action: OnBackPressedCallback) {
     requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, action)
+}
+
+fun Fragment.doOnBackPressed(action: OnBackPressedCallback.() -> Unit) {
+    requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, true, action)
 }
 
 fun Fragment.sendEmail(mail: Email, onNotFound: (e: Exception) -> Unit) = requireContext().sendEmail(mail, onNotFound)
@@ -33,7 +38,7 @@ fun Fragment.downloadFile(
     userAgent: String? = null,
     description: String? = null,
     mimeType: String? = null,
-    onAppNotFound: (e: ActivityNotFoundException) -> Unit,
+    onAppNotFound: (e: Exception) -> Unit,
 ) {
     requireContext().downloadFile(url, fileName, userAgent, description, mimeType, onAppNotFound)
 }
@@ -43,3 +48,5 @@ fun Fragment.startActivityCatching(intent: Intent, onNotFound: (Exception) -> Un
 
 fun Fragment.dialNumber(numberUri: Uri, onNotFound: (e: Exception) -> Unit) =
     requireContext().dialNumber(numberUri, onNotFound)
+
+val Fragment.autofillManager get() = requireContext().autofillManager

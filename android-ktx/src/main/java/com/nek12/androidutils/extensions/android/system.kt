@@ -1,11 +1,14 @@
 package com.nek12.androidutils.extensions.android
 
+import android.app.Application
 import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import android.view.autofill.AutofillManager
 import android.webkit.CookieManager
 import androidx.core.content.ContextCompat
 
@@ -21,13 +24,17 @@ fun Context.startActivityCatching(intent: Intent, onNotFound: (Exception) -> Uni
     try {
         startActivity(intent)
     } catch (e: Exception) {
-        Log.e("StartActivityCatching", "Activity not found", e)
+        Log.e("StartActivityCatching", "Exception: ", e)
         onNotFound(e)
     }
 }
 
 /**
- * @param onAppNotFound is called if there is no download manager on user's device.
+ * Saves file using [DownloadManager] to users /sdcard/Downloads/
+ * @param onFailure is called if there was an exception. Possible exceptions are:
+ *     - ActivityNotFoundException
+ *     - SecurityException - when permission to write to storage was not granted
+ *     - IllegalStateException - when provided parameters are invalid (i.e. download directory can't be created)
  * */
 fun Context.downloadFile(
     url: Uri,
@@ -35,7 +42,7 @@ fun Context.downloadFile(
     userAgent: String? = null,
     description: String? = null,
     mimeType: String? = null,
-    onAppNotFound: (e: ActivityNotFoundException) -> Unit,
+    onFailure: (e: Exception) -> Unit,
 ) {
     val request = DownloadManager.Request(url).apply {
         val cookies = CookieManager.getInstance().getCookie(url.toString())
@@ -51,8 +58,8 @@ fun Context.downloadFile(
         ContextCompat.getSystemService(
             this, DownloadManager::class.java
         )?.enqueue(request) ?: throw ActivityNotFoundException("DownloadManager not found")
-    } catch (e: ActivityNotFoundException) {
-        onAppNotFound(e)
+    } catch (e: Exception) {
+        onFailure(e)
         return
     }
 }
@@ -81,4 +88,19 @@ fun Context.sendEmail(mail: Email, onAppNotFound: (e: Exception) -> Unit) {
         type = "message/rfc822"
     }
     startActivityCatching(sendIntent, onAppNotFound)
+}
+
+val Context.autofillManager
+    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        getSystemService(AutofillManager::class.java)
+    } else {
+        null
+    }
+
+fun Application.relaunch() {
+    //Obtain the startup Intent of the application with the package name of the application
+    val intent: Intent? = packageManager.getLaunchIntentForPackage(packageName)?.apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+    startActivity(intent)
 }

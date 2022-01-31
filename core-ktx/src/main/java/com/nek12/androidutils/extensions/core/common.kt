@@ -2,11 +2,13 @@
 
 package com.nek12.androidutils.extensions.core
 
+import java.math.BigDecimal
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
+import java.util.regex.Pattern
 import kotlin.math.abs
 import kotlin.math.log10
 import kotlin.random.Random
@@ -49,7 +51,7 @@ fun Calendar.setDayOfWeek(dayOfWeek: DayOfWeek) {
 }
 
 /**
- * The count of digits in this [Int]
+ * The number of digits in this [Int]
  */
 val Int.length
     get() = when (this) {
@@ -67,6 +69,7 @@ fun Instant.toZDT(zoneId: ZoneId = ZoneId.systemDefault()): ZonedDateTime = Zone
  * Mainly for extending other classes with lazy properties.
  */
 class LazyWithReceiver<This, Return>(val initializer: This.() -> Return) {
+
     private val values = WeakHashMap<This, Return>()
 
     @Suppress("UNCHECKED_CAST")
@@ -89,6 +92,8 @@ class LazyWithReceiver<This, Return>(val initializer: This.() -> Return) {
 val String?.isValid: Boolean
     get() = !isNullOrBlank() && !equals("null", true)
 
+fun String?.takeIfValid(): String? = if (isValid) this else null
+
 /**
  * @return null if the list is empty
  */
@@ -105,7 +110,20 @@ fun Float.format(digits: Int) = "%.${digits}f".format(this)
 
 val String.isAscii: Boolean get() = toCharArray().none { it < ' ' || it > '~' }
 
+val String.asUUID: UUID
+    get() = UUID.fromString(this)
+
+fun String?.isValidPattern(pattern: Pattern) = isValid && pattern.matcher(this!!).matches()
+
 fun <T> MutableCollection<T>.replace(src: Collection<T>) {
     clear()
     addAll(src)
 }
+
+val BigDecimal.sign: String get() = if (signum() < 0) "–" else ""
+
+fun <T> List<T>.replaceIf(with: T, predicate: (T) -> Boolean): List<T> = map { if (predicate(it)) with else it }
+
+val Long.asDate get() = Date(this)
+
+val Int.asDate get() = Date(this.toLong())

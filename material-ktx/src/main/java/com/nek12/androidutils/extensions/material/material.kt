@@ -4,6 +4,7 @@ package com.nek12.androidutils.extensions.material
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.View
 import android.widget.TextView
@@ -12,9 +13,13 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
+import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -216,3 +221,30 @@ fun View.materialColor(@AttrRes attr: Int) = MaterialColors.getColor(this, attr)
  */
 fun Context.materialColor(@AttrRes attr: Int, @ColorInt defValue: Int = Color.TRANSPARENT) =
     MaterialColors.getColor(this, attr, defValue)
+
+@get:ColorInt
+var MaterialButton.iconTintColor: Int?
+    get() = iconTint?.defaultColor
+    set(value) {
+        iconTint = value?.let { ColorStateList.valueOf(it) }
+    }
+
+/**
+ * @param gravity: One of [BadgeDrawable.TOP_END], [BadgeDrawable.TOP_START], [BadgeDrawable.BOTTOM_END], [BadgeDrawable.BOTTOM_START]
+ */
+@ExperimentalBadgeUtils
+fun View.addBadge(
+    gravity: Int = BadgeDrawable.TOP_END,
+    number: Int? = null,
+    @ColorInt color: Int = MaterialColors.getColor(this, R.attr.colorPrimary),
+) {
+    BadgeUtils.attachBadgeDrawable(
+        BadgeDrawable.create(context).apply {
+            badgeGravity = gravity
+            isVisible = true
+            number?.let { setNumber(it) }
+            backgroundColor = color
+        },
+        this
+    )
+}

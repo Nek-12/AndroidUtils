@@ -5,7 +5,7 @@ plugins {
 }
 
 rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.5.6"
+rootProject.version = "0.5.7"
 
 buildscript {
 

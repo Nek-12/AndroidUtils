@@ -108,7 +108,7 @@ inline fun <T> ApiResult<T>.onLoading(block: () -> Unit): ApiResult<T> {
  */
 inline fun <T> ApiResult<T>.errorIfNot(
     exception: Exception,
-    crossinline predicate: (T) -> Boolean,
+    predicate: (T) -> Boolean,
 ): ApiResult<T> = errorIf(exception) { !predicate(it) }
 
 /**
@@ -116,13 +116,13 @@ inline fun <T> ApiResult<T>.errorIfNot(
  */
 inline fun <T> ApiResult<T>.errorIf(
     exception: Exception,
-    crossinline predicate: (T) -> Boolean,
+    predicate: (T) -> Boolean,
 ): ApiResult<T> = if (this is Success && predicate(result)) Error(exception) else this
 
 /**
  * Change the type of the result to [R] without affecting error/loading results
  */
-inline fun <T, R> ApiResult<T>.map(crossinline block: (T) -> R): ApiResult<R> {
+inline fun <T, R> ApiResult<T>.map(block: (T) -> R): ApiResult<R> {
     return when (this) {
         is Success -> Success(block(result))
         is Error -> Error(e)
@@ -133,7 +133,7 @@ inline fun <T, R> ApiResult<T>.map(crossinline block: (T) -> R): ApiResult<R> {
 /**
  * Change the exception of the Error response without affecting loading/success results
  */
-inline fun <T, R : Exception> ApiResult<T>.mapError(crossinline block: (Exception) -> R): ApiResult<T> {
+inline fun <T, R : Exception> ApiResult<T>.mapError(block: (Exception) -> R): ApiResult<T> {
     return when (this) {
         is Success -> this
         is Error -> Error(block(e))
@@ -144,7 +144,7 @@ inline fun <T, R : Exception> ApiResult<T>.mapError(crossinline block: (Exceptio
 /**
  * Maps [Loading] to a [Success], not touching anything else
  */
-inline fun <R, T : R> ApiResult<T>.mapLoading(crossinline block: () -> R): ApiResult<R> {
+inline fun <R, T : R> ApiResult<T>.mapLoading(block: () -> R): ApiResult<R> {
     return when (this) {
         is Success -> this
         is Error -> this

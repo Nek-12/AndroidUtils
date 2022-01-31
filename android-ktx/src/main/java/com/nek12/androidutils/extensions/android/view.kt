@@ -5,6 +5,7 @@ package com.nek12.androidutils.extensions.android
 import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.os.Build
 import android.util.TypedValue
@@ -12,8 +13,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ScrollView
 import androidx.annotation.AnimatorRes
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
@@ -204,3 +207,19 @@ fun Context.getDrawableCompat(@DrawableRes id: Int) = AppCompatResources.getDraw
  */
 fun ViewGroup.inflate(@LayoutRes res: Int): View =
     LayoutInflater.from(context).inflate(res, this, false)
+
+@get:ColorInt
+var View.backgroundTint: Int?
+    get() = backgroundTintList?.defaultColor
+    set(value) {
+        backgroundTintList = value?.let { ColorStateList.valueOf(it) }
+    }
+
+fun EditText.setTextPreservingSelection(newText: String?) {
+    if (text?.toString() != newText) {
+        //setText removes position, restore it to not create jump for the user
+        val selection = selectionStart..selectionEnd
+        setText(newText)
+        setSelection(selection.first, selection.last)
+    }
+}
