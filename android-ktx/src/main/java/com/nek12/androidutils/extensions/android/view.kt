@@ -29,8 +29,12 @@ import com.nek12.androidutils.extensions.R
 import kotlin.math.floor
 
 const val DEF_FADE_DURATION = 250L
+
 /**
- * Hides this view, optionally animating it. Default animator fades the view out
+ * Hides this view, optionally animating it. Default animator fades the view out.
+ * Be aware that when view visibility is INVISIBLE and you set it to GONE and vice versa,
+ * It makes no sense to animate the view, so the animation won't be run.
+ * Also, if you set the same visibility twice, it will be ignored.
  * @param gone should the view be gone **after** the animation ends?
  * @param duration the animation duration
  * @param animation a resource id that can be used to animate the view. Default is fade out
@@ -44,11 +48,11 @@ fun View.hide(
     @AnimatorRes animation: Int = R.animator.fade_out,
 ) {
     val targetVisibility = if (gone) View.GONE else View.INVISIBLE
-    if (this.visibility == targetVisibility) return
-    if (animated) {
-        animate(animation, duration) { this.visibility = targetVisibility }
-    } else {
-        this.visibility = targetVisibility
+    when {
+        visibility == targetVisibility -> {/* nothing to do */
+        }
+        visibility == View.VISIBLE && animated -> animate(animation, duration) { visibility = targetVisibility }
+        else -> visibility = targetVisibility
     }
 }
 
@@ -78,9 +82,11 @@ fun View.fadeOut(duration: Long = DEF_FADE_DURATION) = hide(animated = true, gon
  * [value] is a legacy value like [View.GONE]
  */
 enum class Visibility(val value: Int) {
+
     VISIBLE(View.VISIBLE), INVISIBLE(View.INVISIBLE), GONE(View.GONE);
 
     companion object {
+
         private val map = values().associateBy(Visibility::value)
 
         fun of(legacy: Int) = map[legacy]
@@ -124,13 +130,13 @@ fun View.setVisibility(
 }
 
 /**
- * Invisible defaults to [Visibility.GONE]. If you need to override, use [View.setVisibility(visibility: Visibility)]
+ * Calls either [show] or [hide] depending on the [visible] and [gone] parameters
  */
 fun View.setVisibility(
     visible: Boolean,
     gone: Boolean = true,
     animated: Boolean = false,
-    duration: Long = DEF_FADE_DURATION
+    duration: Long = DEF_FADE_DURATION,
 ) = setVisibility(Visibility.of(visible, gone), animated, duration)
 
 /**
@@ -160,7 +166,7 @@ fun View.showKeyboard(): Boolean {
 }
 
 /**
- * Animates this view as fading in. The visibility is not changed, only the alpha value.
+ * Animates this view. The visibility is not changed, only the alpha value.
  * @see show
  * @see hide
  * @see setVisibility
@@ -168,7 +174,7 @@ fun View.showKeyboard(): Boolean {
 fun View.animate(
     @AnimatorRes animator: Int,
     duration: Long = DEF_FADE_DURATION,
-    onEnd: ((Animator) -> Unit)? = null
+    onEnd: ((Animator) -> Unit)? = null,
 ) {
     (AnimatorInflater.loadAnimator(context, animator)).apply {
         setTarget(this@animate) //Target view
