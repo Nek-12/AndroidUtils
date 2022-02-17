@@ -17,11 +17,13 @@ package com.nek12.androidutils.room
  *      }
  *  }
  * ```
- * @see RoomRepo
+ * @see RoomDataSource
  * @see RoomDao
  */
-interface RoomEntity {
-    val id: Long
+interface RoomEntity<T : Any> {
+
+    val id: T
+
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
 }

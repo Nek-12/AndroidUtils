@@ -26,19 +26,20 @@ import kotlinx.coroutines.launch
  *   This is used in `get(): Flow<T>` queries to trigger flow emission when any of the [referencedTables] changes.
  *   By default, emissions are triggered when just the [tableName] table changes
  * @see RoomEntity
- * @see RoomRepo
+ * @see RoomDataSource
  **/
 @Dao
-abstract class RoomDao<T : RoomEntity>(
+abstract class RoomDao<I : Any, T : RoomEntity<I>>(
     private val db: RoomDatabase,
     private val tableName: String,
     private val referencedTables: Array<String> = arrayOf(tableName),
 ) {
+
     /**
      * @return The id of a newly-inserted entity
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun add(entity: T): Long
+    abstract suspend fun add(entity: T)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun add(vararg entities: T)
@@ -64,7 +65,7 @@ abstract class RoomDao<T : RoomEntity>(
     @Delete
     abstract suspend fun delete(entities: List<T>)
 
-    suspend fun delete(id: Long) {
+    suspend fun delete(id: I) {
         val query = SimpleSQLiteQuery("DELETE FROM $tableName WHERE id = ($id);")
         delete(query)
     }
@@ -73,7 +74,7 @@ abstract class RoomDao<T : RoomEntity>(
      * @return How many items were deleted
      */
     @JvmName("deleteById")
-    suspend fun delete(ids: List<Long>): Int {
+    suspend fun delete(ids: List<I>): Int {
         val idsQuery = buildSqlIdList(ids)
         val query = SimpleSQLiteQuery("DELETE FROM $tableName WHERE id IN ($idsQuery);")
         return delete(query)
@@ -82,7 +83,7 @@ abstract class RoomDao<T : RoomEntity>(
     /**
      * @return How many items were deleted
      */
-    suspend fun delete(vararg ids: Long): Int {
+    suspend fun delete(vararg ids: I): Int {
         return delete(ids.toList())
     }
 
@@ -97,11 +98,11 @@ abstract class RoomDao<T : RoomEntity>(
     /**
      * Get an entity synchronously (suspending)
      */
-    suspend fun getSync(id: Long): T? {
+    suspend fun getSync(id: I): T? {
         return getSync(listOf(id)).firstOrNull()
     }
 
-    suspend fun getSync(vararg ids: Long): List<T> {
+    suspend fun getSync(vararg ids: I): List<T> {
         return getSync(ids.toList())
     }
 
@@ -110,7 +111,7 @@ abstract class RoomDao<T : RoomEntity>(
         return getSync(query) ?: emptyList()
     }
 
-    suspend fun getSync(ids: List<Long>): List<T> {
+    suspend fun getSync(ids: List<I>): List<T> {
         return getSync(buildSqlIdQuery(ids)) ?: emptyList()
     }
 
@@ -118,7 +119,7 @@ abstract class RoomDao<T : RoomEntity>(
      * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
-    fun get(id: Long): Flow<T?> {
+    fun get(id: I): Flow<T?> {
         return createFlow { getSync(id) }
     }
 
@@ -126,7 +127,7 @@ abstract class RoomDao<T : RoomEntity>(
      * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
-    fun get(vararg ids: Long): Flow<List<T>> {
+    fun get(vararg ids: I): Flow<List<T>> {
         return get(ids.toList())
     }
 
@@ -134,7 +135,7 @@ abstract class RoomDao<T : RoomEntity>(
      * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
-    fun get(ids: List<Long>): Flow<List<T>> {
+    fun get(ids: List<I>): Flow<List<T>> {
         return createFlow { getSync(ids) }
     }
 
@@ -152,7 +153,7 @@ abstract class RoomDao<T : RoomEntity>(
     @RawQuery
     protected abstract suspend fun getSync(query: SupportSQLiteQuery): List<T>?
 
-    private fun buildSqlIdList(ids: List<Long>): String {
+    private fun buildSqlIdList(ids: List<I>): String {
         val result = StringBuilder()
         for (index in ids.indices) {
             if (index != 0) {
@@ -163,7 +164,7 @@ abstract class RoomDao<T : RoomEntity>(
         return result.toString()
     }
 
-    private fun buildSqlIdQuery(ids: List<Long>): SimpleSQLiteQuery {
+    private fun buildSqlIdQuery(ids: List<I>): SimpleSQLiteQuery {
         val idsQ = buildSqlIdList(ids)
         return SimpleSQLiteQuery("SELECT * FROM $tableName WHERE id IN ($idsQ);")
     }
@@ -214,9 +215,4 @@ abstract class RoomDao<T : RoomEntity>(
     //  Not using provided implementation and instead using copy-pasted code with few simple additions.
     //  Although not using provided api to get TransactionExecutor poses bug disaster by circumventing normal transaction dispatchers
     //  (which are internal)
-//    private inline fun <R> createFlow2(
-//        crossinline onInvalidated: suspend () -> R,
-//        //runBlocking: will only be run using queryContext (in a coroutine)
-//    ): Flow<R> = CoroutinesRoom.createFlow(db, db.inTransaction(), referencedTables) { onInvalidated() }
-
 }

@@ -20,8 +20,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-private const val VIEW_SCOPED_VALUE_EXCEPTION =
-    """Trying to call a viewscoped value outside of the view lifecycle."""
+private const val VIEW_SCOPED_VALUE_EXCEPTION = """Trying to call a viewscoped value outside of the view lifecycle."""
 
 /**
  * Execute [block] in parallel using operator async for each element of the collection
@@ -132,11 +131,7 @@ fun LifecycleOwner.delayOnLifecycle(
     }
 }
 
-/**
- * A value that is going to be cleared when the Fragment lifecycle reaches [Fragment.onDestroyView]
- * Remember, process this value **before** calling super.onDestroyView()
- */
-class ViewScopedValue<T : Any> : ReadWriteProperty<Fragment, T>, DefaultLifecycleObserver {
+open class ViewScopedValue<T : Any> : ReadWriteProperty<Fragment, T>, DefaultLifecycleObserver {
 
     private var _value: T? = null
 
@@ -154,6 +149,13 @@ class ViewScopedValue<T : Any> : ReadWriteProperty<Fragment, T>, DefaultLifecycl
         super.onDestroy(owner)
     }
 }
+
+/**
+ * A value that is going to be cleared when the Fragment lifecycle reaches [Fragment.onDestroyView]
+ * Remember, process this value **before** calling super.onDestroyView()
+ * [initializer] will be called after [Fragment.onViewCreated]
+ */
+fun <T : Any> viewScoped() = ViewScopedValue<T>()
 
 fun CoroutineScope.launchCatching(
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
