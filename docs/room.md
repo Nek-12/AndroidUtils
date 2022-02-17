@@ -13,7 +13,7 @@ No problem!
        // You still have to annotate everything properly!  
        @PrimaryKey(autoGenerate = true) 
        override val id: Long = 0,  
-   ) : RoomEntity {  
+   ) : RoomEntity<Long> {  
        companion object {  
            const val TABLE_NAME: String = "Entry"  
        }  
@@ -22,11 +22,11 @@ No problem!
 2. Your DAO:
    ```kotlin  
    //Room will inject db parameter automatically
-   abstract class EntryDao(db: RoomDatabase) : RoomDao<Entry>(db, Entry.TABLE_NAME)
+   abstract class EntryDao(db: RoomDatabase) : RoomDao<Long, Entry>(db, Entry.TABLE_NAME)
    ```  
-3. Your Repo:
+3. Your DataSource:
    ```kotlin  
-   class EntryRepo(private val dao: EntryDao) : RoomRepo<Entry>(dao) 
+   class EntryDataSource(private val dao: EntryDao) : RoomDataSource<Long, Entry>(dao) 
    ```  
 
 You got 19 functions for free, including `add`, `delete`, `update`, and `get`
