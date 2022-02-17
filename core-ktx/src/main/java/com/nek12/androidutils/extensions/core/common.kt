@@ -127,3 +127,10 @@ fun <T> List<T>.replaceIf(with: T, predicate: (T) -> Boolean): List<T> = map { i
 val Long.asDate get() = Date(this)
 
 val Int.asDate get() = Date(this.toLong())
+
+fun <T> Iterable<T>.indexOfFirstOrNull(predicate: (T) -> Boolean) = indexOfFirst(predicate).takeIf { it != -1 }
+
+/**
+ * Uses [LazyThreadSafetyMode.NONE] to provide values quicker
+ */
+fun <T> fastLazy(initializer: () -> T) = lazy(LazyThreadSafetyMode.NONE, initializer)

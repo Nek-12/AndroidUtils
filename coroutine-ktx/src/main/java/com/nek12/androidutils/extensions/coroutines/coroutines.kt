@@ -2,17 +2,16 @@
 
 package com.nek12.androidutils.extensions.coroutines
 
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.nek12.androidutils.extensions.core.ApiResult
 import com.nek12.androidutils.extensions.core.map
 import com.nek12.androidutils.extensions.core.wrap
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlin.collections.forEach
 import kotlin.collections.map
 import kotlin.coroutines.CoroutineContext
@@ -181,3 +180,18 @@ inline fun <T> ApiResult.Companion.flow(crossinline call: suspend () -> T): Flow
 
 inline fun <T, R> Flow<ApiResult<T>>.map(crossinline transform: suspend (T) -> R): Flow<ApiResult<R>> =
     map { result -> result.map { transform(it) } }
+
+
+fun View.clicks(delay: Long = 1000L) = callbackFlow {
+    var lastTime = 0L
+    setOnClickListener {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastTime >= delay) {
+            lastTime = currentTime
+            trySend(it)
+        }
+    }
+    awaitClose {
+        setOnClickListener(null)
+    }
+}

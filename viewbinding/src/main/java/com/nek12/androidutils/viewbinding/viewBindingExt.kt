@@ -2,6 +2,8 @@ package com.nek12.androidutils.viewbinding
 
 import android.util.TypedValue
 import androidx.annotation.AttrRes
+import androidx.annotation.DimenRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.viewbinding.ViewBinding
 
@@ -13,3 +15,6 @@ fun ViewBinding.getAttribute(@AttrRes attr: Int): Int {
     root.context.theme.resolveAttribute(attr, value, true)
     return value.data
 }
+
+fun ViewBinding.dimension(@DimenRes dimen: Int) = root.resources.getDimension(dimen).toInt()
+fun ViewBinding.drawable(@DrawableRes drawable: Int) = root.context.getDrawable(drawable)!!

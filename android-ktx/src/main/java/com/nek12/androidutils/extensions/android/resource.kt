@@ -10,6 +10,8 @@ import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.os.Bundle
+import android.os.Parcelable
 import android.widget.ImageView
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
@@ -90,3 +92,7 @@ fun Int.asDrawable(context: Context) = ContextCompat.getDrawable(context, this)
 
 val Resources.currentLocale: Locale
     get() = ConfigurationCompat.getLocales(configuration).get(0)
+
+inline fun <reified T : Parcelable> Bundle.requireParcelable(name: String): T {
+    return requireNotNull(getParcelable(name)) { "Bundle does not contain a $name" }
+}
