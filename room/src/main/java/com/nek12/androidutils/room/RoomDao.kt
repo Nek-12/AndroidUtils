@@ -1,5 +1,6 @@
 package com.nek12.androidutils.room
 
+import android.annotation.SuppressLint
 import androidx.room.*
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -11,6 +12,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import java.nio.ByteBuffer
+import java.util.*
 
 /**
  * A generic dao class that provides CRUD methods for you for free.
@@ -65,18 +68,13 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
     @Delete
     abstract suspend fun delete(entities: List<T>)
 
-    suspend fun delete(id: I) {
-        val query = SimpleSQLiteQuery("DELETE FROM $tableName WHERE id = ($id);")
-        delete(query)
-    }
-
     /**
      * @return How many items were deleted
      */
     @JvmName("deleteById")
     suspend fun delete(ids: List<I>): Int {
         val idsQuery = buildSqlIdList(ids)
-        val query = SimpleSQLiteQuery("DELETE FROM $tableName WHERE id IN ($idsQuery);")
+        val query = SimpleSQLiteQuery("DELETE FROM `$tableName` WHERE `id` IN ($idsQuery);")
         return delete(query)
     }
 
@@ -91,7 +89,7 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
      * @return How many items were deleted
      */
     suspend fun deleteAll(): Int {
-        val query = SimpleSQLiteQuery("DELETE FROM $tableName")
+        val query = SimpleSQLiteQuery("DELETE FROM `$tableName`;")
         return delete(query)
     }
 
@@ -107,7 +105,7 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
     }
 
     suspend fun getAllSync(): List<T> {
-        val query = SimpleSQLiteQuery("SELECT * FROM $tableName;")
+        val query = SimpleSQLiteQuery("SELECT * FROM `$tableName`;")
         return getSync(query) ?: emptyList()
     }
 
@@ -153,20 +151,22 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
     @RawQuery
     protected abstract suspend fun getSync(query: SupportSQLiteQuery): List<T>?
 
+    @SuppressLint("RestrictedApi")
     private fun buildSqlIdList(ids: List<I>): String {
-        val result = StringBuilder()
-        for (index in ids.indices) {
-            if (index != 0) {
-                result.append(",")
+        return buildString {
+            ids.forEachIndexed { i, id ->
+                //TODO: Support UUID blobs
+                if (i != 0) {
+                    append(",")
+                }
+                append("'$id'")
             }
-            result.append("'").append(ids[index]).append("'")
         }
-        return result.toString()
     }
 
     private fun buildSqlIdQuery(ids: List<I>): SimpleSQLiteQuery {
         val idsQ = buildSqlIdList(ids)
-        return SimpleSQLiteQuery("SELECT * FROM $tableName WHERE id IN ($idsQ);")
+        return SimpleSQLiteQuery("SELECT * FROM $tableName WHERE `id` IN ($idsQ);")
     }
 
     /**
@@ -215,4 +215,18 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
     //  Not using provided implementation and instead using copy-pasted code with few simple additions.
     //  Although not using provided api to get TransactionExecutor poses bug disaster by circumventing normal transaction dispatchers
     //  (which are internal)
+}
+
+private fun UUID.toByteBlob(): ByteArray {
+    val bb: ByteBuffer = ByteBuffer.wrap(ByteArray(16))
+    bb.putLong(mostSignificantBits)
+    bb.putLong(leastSignificantBits)
+    return bb.array()
+}
+
+private fun ByteArray.toUUID(): UUID {
+    val bb: ByteBuffer = ByteBuffer.wrap(this)
+    val mostSignificantBits = bb.long
+    val leastSignificantBits = bb.long
+    return UUID(mostSignificantBits, leastSignificantBits)
 }

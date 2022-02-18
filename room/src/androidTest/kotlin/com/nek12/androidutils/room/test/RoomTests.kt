@@ -20,12 +20,13 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class RoomTests {
+
     private lateinit var db: EntryDatabase
     private lateinit var dao: EntryDao
     private lateinit var repo: EntryRepo
 
-
     companion object {
+
         private val testDispatcher by lazy { StandardTestDispatcher() }
         private val testScope by lazy { TestScope(testDispatcher) }
 
@@ -61,7 +62,7 @@ class RoomTests {
     }
 
     @Test
-    fun testInvalidationSingleTable(): Unit = testScope.runTest(5000) {
+    fun testInvalidationSingleTable(): Unit = runTest {
 
         val job = async {
             dao.getAll()
@@ -78,5 +79,35 @@ class RoomTests {
         val result = job.await()
         println(result)
         assertEquals(expected, result.map { it.size })
+    }
+
+
+    @Test
+    fun testOperations(): Unit = runTest {
+        val entities = (1..10).map { Entry() }
+        // multiple
+        doAwait { dao.add(entities) }
+        assertEquals(10, dao.getAllSync().count())
+
+        doAwait { dao.add(entities.first()) }
+        assertEquals(10, dao.getAllSync().count())
+
+        assertEquals(entities.size, dao.getSync(entities.map { it.id }).count())
+
+        doAwait { dao.delete(entities.map { it.id }) }
+
+        assertEquals(0, dao.getAllSync().count())
+
+        val entity = Entry()
+        doAwait { dao.add(entity) }
+        assertEquals(1, dao.getAllSync().count())
+
+        doAwait { dao.delete(entity.id) }
+
+    }
+
+    private inline fun TestScope.doAwait(call: () -> Unit) {
+        call()
+        advanceUntilIdle()
     }
 }

@@ -9,8 +9,8 @@ import java.util.*
 @Entity(tableName = Entry.TABLE_NAME)
 data class Entry(
     @PrimaryKey(autoGenerate = false)
-    override val id: UUID = UUID.randomUUID(),
-) : RoomEntity<UUID> {
+    override val id: String = UUID.randomUUID().toString(),
+) : RoomEntity<String> {
 
     companion object {
 
@@ -19,9 +19,9 @@ data class Entry(
 }
 
 @Dao
-abstract class EntryDao(db: RoomDatabase) : RoomDao<UUID, Entry>(db, Entry.TABLE_NAME)
+abstract class EntryDao(db: RoomDatabase) : RoomDao<String, Entry>(db, Entry.TABLE_NAME)
 
-class EntryRepo(dao: EntryDao) : RoomDataSource<UUID, Entry>(dao)
+class EntryRepo(dao: EntryDao) : RoomDataSource<String, Entry>(dao)
 
 @Database(
     entities = [Entry::class],
