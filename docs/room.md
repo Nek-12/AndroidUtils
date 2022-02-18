@@ -41,3 +41,8 @@ By default, emissions are triggered when just the base table changes.
 > What should Include in the `referencedTables` parameter?
 
 Include all @Embedded tables, all `@Relation `tables, and all `ForeignKey` tables
+
+## TBD
+
+* Be aware that currently the library **does not support storing UUIDs** as primary keys. So if you decide to use
+* it, please avoid blob UUIDs (UUID type argument in RoomEntity). I'm working on a fix right now.
