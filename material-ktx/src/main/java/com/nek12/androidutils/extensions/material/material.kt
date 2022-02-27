@@ -7,6 +7,9 @@ import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.View
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -248,3 +251,20 @@ fun View.addBadge(
         this
     )
 }
+
+
+/**
+ * A [FrameLayout] that wraps your layout and hold the behavior of the bottom sheet
+ */
+val BottomSheetDialogFragment.bottomSheet: FrameLayout get() = requireDialog().findViewById(com.google.android.material.R.id.design_bottom_sheet)
+
+/**
+ * Whether the height of this bottom sheet is such that when expanded it's going to be full-screen
+ */
+var BottomSheetDialogFragment.fullscreen: Boolean
+    get() {
+        return bottomSheet.layoutParams.height == MATCH_PARENT
+    }
+    set(value) {
+        bottomSheet.layoutParams.height = if (value) MATCH_PARENT else WRAP_CONTENT
+    }
