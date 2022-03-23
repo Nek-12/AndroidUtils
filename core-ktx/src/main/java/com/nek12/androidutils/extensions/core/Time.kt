@@ -3,9 +3,7 @@
 package com.nek12.androidutils.extensions.core
 
 import java.io.Serializable
-import java.time.Instant
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 import kotlin.math.abs
 
 /**
@@ -45,9 +43,7 @@ open class Time(
             throw IllegalArgumentException("Invalid time value: $hour:$minute:$second")
     }
 
-    override fun toString(): String {
-        return asString()
-    }
+    override fun toString(): String = asString()
 
     val clock: Clock get() = if (hour >= 12) Clock.PM else Clock.AM
 
@@ -62,30 +58,25 @@ open class Time(
     /** Same as toString but gives you a choice on whether to use 12H scheme.
      * [toString] uses asString(false)
      * @param addSecondsIfZero If the seconds value is equal to 0, should include them in the representation? e.g.:
+     * @param use12h whether to represent time in 12-hour format (AM/PM letters not added). Mind that deserializing
+     * the resulting string back to Time won't result in a valid value, if you have this parameter true
      * true => "17:00:00", false => "17:00"
      * **/
     fun asString(use12h: Boolean = false, addSecondsIfZero: Boolean = false): String {
-        val h = if (use12h) hourAs12H else hour
-        val builder = StringBuilder("${asString(h)}:${asString(minute)}")
-        if (addSecondsIfZero || second != 0) builder.append(":${asString(second)}")
-        if (use12h) builder.append(clock.value)
-        return builder.toString()
-    }
-
-    /**
-     * Returns an integer that represents this time, like a string, but without the ":"
-     * Examples:
-     * - 17:12:45 -> 171245
-     * - 00:00:00 -> 0
-     * - 05:00:00 -> 50000
-     */
-    fun toInt(): Int {
-        return hour * 10000 + minute * 100 + second
+        return buildString {
+            append("${asString(if (use12h) hourAs12H else hour)}:${asString(minute)}")
+            if (addSecondsIfZero || second != 0) append(":${asString(second)}")
+            if (use12h) append(" ${clock.value}")
+        }
     }
 
     operator fun plus(other: Time): Time {
         return add(other.hour, other.minute, other.second)
     }
+
+    operator fun compareTo(time: Time): Int = secondsSinceMidnight.compareTo(time.secondsSinceMidnight)
+
+    operator fun minus(other: Time): Time = add(-other.hour, -other.minute, -other.second)
 
     /**
      * Add specified number of [hours], [minutes], or [seconds] to this time.
@@ -108,8 +99,6 @@ open class Time(
         return Time(h, m, s)
     }
 
-    operator fun compareTo(time: Time): Int = secondsSinceMidnight.compareTo(time.secondsSinceMidnight)
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -130,7 +119,20 @@ open class Time(
         return result
     }
 
+    operator fun component1() = hour
+    operator fun component2() = minute
+    operator fun component3() = second
+
+    operator fun get(index: Int): Int = when (index) {
+        0 -> hour
+        1 -> minute
+        2 -> second
+        else -> throw IndexOutOfBoundsException("Only 0,1 and 2 are valid values")
+    }
+
+
     companion object {
+
         /**
          * Represents this numeric value as if it is a number on the clock
          * Examples:
@@ -170,7 +172,7 @@ open class Time(
          * Create a time from milliseconds since midnight.
          * **[millis] is NOT a timestamp**
          */
-        fun fromMillis(millis: Long): Time {
+        fun fromMillisSinceMidnight(millis: Long): Time {
             val totalSeconds = millis / 1000
             val totalMinutes = totalSeconds / 60
             val totalHours = totalMinutes / 60
@@ -182,8 +184,8 @@ open class Time(
          * [seconds] is NOT a timestamp
          * @see secondsSinceMidnight
          */
-        fun fromSeconds(seconds: Long): Time {
-            return fromMillis(seconds * 1000)
+        fun fromSecondsSinceMidnight(seconds: Long): Time {
+            return fromMillisSinceMidnight(seconds * 1000)
         }
 
         /**
@@ -199,12 +201,23 @@ open class Time(
         /** example: 12:45:00 or 4:30, 24h format only **/
         fun of(s: String): Time {
             try {
-                val parts = s.split(':', '.', '-', ignoreCase = true)
-                if (parts.size > 3 || parts.size < 2) throw IllegalArgumentException("Invalid delimiter count")
-                val hours = parts[0].toInt()
+                val words = s.split(" ")
+                if (words.size !in 1..2) throw IllegalArgumentException("Not a time")
+
+                val parts = words.first().split(':', '.', '-', ignoreCase = true)
+                if (parts.size !in 2..3) throw IllegalArgumentException("Invalid delimiter count")
+
+                val hours = if (words.size == 2 && words[1] == Clock.PM.value)
+                    parts[0].toInt() + 12
+                else
+                    parts[0].toInt()
+
                 val minutes = parts[1].toInt()
+
                 val seconds = if (parts.size == 3) parts[2].toInt() else 0
+
                 return Time(hours, minutes, seconds)
+
             } catch (e: Exception) {
                 throw IllegalArgumentException("Couldn't parse time", e)
             }
@@ -217,7 +230,7 @@ open class Time(
             get() = Time(23, 59, 59)
 
         /**
-         * midnight or 00:00:00
+         * 00:00:00
          */
         val MIN: Time
             get() = Time(0, 0)
@@ -254,4 +267,19 @@ open class Time(
     enum class Clock(val value: String) {
         AM("AM"), PM("PM")
     }
+}
+
+fun LocalTime.toTime() = Time(hour, minute, second)
+
+fun Time.toLocalTime(): LocalTime = LocalTime.of(hour, minute, second)
+
+/**
+ * Returns an integer that represents this time, like a string, but without the ":"
+ * Examples:
+ * - 17:12:45 -> 171245
+ * - 00:00:00 -> 0
+ * - 05:00:00 -> 50000
+ */
+fun Time.toInt(): Int {
+    return hour * 10000 + minute * 100 + second
 }

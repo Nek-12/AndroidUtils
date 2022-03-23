@@ -1,11 +1,9 @@
-import java.net.URI
-
 plugins {
     `kotlin-dsl`
 }
 
 rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.6.2"
+rootProject.version = "0.6.3"
 
 buildscript {
 
@@ -23,7 +21,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        maven { url = URI("https://jitpack.io") }
+        maven { url = uri("https://jitpack.io") }
         mavenCentral()
     }
 }
@@ -36,10 +34,6 @@ subprojects {
         "app" -> apply(plugin = "com.android.application")
         "core-ktx" -> apply(plugin = "java-library")
         else -> apply(plugin = "android-library")
-    }
-
-    dependencies {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}")
     }
 }
 
