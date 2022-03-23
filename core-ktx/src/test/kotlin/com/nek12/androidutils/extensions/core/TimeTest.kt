@@ -1,5 +1,5 @@
-import com.nek12.androidutils.extensions.core.Time
-import com.nek12.androidutils.extensions.core.toInt
+package com.nek12.androidutils.extensions.core
+
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
