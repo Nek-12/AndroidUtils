@@ -191,6 +191,9 @@ fun View.animate(
 }
 
 
+/**
+ * Interpret this as DP value and convert it to px. You are responsible for calling this on right value
+ */
 val Number.toPx
     get() = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
@@ -198,8 +201,23 @@ val Number.toPx
         Resources.getSystem().displayMetrics
     )
 
+/**
+ * Interpret this as px value and convert it to dp. You are responsible for calling this on right value
+ */
+val Number.toDp
+    get() = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_PX,
+        this.toFloat(),
+        Resources.getSystem().displayMetrics
+    )
+
 val Fragment.screenWidthPx get() = requireActivity().resources.displayMetrics.widthPixels
 val Fragment.screenHeightPx get() = requireActivity().resources.displayMetrics.heightPixels
+
+/**
+ * @see [android.util.DisplayMetrics.density]
+ */
+val Fragment.screenDensity get() = requireActivity().resources.displayMetrics.density
 
 
 inline fun <reified T : View> T.onClick(crossinline block: (T) -> Unit) = setOnClickListener { block(it as T) }
@@ -217,8 +235,8 @@ fun Context.getDrawableCompat(@DrawableRes id: Int) = AppCompatResources.getDraw
 /*
  * Credits: https://github.com/tunjid/Android-Extensions/blob/develop/view/src/main/java/com/tunjid/androidx/view/util/ViewUtil.kt
  */
-fun ViewGroup.inflate(@LayoutRes res: Int): View =
-    LayoutInflater.from(context).inflate(res, this, false)
+fun ViewGroup.inflate(@LayoutRes res: Int, attachToRoot: Boolean = false): View =
+    LayoutInflater.from(context).inflate(res, this, attachToRoot)
 
 @get:ColorInt
 var View.backgroundTint: Int?

@@ -159,11 +159,11 @@ fun <T : Any> viewScoped() = ViewScopedValue<T>()
 fun CoroutineScope.launchCatching(
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
     start: CoroutineStart = CoroutineStart.DEFAULT,
-    onError: (Throwable) -> Unit,
+    onError: CoroutineContext.(Throwable) -> Unit,
     block: suspend CoroutineScope.() -> Unit,
 ): Job {
-    val handler = CoroutineExceptionHandler { _, e ->
-        onError(e)
+    val handler = CoroutineExceptionHandler { context, e ->
+        onError(context, e)
     }
     return launch(dispatcher + handler, start, block)
 }

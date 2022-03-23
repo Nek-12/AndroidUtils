@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.text.format.DateFormat
 import android.util.Log
 import android.view.autofill.AutofillManager
 import android.webkit.CookieManager
@@ -105,3 +106,5 @@ fun Application.relaunch() {
     }
     startActivity(intent)
 }
+
+val Context.isSystem24Hour get() = DateFormat.is24HourFormat(this)
