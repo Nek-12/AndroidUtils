@@ -19,7 +19,8 @@ implementation ("com.github.Nek-12.AndroidUtils:safenavcontroller:$utilsVersion"
 implementation ("com.github.Nek-12.AndroidUtils:coroutine-ktx:$utilsVersion")
 implementation ("com.github.Nek-12.AndroidUtils:room:$utilsVersion")
 implementation ("com.github.Nek-12.AndroidUtils:material-ktx:$utilsVersion")
-implementation ("com.github.Nek-12.AndroidUtils:viewbinding:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:viewbinding:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:compose-ktx:$utilsVersion")
 ```  
 
 ### RecyclerView
@@ -62,8 +63,18 @@ Documentation on those is still TBD, however there is not much code in them, so 
   way to handle external links, security vulnerabilities, and the mess that Google made of WebViewClient callbacks (when
   same callback gets called 2, 3 or more times in a row. It is also not bound to the view lifecycle, so you can just
   attach and detach it and your data will be safe, even in ViewModel)
-* Other `***-ktx` artifacts will give you some useful extension functions like `collectOnLifecycle()` from coroutines-ktx that I used in examples
-  above to simplify working with system APIs, coroutines, and other android components.
+* `compose-ktx` will let you streamline your code by providing a new way to work with resources. Instead of writing
+  ```kotlin
+  stringResource(R.string.some_string) 
+  ```  
+  you can now write
+  ```kotlin
+  R.string.some_string.string() //plurals, drawables and AVDs supported too
+  ```
+  And as always, useful extensions included
+* Other `***-ktx` artifacts will give you some useful extension functions like `collectOnLifecycle()` from
+  coroutines-ktx that I used in examples above to simplify working with system APIs, coroutines, and other android
+  components.
 
 For more information and other examples see javadocs in the library code.
 If you find something that is missing, feel free to tell me about it using Github issues.
