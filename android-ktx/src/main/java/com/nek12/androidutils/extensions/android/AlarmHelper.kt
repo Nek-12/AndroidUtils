@@ -2,7 +2,11 @@
 
 package com.nek12.androidutils.extensions.android
 
-import android.app.*
+import android.app.AlarmManager
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import androidx.annotation.DrawableRes
@@ -24,7 +28,6 @@ open class AlarmHelper(protected val context: Context) {
     private val calendar: Calendar = Calendar.getInstance().apply {
         timeInMillis = System.currentTimeMillis()
     }
-
 
     /**
      * Create a notification action, i.e. a button to add to the notification.

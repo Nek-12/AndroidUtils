@@ -3,7 +3,7 @@ plugins {
 }
 
 rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.6.3"
+rootProject.version = "0.7.0"
 
 buildscript {
 
@@ -35,6 +35,7 @@ subprojects {
         "core-ktx" -> apply(plugin = "java-library")
         else -> apply(plugin = "android-library")
     }
+
 }
 
 kotlin {

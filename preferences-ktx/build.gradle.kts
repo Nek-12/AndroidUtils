@@ -1,3 +1,3 @@
 dependencies {
-    implementation("androidx.preference:preference-ktx:1.1.1")
+    implementation("androidx.preference:preference-ktx:1.2.0")
 }

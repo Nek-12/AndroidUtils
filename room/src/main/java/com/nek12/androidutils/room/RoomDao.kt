@@ -1,7 +1,17 @@
 package com.nek12.androidutils.room
 
 import android.annotation.SuppressLint
-import androidx.room.*
+import androidx.room.CoroutinesRoom
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Embedded
+import androidx.room.Insert
+import androidx.room.InvalidationTracker
+import androidx.room.OnConflictStrategy
+import androidx.room.RawQuery
+import androidx.room.RoomDatabase
+import androidx.room.Update
+import androidx.room.getQueryDispatcher
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.asCoroutineDispatcher

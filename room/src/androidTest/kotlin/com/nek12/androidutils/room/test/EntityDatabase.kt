@@ -1,6 +1,10 @@
 package com.nek12.androidutils.room.test
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.RoomDatabase
 import com.nek12.androidutils.room.RoomDao
 import com.nek12.androidutils.room.RoomDataSource
 import com.nek12.androidutils.room.RoomEntity

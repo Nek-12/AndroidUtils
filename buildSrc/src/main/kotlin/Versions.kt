@@ -1,4 +1,6 @@
 object Versions {
+
+    const val lifecycle = "2.4.0"
     const val gradle = "7.0.3"
     const val kotlin = "1.6.10"
     const val coroutines = "1.6.0"

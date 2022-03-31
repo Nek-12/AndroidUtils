@@ -1,14 +1,22 @@
 @file:Suppress("unused")
 
-package com.nek12.androidutils.extensions.android
+package com.nek12.androidutils.extensions.view
 
 import android.animation.Animator
 import android.animation.AnimatorInflater
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.drawable.Animatable2
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.text.Editable
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -17,21 +25,21 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.ScrollView
 import android.widget.TextView
-import androidx.annotation.*
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.widget.PopupMenu
+import androidx.annotation.AnimatorRes
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
+import androidx.annotation.MenuRes
+import androidx.annotation.RequiresApi
 import androidx.core.animation.doOnEnd
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.nek12.androidutils.extensions.R
 import com.nek12.androidutils.extensions.core.isValid
 import com.nek12.androidutils.extensions.core.takeIfValid
-import kotlin.math.floor
+import com.nek12.androidutils.extensions.coroutines.R
 
 const val DEF_FADE_DURATION = 250L
 
@@ -57,7 +65,10 @@ fun View.hide(
         visibility == targetVisibility -> {
             /* nothing to do */
         }
-        visibility == View.VISIBLE && animated -> animate(animation, duration) { visibility = targetVisibility }
+        visibility == View.VISIBLE && animated -> animate(animation, duration) {
+            visibility =
+                    targetVisibility
+        }
         else -> visibility = targetVisibility
     }
 }
@@ -80,7 +91,11 @@ fun View.show(
 
 fun View.fadeIn(duration: Long = DEF_FADE_DURATION) = show(true, duration)
 
-fun View.fadeOut(duration: Long = DEF_FADE_DURATION) = hide(animated = true, gone = true, duration = duration)
+fun View.fadeOut(duration: Long = DEF_FADE_DURATION) = hide(
+    animated = true,
+    gone = true,
+    duration = duration
+)
 
 /**
  * A better API for legacy View visibility constants.
@@ -115,7 +130,7 @@ enum class Visibility(val value: Int) {
  */
 var View.currentVisibility: Visibility
     get() = Visibility.of(this.visibility)
-        ?: throw IllegalArgumentException("No such visibility value")
+            ?: throw IllegalArgumentException("No such visibility value")
     set(value) {
         visibility = value.value
     }
@@ -145,21 +160,10 @@ fun View.setVisibility(
     duration: Long = DEF_FADE_DURATION,
 ) = setVisibility(Visibility.of(visible, gone), animated, duration)
 
-/**
- * Sets this recyclerview's layout manager to a grid layout manager where the columns are evenly
- * distributed to fill the screen. If you specify 50dp as column width and your screen is
- * 300dp-wide, for example, you will get 6 columns.
- */
-fun RecyclerView.autoFitColumns(columnWidthDP: Int, columnSpacingDp: Int) {
-    val displayMetrics = this.resources.displayMetrics
-    val noOfColumns =
-        floor((displayMetrics.widthPixels / displayMetrics.density) / (columnWidthDP.toDouble() + columnSpacingDp.toDouble())).toInt()
-    this.layoutManager = GridLayoutManager(this.context, noOfColumns)
-}
 
 fun View.hideKeyboard(): Boolean {
     val inputMethodManager =
-        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     return inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
 }
 
@@ -211,16 +215,11 @@ val Number.toDp
         Resources.getSystem().displayMetrics
     )
 
-val Fragment.screenWidthPx get() = requireActivity().resources.displayMetrics.widthPixels
-val Fragment.screenHeightPx get() = requireActivity().resources.displayMetrics.heightPixels
-
-/**
- * @see [android.util.DisplayMetrics.density]
- */
-val Fragment.screenDensity get() = requireActivity().resources.displayMetrics.density
-
-
-inline fun <reified T : View> T.onClick(crossinline block: (T) -> Unit) = setOnClickListener { block(it as T) }
+inline fun <reified T : View> T.onClick(crossinline block: (T) -> Unit) = setOnClickListener {
+    block(
+        it as T
+    )
+}
 
 fun ScrollView.scrollToView(view: View) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -230,13 +229,11 @@ fun ScrollView.scrollToView(view: View) {
     }
 }
 
-fun Context.getDrawableCompat(@DrawableRes id: Int) = AppCompatResources.getDrawable(this, id)!!
-
 /*
  * Credits: https://github.com/tunjid/Android-Extensions/blob/develop/view/src/main/java/com/tunjid/androidx/view/util/ViewUtil.kt
  */
 fun ViewGroup.inflate(@LayoutRes res: Int, attachToRoot: Boolean = false): View =
-    LayoutInflater.from(context).inflate(res, this, attachToRoot)
+        LayoutInflater.from(context).inflate(res, this, attachToRoot)
 
 @get:ColorInt
 var View.backgroundTint: Int?
@@ -269,12 +266,20 @@ fun TextView.setTextOrHide(text: String?, gone: Boolean = false, animated: Boole
     setVisibility(text.isValid, gone = gone, animated = animated)
 }
 
-fun ImageView.setDrawableOrHide(@DrawableRes res: Int?, gone: Boolean = true, animated: Boolean = false) {
+fun ImageView.setDrawableOrHide(
+    @DrawableRes res: Int?,
+    gone: Boolean = true,
+    animated: Boolean = false
+) {
     setVisibility(res != null, gone = gone, animated = animated)
     res?.let(::setImageResource)
 }
 
-fun ImageView.setDrawableOrHide(drawable: Drawable?, gone: Boolean = true, animated: Boolean = false) {
+fun ImageView.setDrawableOrHide(
+    drawable: Drawable?,
+    gone: Boolean = true,
+    animated: Boolean = false
+) {
     setVisibility(drawable != null, gone = gone, animated = animated)
     drawable?.let(::setImageDrawable)
 }
@@ -290,4 +295,57 @@ val EditText.input get() = text?.toString()?.takeIfValid()
  */
 fun EditText.doAfterTextChangedInFocus(action: (String?) -> Unit) = doAfterTextChanged { text ->
     if (isFocused) action(text?.toString())
+}
+
+/**
+ * Set the image drawable for this [ImageView] using [avdResId], then start animating it.
+ * The animation runs in loops and never stops.
+ */
+@SuppressLint("UseCompatLoadingForDrawables")
+@RequiresApi(Build.VERSION_CODES.M)
+// Requires M api and does not use AppCompat because the animation won't work when using appcompat drawable, tested
+fun ImageView.applyLoopingAVD(@DrawableRes avdResId: Int) {
+    val animated = resources.getDrawable(
+        avdResId,
+        context.theme
+    ) as? AnimatedVectorDrawable ?: throw IllegalArgumentException("Invalid drawable")
+    applyLoopingAVD(animated)
+}
+
+@RequiresApi(Build.VERSION_CODES.M)
+fun ImageView.applyLoopingAVD(avd: AnimatedVectorDrawable) {
+    avd.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+        override fun onAnimationEnd(drawable: Drawable?) {
+            this@applyLoopingAVD.post { avd.start() }
+        }
+    })
+    this.setImageDrawable(avd)
+    avd.start()
+}
+
+
+fun TextView.setColorOfSubstring(substring: String, color: Int) {
+    if (!text?.toString().isValid || !substring.isValid) return
+    val spannable = SpannableString(text)
+    val start = text.indexOf(substring)
+    spannable.setSpan(
+        ForegroundColorSpan(color),
+        start,
+        start + substring.length,
+        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
+    text = spannable
+}
+
+/**
+ * A class that invokes [onChanged] **after** the text changes. Also validates the query.
+ * @see TextWatcher
+ */
+class TextChangeListener(private val onChanged: (newText: String?) -> Unit) : TextWatcher {
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+    override fun afterTextChanged(s: Editable?) {
+        onChanged(s?.toString().takeIf { it.isValid })
+    }
 }

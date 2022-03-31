@@ -2,8 +2,8 @@
 
 package com.nek12.androidutils.extensions.coroutines
 
+import android.app.Fragment
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.nek12.androidutils.extensions.core.ApiResult
 import com.nek12.androidutils.extensions.core.map
@@ -16,8 +16,6 @@ import kotlin.collections.forEach
 import kotlin.collections.map
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 private const val VIEW_SCOPED_VALUE_EXCEPTION = """Trying to call a viewscoped value outside of the view lifecycle."""
 
@@ -43,13 +41,6 @@ suspend fun <A, B> Collection<A>.mapParallel(
     map { async(context, start) { this@withContext.block(it) } }.map { it.await() }
 }
 
-/**
- * Notify livedata observers without changing its value
- */
-fun <T> MutableLiveData<T>.notifyObserver() {
-    postValue(value)
-}
-
 /** Starts a new coroutine that will collect values from a flow while the lifecycle is in a
  * [state].
  *
@@ -69,23 +60,19 @@ fun <T> MutableLiveData<T>.notifyObserver() {
  * **/
 fun <T> Flow<T>.collectOnLifecycle(
     lifecycleOwner: LifecycleOwner,
-    state: Lifecycle.State = Lifecycle.State.RESUMED,
-    action: suspend (T) -> Unit,
-): Job {
-    return lifecycleOwner.lifecycleScope.launch {
-        lifecycleOwner.lifecycle.repeatOnLifecycle(state) {
-            collect { action(it) }
-        }
-    }
+    state: Lifecycle.State = Lifecycle.State.STARTED,
+    collector: FlowCollector<T>,
+): Job = lifecycleOwner.lifecycleScope.launch {
+    flowWithLifecycle(lifecycleOwner.lifecycle, state).collect(collector)
 }
 
 fun <T> Flow<T?>.collectNotNullOnLifecycle(
     lifecycleOwner: LifecycleOwner,
     state: Lifecycle.State = Lifecycle.State.RESUMED,
-    action: suspend (T) -> Unit,
+    collector: FlowCollector<T>,
 ) {
     collectOnLifecycle(lifecycleOwner, state) {
-        if (it != null) action(it)
+        if (it != null) collector.emit(it)
     }
 }
 
@@ -130,44 +117,6 @@ fun LifecycleOwner.delayOnLifecycle(
     }
 }
 
-open class ViewScopedValue<T : Any> : ReadWriteProperty<Fragment, T>, DefaultLifecycleObserver {
-
-    private var _value: T? = null
-
-    override fun getValue(thisRef: Fragment, property: KProperty<*>): T =
-        _value ?: throw IllegalStateException(VIEW_SCOPED_VALUE_EXCEPTION)
-
-    override fun setValue(thisRef: Fragment, property: KProperty<*>, value: T) {
-        thisRef.viewLifecycleOwner.lifecycle.removeObserver(this)
-        _value = value
-        thisRef.viewLifecycleOwner.lifecycle.addObserver(this)
-    }
-
-    override fun onDestroy(owner: LifecycleOwner) {
-        _value = null
-        super.onDestroy(owner)
-    }
-}
-
-/**
- * A value that is going to be cleared when the Fragment lifecycle reaches [Fragment.onDestroyView]
- * Remember, process this value **before** calling super.onDestroyView()
- * [initializer] will be called after [Fragment.onViewCreated]
- */
-fun <T : Any> viewScoped() = ViewScopedValue<T>()
-
-fun CoroutineScope.launchCatching(
-    dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    start: CoroutineStart = CoroutineStart.DEFAULT,
-    onError: CoroutineContext.(Throwable) -> Unit,
-    block: suspend CoroutineScope.() -> Unit,
-): Job {
-    val handler = CoroutineExceptionHandler { context, e ->
-        onError(context, e)
-    }
-    return launch(dispatcher + handler, start, block)
-}
-
 /**
  * Emits [Loading], then executes [call] and [wrap]s it in [ApiResult]
  */
@@ -194,4 +143,16 @@ fun View.clicks(delay: Long = 1000L) = callbackFlow {
     awaitClose {
         setOnClickListener(null)
     }
+}
+
+fun CoroutineScope.launchCatching(
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    onError: CoroutineContext.(Throwable) -> Unit,
+    block: suspend CoroutineScope.() -> Unit,
+): Job {
+    val handler = CoroutineExceptionHandler { context, e ->
+        onError(context, e)
+    }
+    return launch(dispatcher + handler, start, block)
 }

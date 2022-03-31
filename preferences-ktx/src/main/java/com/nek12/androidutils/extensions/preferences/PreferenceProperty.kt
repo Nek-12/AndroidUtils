@@ -23,38 +23,43 @@ typealias PreferenceProvider = () -> SharedPreferences
  * ```
  */
 internal abstract class PreferenceProperty<in T, V>(
-    private val key: String,
     private val defaultValue: V,
+    private val key: String? = null,
     private val getter: SharedPreferences.(String, V) -> V,
     private val setter: SharedPreferences.Editor.(String, V) -> SharedPreferences.Editor,
 ) : ReadWriteProperty<T, V> {
+
     abstract fun getPreferences(thisRef: T): SharedPreferences
 
     override fun getValue(thisRef: T, property: KProperty<*>): V =
-        getPreferences(thisRef).getter(key, defaultValue)
+        getPreferences(thisRef).getter(key ?: property.name, defaultValue)
 
     @SuppressLint("CommitPrefEdits")
     override fun setValue(thisRef: T, property: KProperty<*>, value: V) =
-        getPreferences(thisRef).edit().setter(key, value).apply()
+        getPreferences(thisRef).edit().setter(key ?: property.name, value).apply()
 
 }
 
 internal class DefaultPreferenceProperty<T>(
-    key: String,
     defaultValue: T,
+    key: String? = null,
     getter: SharedPreferences.(String, T) -> T,
     setter: SharedPreferences.Editor.(String, T) -> SharedPreferences.Editor,
-) : PreferenceProperty<Context, T>(key, defaultValue, getter, setter) {
-    override fun getPreferences(thisRef: Context): SharedPreferences = thisRef.getDefaultPreferences()
+) : PreferenceProperty<Context, T>(defaultValue, key, getter, setter) {
+
+    private var _prefs: SharedPreferences? = null
+
+    override fun getPreferences(thisRef: Context): SharedPreferences =
+        _prefs ?: thisRef.getDefaultPreferences().also { _prefs = it }
 }
 
 internal class ProvidedPreferenceProperty<T>(
-    key: String,
     defaultValue: T,
+    key: String? = null,
     getter: SharedPreferences.(String, T) -> T,
     setter: SharedPreferences.Editor.(String, T) -> SharedPreferences.Editor,
     private val preferences: SharedPreferences,
-) : PreferenceProperty<Any?, T>(key, defaultValue, getter, setter) {
+) : PreferenceProperty<Any?, T>(defaultValue, key, getter, setter) {
 
     override fun getPreferences(thisRef: Any?): SharedPreferences = preferences
 }

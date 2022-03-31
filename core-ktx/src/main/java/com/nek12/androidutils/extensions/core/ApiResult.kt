@@ -2,7 +2,10 @@
 
 package com.nek12.androidutils.extensions.core
 
-import com.nek12.androidutils.extensions.core.ApiResult.*
+import com.nek12.androidutils.extensions.core.ApiResult.Companion
+import com.nek12.androidutils.extensions.core.ApiResult.Error
+import com.nek12.androidutils.extensions.core.ApiResult.Loading
+import com.nek12.androidutils.extensions.core.ApiResult.Success
 
 class NotFinishedException : IllegalArgumentException(ApiResult.DEFAULT_LOADING_MESSAGE)
 

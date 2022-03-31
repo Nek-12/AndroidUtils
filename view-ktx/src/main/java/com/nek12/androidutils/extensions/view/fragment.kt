@@ -1,13 +1,20 @@
-package com.nek12.androidutils.extensions.android
+package com.nek12.androidutils.extensions.view
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
-import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import com.nek12.androidutils.extensions.android.Email
+import com.nek12.androidutils.extensions.android.autofillManager
+import com.nek12.androidutils.extensions.android.dialNumber
+import com.nek12.androidutils.extensions.android.downloadFile
+import com.nek12.androidutils.extensions.android.openBrowser
+import com.nek12.androidutils.extensions.android.sendEmail
+import com.nek12.androidutils.extensions.android.shareAsText
+import com.nek12.androidutils.extensions.android.startActivityCatching
 
 /**
  * Whether the device is in landscape mode right now
@@ -23,7 +30,8 @@ fun Fragment.doOnBackPressed(action: OnBackPressedCallback.() -> Unit) {
     requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, true, action)
 }
 
-fun Fragment.sendEmail(mail: Email, onNotFound: (e: Exception) -> Unit) = requireContext().sendEmail(mail, onNotFound)
+fun Fragment.sendEmail(mail: Email, onNotFound: (e: Exception) -> Unit) =
+    requireContext().sendEmail(mail, onNotFound)
 
 fun Fragment.sendEmail(uri: Uri, onNotFound: (e: Exception) -> Unit) = sendEmail(Email.ofUri(uri), onNotFound)
 
@@ -52,6 +60,20 @@ fun Fragment.dialNumber(numberUri: Uri, onNotFound: (e: Exception) -> Unit) =
 
 val Fragment.autofillManager get() = requireContext().autofillManager
 
-fun Fragment.drawableCompat(@DrawableRes id: Int): Drawable {
-    return requireContext().getDrawableCompat(id)
+fun <T> Fragment.observe(data: LiveData<T>, block: (value: T?) -> Unit) {
+    data.observe(viewLifecycleOwner, block)
 }
+
+fun <T> Fragment.observeNotNull(data: LiveData<T>, observer: (value: T) -> Unit) {
+    data.observe(viewLifecycleOwner) {
+        if (it != null) observer(it)
+    }
+}
+
+val Fragment.screenWidthPx get() = requireActivity().resources.displayMetrics.widthPixels
+val Fragment.screenHeightPx get() = requireActivity().resources.displayMetrics.heightPixels
+
+/**
+ * @see [android.util.DisplayMetrics.density]
+ */
+val Fragment.screenDensity get() = requireActivity().resources.displayMetrics.density

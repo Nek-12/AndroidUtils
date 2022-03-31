@@ -1,11 +1,13 @@
-package com.nek12.androidutils.extensions.android
+package com.nek12.androidutils.extensions.view
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.core.view.doOnDetach
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.floor
 
 /**
  * Sets an adapter for the recycler view that will be cleared after [View.onDetachedFromWindow], preventing memory leaks
@@ -42,3 +44,15 @@ inline fun <reified T : RecyclerView.ViewHolder> RecyclerView.forEachVisibleHold
 }
 
 fun <T, R : RecyclerView.ViewHolder?> ListAdapter<T, R>.clear() = submitList(emptyList())
+
+/**
+ * Sets this recyclerview's layout manager to a grid layout manager where the columns are evenly
+ * distributed to fill the screen. If you specify 50dp as column width and your screen is
+ * 300dp-wide, for example, you will get 6 columns.
+ */
+fun RecyclerView.autoFitColumns(columnWidthDP: Int, columnSpacingDp: Int) {
+    val displayMetrics = this.resources.displayMetrics
+    val noOfColumns =
+        floor((displayMetrics.widthPixels / displayMetrics.density) / (columnWidthDP.toDouble() + columnSpacingDp.toDouble())).toInt()
+    this.layoutManager = GridLayoutManager(this.context, noOfColumns)
+}

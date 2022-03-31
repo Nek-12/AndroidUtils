@@ -4,11 +4,21 @@ package com.nek12.androidutils.extensions.android
 
 import android.graphics.Color
 import android.graphics.Typeface
-import android.text.*
-import android.text.style.*
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.BackgroundColorSpan
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StrikethroughSpan
+import android.text.style.StyleSpan
+import android.text.style.SubscriptSpan
+import android.text.style.SuperscriptSpan
+import android.text.style.UnderlineSpan
 import android.util.Patterns
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.text.HtmlCompat
 import com.nek12.androidutils.extensions.core.isValid
@@ -41,18 +51,6 @@ fun SpannableString.withClickableSpan(
     return this
 }
 
-fun TextView.setColorOfSubstring(substring: String, color: Int) {
-    if (!text?.toString().isValid || !substring.isValid) return
-    val spannable = SpannableString(text)
-    val start = text.indexOf(substring)
-    spannable.setSpan(
-        ForegroundColorSpan(color),
-        start,
-        start + substring.length,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-    )
-    text = spannable
-}
 
 /**
  * [span] is a ..Span object like a [ForegroundColorSpan] or a [SuperscriptSpan]
@@ -111,20 +109,6 @@ fun String.hextoRGB(): Triple<Int, Int, Int> {
  * If this is a color int, turns it into a hex string.
  */
 fun Int.colorToHexString() = String.format(Locale.ROOT, "#%06X", -0x1 and this).replace("#FF", "#")
-
-/**
- * A class that invokes [onChanged] **after** the text changes. Also validates the query.
- * @see TextWatcher
- */
-class TextChangeListener(private val onChanged: (newText: String?) -> Unit) : TextWatcher {
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-    override fun afterTextChanged(s: Editable?) {
-        onChanged(s?.toString().takeIf { it.isValid })
-    }
-}
-
 
 val String.asHTML: Spanned
     get() = HtmlCompat.fromHtml(this, 0)
