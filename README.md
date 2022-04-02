@@ -9,16 +9,17 @@ Latest version is  [![Jitpack Version](https://jitpack.io/v/Nek-12/AndroidUtils.
 Extensions available:
 ```kotlin
 val utilsVersion = "<look up 👆🏻>"
-implementation ("com.github.Nek-12.AndroidUtils:databinding-recyclerview:$utilsVersion")
-implementation ("com.github.Nek-12.AndroidUtils:preferences-ktx:$utilsVersion")
-implementation ("com.github.Nek-12.AndroidUtils:databinding-genericpagingadapter:$utilsVersion")
-implementation ("com.github.Nek-12.AndroidUtils:databinding:$utilsVersion")
-implementation ("com.github.Nek-12.AndroidUtils:core-ktx:$utilsVersion")
-implementation ("com.github.Nek-12.AndroidUtils:android-ktx:$utilsVersion")
-implementation ("com.github.Nek-12.AndroidUtils:safenavcontroller:$utilsVersion")
-implementation ("com.github.Nek-12.AndroidUtils:coroutine-ktx:$utilsVersion")
-implementation ("com.github.Nek-12.AndroidUtils:room:$utilsVersion")
-implementation ("com.github.Nek-12.AndroidUtils:material-ktx:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:core-ktx:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:android-ktx:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:coroutine-ktx:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:room:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:databinding:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:viewbinding:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:databinding-recyclerview:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:databinding-genericpagingadapter:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:preferences-ktx:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:safenavcontroller:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:material-ktx:$utilsVersion")
 implementation("com.github.Nek-12.AndroidUtils:view-ktx:$utilsVersion")
 implementation("com.github.Nek-12.AndroidUtils:compose-ktx:$utilsVersion")
 ```  
