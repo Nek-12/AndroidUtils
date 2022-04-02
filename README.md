@@ -19,7 +19,7 @@ implementation ("com.github.Nek-12.AndroidUtils:safenavcontroller:$utilsVersion"
 implementation ("com.github.Nek-12.AndroidUtils:coroutine-ktx:$utilsVersion")
 implementation ("com.github.Nek-12.AndroidUtils:room:$utilsVersion")
 implementation ("com.github.Nek-12.AndroidUtils:material-ktx:$utilsVersion")
-implementation("com.github.Nek-12.AndroidUtils:extensions:$utilsVersion")
+implementation("com.github.Nek-12.AndroidUtils:view-ktx:$utilsVersion")
 implementation("com.github.Nek-12.AndroidUtils:compose-ktx:$utilsVersion")
 ```  
 
