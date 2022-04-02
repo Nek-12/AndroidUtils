@@ -39,7 +39,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.nek12.androidutils.extensions.core.isValid
 import com.nek12.androidutils.extensions.core.takeIfValid
-import com.nek12.androidutils.extensions.coroutines.R
 
 const val DEF_FADE_DURATION = 250L
 
