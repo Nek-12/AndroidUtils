@@ -1,7 +1,6 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
-    id("org.jetbrains.kotlin.plugin.parcelize")
     `maven-publish`
 }
 
@@ -42,6 +41,14 @@ android {
 
     sourceSets.all {
         java.srcDir("src/$name/kotlin")
+    }
+
+    buildFeatures {
+        aidl = false
+        buildConfig = false
+        prefab = false
+        renderScript = false
+        mlModelBinding = false
     }
 }
 dependencies {

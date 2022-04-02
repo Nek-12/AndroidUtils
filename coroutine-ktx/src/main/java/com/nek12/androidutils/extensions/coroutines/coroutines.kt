@@ -2,7 +2,6 @@
 
 package com.nek12.androidutils.extensions.coroutines
 
-import android.app.Fragment
 import android.view.View
 import androidx.lifecycle.*
 import com.nek12.androidutils.extensions.core.ApiResult
@@ -16,8 +15,6 @@ import kotlin.collections.forEach
 import kotlin.collections.map
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-
-private const val VIEW_SCOPED_VALUE_EXCEPTION = """Trying to call a viewscoped value outside of the view lifecycle."""
 
 /**
  * Execute [block] in parallel using operator async for each element of the collection
@@ -61,18 +58,18 @@ suspend fun <A, B> Collection<A>.mapParallel(
 fun <T> Flow<T>.collectOnLifecycle(
     lifecycleOwner: LifecycleOwner,
     state: Lifecycle.State = Lifecycle.State.STARTED,
-    collector: FlowCollector<T>,
+    collector: suspend CoroutineScope.(T) -> Unit,
 ): Job = lifecycleOwner.lifecycleScope.launch {
-    flowWithLifecycle(lifecycleOwner.lifecycle, state).collect(collector)
+    flowWithLifecycle(lifecycleOwner.lifecycle, state).collect { collector(it) }
 }
 
 fun <T> Flow<T?>.collectNotNullOnLifecycle(
     lifecycleOwner: LifecycleOwner,
     state: Lifecycle.State = Lifecycle.State.RESUMED,
-    collector: FlowCollector<T>,
+    collector: suspend CoroutineScope.(T) -> Unit,
 ) {
     collectOnLifecycle(lifecycleOwner, state) {
-        if (it != null) collector.emit(it)
+        if (it != null) collector(it)
     }
 }
 

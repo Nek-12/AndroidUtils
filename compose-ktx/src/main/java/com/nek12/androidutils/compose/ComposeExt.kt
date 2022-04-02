@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -87,10 +88,10 @@ fun <T> StateFlow<T>.collectAsStateOnLifecycle(
 @Composable
 @Suppress("ComposableNaming")
 inline fun <T> Flow<T>.collectOnLifecycle(
-    crossinline action: suspend (T) -> Unit,
+    crossinline action: suspend CoroutineScope.(T) -> Unit,
 ) {
     val lifecycleAwareFlow = rememberFlowWithLifecycle(this)
     LaunchedEffect(this) {
-        lifecycleAwareFlow.collect(action)
+        lifecycleAwareFlow.collect { action(it) }
     }
 }
