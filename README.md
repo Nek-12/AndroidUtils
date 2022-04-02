@@ -31,7 +31,7 @@ For documentation on `databinding-recyclerview`, check out [this doc](docs/datab
 For documentation on `room`, check out [this one](docs/room.md)
 
 ### ApiResult
-ApiResult is included in the `coroutines-ktx` artifact.  
+ApiResult is included in the `core-ktx` artifact.  
 Read [this doc](docs/networking.md) for reference.
 
 ## Other components
@@ -47,6 +47,7 @@ Documentation on those is still TBD, however there is not much code in them, so 
  Uses `SharedPreferences.Editor.apply()` that does operations on background thread and caches values.
  SharedPreferences is a Singleton object so you can easily get as many references as you want, if you use default shared preferences, don't worry about accessing   or creating properties.
  However, if you're using custom sharedPreferences argument, you must manage the lifecycle yourself.  
+ If you don't specify a key (by default it's null), property name will be used.
  example:
      ```
      var isFirstLaunch: Boolean = booleanPreference(KEY_FIRST_LAUNCH)
