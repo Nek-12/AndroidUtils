@@ -66,7 +66,7 @@ fun View.hide(
         }
         visibility == View.VISIBLE && animated -> animate(animation, duration) {
             visibility =
-                    targetVisibility
+                targetVisibility
         }
         else -> visibility = targetVisibility
     }
@@ -129,7 +129,7 @@ enum class Visibility(val value: Int) {
  */
 var View.currentVisibility: Visibility
     get() = Visibility.of(this.visibility)
-            ?: throw IllegalArgumentException("No such visibility value")
+        ?: throw IllegalArgumentException("No such visibility value")
     set(value) {
         visibility = value.value
     }
@@ -162,7 +162,7 @@ fun View.setVisibility(
 
 fun View.hideKeyboard(): Boolean {
     val inputMethodManager =
-            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     return inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
 }
 
@@ -232,7 +232,7 @@ fun ScrollView.scrollToView(view: View) {
  * Credits: https://github.com/tunjid/Android-Extensions/blob/develop/view/src/main/java/com/tunjid/androidx/view/util/ViewUtil.kt
  */
 fun ViewGroup.inflate(@LayoutRes res: Int, attachToRoot: Boolean = false): View =
-        LayoutInflater.from(context).inflate(res, this, attachToRoot)
+    LayoutInflater.from(context).inflate(res, this, attachToRoot)
 
 @get:ColorInt
 var View.backgroundTint: Int?
