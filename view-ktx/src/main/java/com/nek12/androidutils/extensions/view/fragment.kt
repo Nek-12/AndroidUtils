@@ -1,12 +1,16 @@
 package com.nek12.androidutils.extensions.view
 
+import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import com.nek12.androidutils.extensions.android.BundleExtra
 import com.nek12.androidutils.extensions.android.Email
 import com.nek12.androidutils.extensions.android.autofillManager
 import com.nek12.androidutils.extensions.android.dialNumber
@@ -15,6 +19,7 @@ import com.nek12.androidutils.extensions.android.openBrowser
 import com.nek12.androidutils.extensions.android.sendEmail
 import com.nek12.androidutils.extensions.android.shareAsText
 import com.nek12.androidutils.extensions.android.startActivityCatching
+import kotlin.reflect.KProperty0
 
 /**
  * Whether the device is in landscape mode right now
@@ -77,3 +82,12 @@ val Fragment.screenHeightPx get() = requireActivity().resources.displayMetrics.h
  * @see [android.util.DisplayMetrics.density]
  */
 val Fragment.screenDensity get() = requireActivity().resources.displayMetrics.density
+
+fun <T: Fragment> T.setArgs(vararg args: Pair<KProperty0<Any?>, Any?>): T = apply {
+    arguments = bundleOf(*args.map { it.first.name to it.second }.toTypedArray())
+}
+
+inline fun <reified T> Fragment.arg(defaultValue: T? = null) =
+    object: BundleExtra<Activity, T>(null is T, defaultValue) {
+        override val bundle: Bundle? get() = arguments
+    }
