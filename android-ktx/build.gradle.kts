@@ -1,4 +1,4 @@
 dependencies {
-    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.core:core-ktx:${Versions.coreKtx}")
     implementation(project(":core-ktx"))
 }

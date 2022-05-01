@@ -1,9 +1,11 @@
 plugins {
+    kotlin("jvm")
     `kotlin-dsl`
+    id("com.github.ben-manes.versions") version Versions.versionsPlugin
 }
 
 rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.7.0"
+rootProject.version = "0.7.1"
 
 buildscript {
 
@@ -15,6 +17,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:${Versions.gradle}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
+        classpath("com.github.ben-manes:gradle-versions-plugin:${Versions.versionsPlugin}")
     }
 }
 

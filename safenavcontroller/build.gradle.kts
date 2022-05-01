@@ -1,6 +1,5 @@
 dependencies {
-    val navVersion = "2.4.0-beta01"
-    implementation("androidx.navigation:navigation-runtime-ktx:$navVersion")
-    implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
-    implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
+    implementation("androidx.navigation:navigation-runtime-ktx:$${Versions.navigationView}")
+    implementation("androidx.navigation:navigation-fragment-ktx:$${Versions.navigationView}")
+    implementation("androidx.navigation:navigation-ui-ktx:$${Versions.navigationView}")
 }

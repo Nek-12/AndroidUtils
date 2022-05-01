@@ -10,6 +10,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":android-ktx"))
     implementation("androidx.compose.ui:ui:${Versions.compose}")
     implementation("androidx.compose.foundation:foundation:${Versions.compose}")
     implementation("androidx.compose.animation:animation-graphics:${Versions.compose}")
