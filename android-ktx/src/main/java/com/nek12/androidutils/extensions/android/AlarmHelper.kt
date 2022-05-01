@@ -16,10 +16,10 @@ import com.nek12.androidutils.extensions.core.setDayOfWeek
 import java.time.DayOfWeek
 import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.O)
 /**
  * A class that simplifies work with [NotificationManager] and [AlarmManager]
  */
+@RequiresApi(Build.VERSION_CODES.O)
 open class AlarmHelper(protected val context: Context) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     private val notificationManager =

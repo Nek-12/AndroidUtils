@@ -13,4 +13,5 @@ object Versions {
     const val navigationView = "2.5.0-beta01"
     const val coreKtx = "1.8.0-beta01"
     const val activity = "1.5.0-beta01"
+    const val fragmentKtx = "1.4.0"
 }
