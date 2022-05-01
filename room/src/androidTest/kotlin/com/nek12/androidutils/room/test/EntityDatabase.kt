@@ -14,7 +14,7 @@ import java.util.*
 data class Entry(
     @PrimaryKey(autoGenerate = false)
     override val id: String = UUID.randomUUID().toString(),
-) : RoomEntity<String> {
+): RoomEntity<String> {
 
     companion object {
 
@@ -23,15 +23,16 @@ data class Entry(
 }
 
 @Dao
-abstract class EntryDao(db: RoomDatabase) : RoomDao<String, Entry>(db, Entry.TABLE_NAME)
+abstract class EntryDao(db: RoomDatabase): RoomDao<String, Entry>(db, Entry.TABLE_NAME)
 
-class EntryRepo(dao: EntryDao) : RoomDataSource<String, Entry>(dao)
+class EntryRepo(dao: EntryDao): RoomDataSource<String, Entry>(dao)
 
 @Database(
     entities = [Entry::class],
     version = 1,
     exportSchema = false
 )
-abstract class EntryDatabase : RoomDatabase() {
+abstract class EntryDatabase: RoomDatabase() {
+
     abstract fun entryDao(): EntryDao
 }

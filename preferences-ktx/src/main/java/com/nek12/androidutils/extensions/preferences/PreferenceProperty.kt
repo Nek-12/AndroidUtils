@@ -27,7 +27,7 @@ internal abstract class PreferenceProperty<in T, V>(
     private val key: String? = null,
     private val getter: SharedPreferences.(String, V) -> V,
     private val setter: SharedPreferences.Editor.(String, V) -> SharedPreferences.Editor,
-) : ReadWriteProperty<T, V> {
+): ReadWriteProperty<T, V> {
 
     abstract fun getPreferences(thisRef: T): SharedPreferences
 
@@ -45,7 +45,7 @@ internal class DefaultPreferenceProperty<T>(
     key: String? = null,
     getter: SharedPreferences.(String, T) -> T,
     setter: SharedPreferences.Editor.(String, T) -> SharedPreferences.Editor,
-) : PreferenceProperty<Context, T>(defaultValue, key, getter, setter) {
+): PreferenceProperty<Context, T>(defaultValue, key, getter, setter) {
 
     private var _prefs: SharedPreferences? = null
 
@@ -59,7 +59,7 @@ internal class ProvidedPreferenceProperty<T>(
     getter: SharedPreferences.(String, T) -> T,
     setter: SharedPreferences.Editor.(String, T) -> SharedPreferences.Editor,
     private val preferences: SharedPreferences,
-) : PreferenceProperty<Any?, T>(defaultValue, key, getter, setter) {
+): PreferenceProperty<Any?, T>(defaultValue, key, getter, setter) {
 
     override fun getPreferences(thisRef: Any?): SharedPreferences = preferences
 }

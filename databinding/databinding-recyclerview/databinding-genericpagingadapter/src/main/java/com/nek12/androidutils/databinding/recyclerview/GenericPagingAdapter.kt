@@ -18,7 +18,7 @@ import androidx.paging.PagingDataAdapter
 open class GenericPagingAdapter(
     private val listener: ItemListener<Item<*, *>>? = null,
     private val lifecycleOwner: LifecycleOwner? = null,
-) : PagingDataAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
+): PagingDataAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int = getItem(position)?.layout ?: 0
 
@@ -36,12 +36,12 @@ open class GenericPagingAdapter(
 }
 
 @Suppress("UNCHECKED_CAST")
-suspend fun <T, VB : ViewDataBinding> GenericPagingAdapter.submitData(data: PagingData<Item<T, VB>>) {
+suspend fun <T, VB: ViewDataBinding> GenericPagingAdapter.submitData(data: PagingData<Item<T, VB>>) {
     submitData(data as PagingData<Item<*, *>>)
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <T, VB : ViewDataBinding> GenericPagingAdapter.submitData(
+fun <T, VB: ViewDataBinding> GenericPagingAdapter.submitData(
     lifecycle: Lifecycle,
     data: PagingData<Item<T, VB>>
 ) {

@@ -33,8 +33,7 @@ fun Instant.onSameUTCDay(other: Instant): Boolean {
 
 val ZonedDateTime.isToday: Boolean get() = onSameLocalDay(ZonedDateTime.now())
 
-val ZonedDateTime.weekStart: ZonedDateTime
-get() = with(ChronoField.DAY_OF_WEEK, 1)
+val ZonedDateTime.weekStart: ZonedDateTime get() = with(ChronoField.DAY_OF_WEEK, 1)
 
 val Instant.localMonthDay get() = toZDT().dayOfMonth
 
@@ -85,6 +84,7 @@ fun Calendar.isCurrentMonth(): Boolean {
     val now = getInstance(timeZone)
     return now[MONTH] == this[MONTH] && now[YEAR] == this[YEAR]
 }
+
 fun Calendar.isCurrentYear(): Boolean {
     return getInstance(timeZone)[YEAR] == this[YEAR]
 }

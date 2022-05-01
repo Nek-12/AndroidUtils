@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
  * @see RoomDao
  * @see RoomEntity
  */
-open class RoomDataSource<I : Any, T : RoomEntity<I>>(private val dao: RoomDao<I, T>) {
+open class RoomDataSource<I: Any, T: RoomEntity<I>>(private val dao: RoomDao<I, T>) {
 
     open suspend fun add(entity: T) = dao.add(entity)
     open suspend fun add(vararg entities: T) = dao.add(*entities)

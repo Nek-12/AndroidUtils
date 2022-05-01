@@ -151,4 +151,5 @@ fun stringPreference(
     defaultValue,
     key,
     { k, default -> getString(k, default) ?: defaultValue },
-    SharedPreferences.Editor::putString)
+    SharedPreferences.Editor::putString
+)

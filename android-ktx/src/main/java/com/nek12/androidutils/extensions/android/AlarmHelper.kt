@@ -21,6 +21,7 @@ import java.util.*
  */
 @RequiresApi(Build.VERSION_CODES.O)
 open class AlarmHelper(protected val context: Context) {
+
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

@@ -13,6 +13,7 @@ import android.webkit.*
  * A listener for events that happen in [WebClient]
  */
 interface WebClientListener {
+
     /**
      * Is triggered when whole page could not be loaded (not triggered for css, js, ads & other errors)
      */
@@ -52,7 +53,8 @@ interface WebClientListener {
 @SuppressLint("SetJavaScriptEnabled")
 open class WebClient(
     private val allowedHosts: List<String?>,
-) : WebViewClient(), DownloadListener {
+): WebViewClient(), DownloadListener {
+
     private var webView: WebView? = null
     private var listener: WebClientListener? = null
     val url get() = webView?.url
@@ -142,7 +144,7 @@ open class WebClient(
     }
 
     override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-        Log.d(TAG,"ShouldOverrideUrlLoading, url: $url")
+        Log.d(TAG, "ShouldOverrideUrlLoading, url: $url")
         val uri = url.asUri
         return when {
             uri == null -> false
@@ -155,7 +157,7 @@ open class WebClient(
     }
 
     override fun onPageFinished(view: WebView?, url: String?) {
-        Log.d(TAG,"onPageFinished, url: $url")
+        Log.d(TAG, "onPageFinished, url: $url")
         super.onPageFinished(view, url)
         //workaround bug when onPageFinished is triggered 3 times, last one is for 100%
         if (view?.progress == 100) {
@@ -164,7 +166,7 @@ open class WebClient(
     }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-        Log.d(TAG,"onPageStarted, url: $url")
+        Log.d(TAG, "onPageStarted, url: $url")
         super.onPageStarted(view, url?.asUri?.asHttps.toString(), favicon)
         listener?.onStartedLoading(url.asUri)
     }
@@ -203,6 +205,7 @@ open class WebClient(
     }
 
     companion object {
+
         protected const val TAG = "WebClient"
     }
 }

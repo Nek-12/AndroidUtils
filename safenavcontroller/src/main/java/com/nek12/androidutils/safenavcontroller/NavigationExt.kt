@@ -53,6 +53,7 @@ fun NavController.tryNavigate(
 ): Boolean {
     return tryLogging { navigate(to, args, navOptions, navigatorExtras) }
 }
+
 val NavController.canNavigateUp get() = previousBackStackEntry != null
 
 

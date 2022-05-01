@@ -168,7 +168,8 @@ val readyToSubmitItems = ItemBuilder {
 
 ### ItemClickListener
 
-1. Let your activity/fragment implement ItemClickListener / ItemLongClickListener or ItemInflateListener, or all of these.
+1. Let your activity/fragment implement ItemClickListener / ItemLongClickListener or ItemInflateListener, or all of
+   these.
 2. Then set the listener when you create an adapter. Depending on the type of the listener, it will be called at
    appropriate times. The listener is called not only when the user presses "the background" (as it would have if you
    used regular cheap RecyclerView, but when the user presses **any** part of the view, and as a parameter, you will get
@@ -200,5 +201,6 @@ override fun onItemClicked(view: View, item: Item<*, *>, pos: Int) {
 ```
 
 TBD:
+
 * Item diff payloads
 * Item decorations

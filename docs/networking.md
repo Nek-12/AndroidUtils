@@ -1,7 +1,7 @@
 ### `ApiResult` class
-It's convenient to wrap the results of your network calls in some object and then
-handle the result of the operation somewhere in your UI or ViewModel layer. 
-When creating your repo, use the `ApiResult` class to wrap some API call
+
+It's convenient to wrap the results of your network calls in some object and then handle the result of the operation
+somewhere in your UI or ViewModel layer. When creating your repo, use the `ApiResult` class to wrap some API call
 
 ```kotlin
 class MyRepo(private val api: MyRetrofitApiInterface) {
@@ -12,6 +12,7 @@ class MyRepo(private val api: MyRetrofitApiInterface) {
         ApiResult.flow { api.logIn(email, password) }
 }
 ```
+
 You can see that you get two functions to use:   
 `wrap(call: (suspend () -> T)): ApiResult<T>`  
 and  

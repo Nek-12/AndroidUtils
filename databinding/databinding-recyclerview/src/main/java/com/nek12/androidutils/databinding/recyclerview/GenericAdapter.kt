@@ -9,6 +9,7 @@ import androidx.core.view.children
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
+import com.nek12.androidutils.databinding.BR
 
 /**
  * The base class for your adapter implementations. In general, you should not be required to
@@ -39,7 +40,7 @@ open class GenericAdapter(
     private val lifecycleOwner: LifecycleOwner? = null,
     stableIds: Boolean = true,
     private val brVariable: Int = BR.data
-) : ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
+): ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
     init {
         setHasStableIds(stableIds)
@@ -89,7 +90,7 @@ internal fun setLongClickListenersOnViewGroup(view: View, onClick: (v: View) -> 
     }
 }
 
-inline fun <T : Item<*, *>> applyListenerToAllViews(
+inline fun <T: Item<*, *>> applyListenerToAllViews(
     vh: BaseHolder,
     clickListener: ItemListener<T>?,
     crossinline itemSelector: () -> T?
@@ -128,10 +129,9 @@ inline fun <T : Item<*, *>> applyListenerToAllViews(
  * you will lose some performance, so make sure you
  * resort to this when you truly have no other alternative.
  */
-inline fun <T, VB : ViewDataBinding> GenericAdapter.submitData(
+inline fun <T, VB: ViewDataBinding> GenericAdapter.submitData(
     data: List<T>,
     @LayoutRes layout: Int,
     crossinline idSelector: (T) -> Long?,
-    noinline binder: RVBinder<T,VB>? = null) {
-    this.submitList(data.map { Item.itemFromData(it, idSelector(it), layout, binder) })
-}
+    noinline binder: RVBinder<T, VB>? = null
+) = submitList(data.map { Item.itemFromData(it, idSelector(it), layout, binder) })

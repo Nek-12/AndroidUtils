@@ -38,7 +38,28 @@ val Uri.linkType
     }
 
 enum class LinkType {
-    Web, Mail, Tel, Other, Unknown, Blob, ContentProvider, Dns, Drm, File, Calendar, Ssh, Skype, Resource, FilesystemQuery, TextMessage, AppleMail, GooglePlay, Map, Magnet, Geo, Fax
+    Web,
+    Mail,
+    Tel,
+    Other,
+    Unknown,
+    Blob,
+    ContentProvider,
+    Dns,
+    Drm,
+    File,
+    Calendar,
+    Ssh,
+    Skype,
+    Resource,
+    FilesystemQuery,
+    TextMessage,
+    AppleMail,
+    GooglePlay,
+    Map,
+    Magnet,
+    Geo,
+    Fax
 }
 
 data class Email(

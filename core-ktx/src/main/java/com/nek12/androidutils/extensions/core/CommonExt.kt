@@ -103,7 +103,7 @@ fun List<DayOfWeek>.sortedByLocale(locale: Locale = Locale.getDefault()): List<D
 /**
  * Returns the sign of the number, as a char
  */
-val <T : Number> T.signChar: String
+val <T: Number> T.signChar: String
     get() {
         val repr = this.toByte()
         return when {

@@ -8,6 +8,7 @@ import androidx.databinding.ViewDataBinding
 import com.nek12.androidutils.databinding.recyclerview.Item.Companion.itemFromData
 
 class ItemBuilder {
+
     private var currentList = mutableListOf<Item<*, *>>()
 
     fun items(list: Collection<Item<*, *>>): ItemBuilder {
@@ -25,7 +26,7 @@ class ItemBuilder {
 
     fun <T> item(item: T, mapper: (T) -> Item<*, *>): ItemBuilder = item(mapper(item))
 
-    fun <T, VB : ViewDataBinding> data(
+    fun <T, VB: ViewDataBinding> data(
         data: T,
         @LayoutRes layout: Int,
         id: Long,
@@ -35,7 +36,7 @@ class ItemBuilder {
         return this
     }
 
-    fun <T, VB : ViewDataBinding> data(
+    fun <T, VB: ViewDataBinding> data(
         data: Collection<T>,
         @LayoutRes layout: Int,
         idSelector: (T) -> Long?,
@@ -64,14 +65,14 @@ class ItemBuilder {
     /**
      * Add only items satisfying given [predicate]
      */
-    fun <T, VB : ViewDataBinding> filtered(items: Collection<Item<T, VB>>, predicate: (Item<T, VB>) -> Boolean): ItemBuilder {
+    fun <T, VB: ViewDataBinding> filtered(items: Collection<Item<T, VB>>, predicate: (Item<T, VB>) -> Boolean): ItemBuilder {
         return items(items.filter(predicate))
     }
 
     /**
      * Add an item if it satisfies [predicate]
      */
-    fun <T, VB : ViewDataBinding> filtered(item: Item<T, VB>, predicate: (Item<T, VB>) -> Boolean): ItemBuilder {
+    fun <T, VB: ViewDataBinding> filtered(item: Item<T, VB>, predicate: (Item<T, VB>) -> Boolean): ItemBuilder {
         if (predicate(item)) item(item)
         return this
     }
@@ -89,7 +90,8 @@ class ItemBuilder {
     fun header(title: String, @LayoutRes layout: Int): ItemBuilder = item(StringHeaderItem(title, layout))
 
     companion object {
-        operator fun invoke(block: ItemBuilder.() -> Unit): List<Item<*,*>> {
+
+        operator fun invoke(block: ItemBuilder.() -> Unit): List<Item<*, *>> {
             val builder = ItemBuilder()
             block(builder)
             return builder.build()

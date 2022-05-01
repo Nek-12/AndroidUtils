@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.nek12.androidutils.databinding.BR
 
 /**
  * The generic databinding ViewHolder class that is used internally in the library.
@@ -20,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
  * item is called exactly "data" and the type is of the first type argument for your [Item] class
  * implementation (i.e. the type of the "data" field).**
  */
-class BaseHolder(val binding: ViewDataBinding, private val brVariable: Int = BR.data) :
+class BaseHolder(val binding: ViewDataBinding, private val brVariable: Int = BR.data):
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: Item<*, *>) {
@@ -32,6 +33,7 @@ class BaseHolder(val binding: ViewDataBinding, private val brVariable: Int = BR.
     }
 
     companion object {
+
         inline fun <reified T: ViewDataBinding> inflate(
             parent: ViewGroup,
             @LayoutRes layout: Int,
