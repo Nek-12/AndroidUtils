@@ -56,7 +56,7 @@ fun Int.asColor(context: Context) = ContextCompat.getColor(context, this)
 fun Int.asDrawable(context: Context) = ContextCompat.getDrawable(context, this)
 
 val Resources.currentLocale: Locale
-    get() = ConfigurationCompat.getLocales(configuration).get(0)
+    get() = ConfigurationCompat.getLocales(configuration).get(0)!!
 
 inline fun <reified T : Parcelable> Bundle.requireParcelable(name: String): T {
     return requireNotNull(getParcelable(name)) { "Bundle does not contain a $name" }

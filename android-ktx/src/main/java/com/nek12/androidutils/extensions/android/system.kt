@@ -2,6 +2,7 @@ package com.nek12.androidutils.extensions.android
 
 import android.app.Application
 import android.app.DownloadManager
+import android.app.PendingIntent
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.text.format.DateFormat
 import android.util.Log
 import android.view.autofill.AutofillManager
 import android.webkit.CookieManager
+import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
 
 /**
@@ -108,3 +110,18 @@ fun Application.relaunch() {
 }
 
 val Context.isSystem24Hour get() = DateFormat.is24HourFormat(this)
+
+inline fun <reified T> Context.makeDeeplinkIntent(uri: Uri): PendingIntent {
+
+    val intent = Intent(
+        Intent.ACTION_VIEW,
+        uri,
+        this,
+        T::class.java
+    )
+
+    return TaskStackBuilder.create(this).run {
+        addNextIntentWithParentStack(intent)
+        getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)!!
+    }
+}
