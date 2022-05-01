@@ -6,7 +6,6 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asExecutor
@@ -22,6 +21,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.AfterClass
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
@@ -95,27 +95,27 @@ class RoomTests {
     fun testOperations(): Unit = runTest {
         val entities = (1..10).map { Entry() }
         // multiple
-        doAwait { dao.add(entities) }
+        await { dao.add(entities) }
         assertEquals(10, dao.getAllSync().count())
 
-        doAwait { dao.add(entities.first()) }
+        await { dao.add(entities.first()) }
         assertEquals(10, dao.getAllSync().count())
 
         assertEquals(entities.size, dao.getSync(entities.map { it.id }).count())
 
-        doAwait { dao.delete(entities.map { it.id }) }
+        await { dao.delete(entities.map { it.id }) }
 
         assertEquals(0, dao.getAllSync().count())
 
         val entity = Entry()
-        doAwait { dao.add(entity) }
+        await { dao.add(entity) }
         assertEquals(1, dao.getAllSync().count())
 
-        doAwait { dao.delete(entity.id) }
+        await { dao.delete(entity.id) }
 
     }
 
-    private inline fun TestScope.doAwait(call: () -> Unit) {
+    private inline fun TestScope.await(call: () -> Unit) {
         call()
         advanceUntilIdle()
     }
