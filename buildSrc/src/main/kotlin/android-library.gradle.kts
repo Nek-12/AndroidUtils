@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    compileSdk = 31
-    buildToolsVersion = "31.0.0"
+    compileSdk = 32
+    buildToolsVersion = "32.0.0"
 
     defaultConfig {
         minSdk = 22
-        targetSdk = 31
+        targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         consumerProguardFiles("consumer-rules.pro")
@@ -37,7 +37,12 @@ android {
 
     kotlinOptions {
         jvmTarget = "11"
-        freeCompilerArgs += listOf("-opt-in=kotlin.RequiresOptIn", "-Xjvm-default=all")
+        freeCompilerArgs += listOf(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xjvm-default=all",
+            "-P", //TODO: Remove once support 1.6.21
+            "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+        )
     }
 
     sourceSets.all {

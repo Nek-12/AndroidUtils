@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.webkit.*
+import androidx.core.net.toUri
 
 /**
  * A listener for events that happen in [WebClient]
@@ -145,7 +146,7 @@ open class WebClient(
 
     override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
         Log.d(TAG, "ShouldOverrideUrlLoading, url: $url")
-        val uri = url.asUri
+        val uri = url?.toUri()
         return when {
             uri == null -> false
             uri.host in allowedHosts && uri.linkType == LinkType.Web -> false
@@ -161,14 +162,14 @@ open class WebClient(
         super.onPageFinished(view, url)
         //workaround bug when onPageFinished is triggered 3 times, last one is for 100%
         if (view?.progress == 100) {
-            listener?.onSuccess(url.asUri)
+            listener?.onSuccess(url?.toUri())
         }
     }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         Log.d(TAG, "onPageStarted, url: $url")
-        super.onPageStarted(view, url?.asUri?.asHttps.toString(), favicon)
-        listener?.onStartedLoading(url.asUri)
+        super.onPageStarted(view, url?.toUri()?.asHttps.toString(), favicon)
+        listener?.onStartedLoading(url?.toUri())
     }
 
     //OnReceivedError indicates no connection
@@ -199,8 +200,8 @@ open class WebClient(
         contentLength: Long
     ) {
         val fileName: String? = URLUtil.guessFileName(url, contentDisposition, mimetype)
-        if (url.asUri != null && fileName != null) {
-            listener?.onRequestedFileDownload(url.asUri!!, fileName, mimetype)
+        if (url?.toUri() != null && fileName != null) {
+            listener?.onRequestedFileDownload(url.toUri(), fileName, mimetype)
         }
     }
 
