@@ -111,7 +111,7 @@ fun Application.relaunch() {
 
 val Context.isSystem24Hour get() = DateFormat.is24HourFormat(this)
 
-inline fun <reified T> Context.makeDeeplinkIntent(uri: Uri): PendingIntent {
+inline fun <reified T> Context.makeDeeplinkIntent(uri: Uri, requestCode: Int = 0, flags: Int = PendingIntent.FLAG_UPDATE_CURRENT): PendingIntent {
 
     val intent = Intent(
         Intent.ACTION_VIEW,
@@ -122,6 +122,6 @@ inline fun <reified T> Context.makeDeeplinkIntent(uri: Uri): PendingIntent {
 
     return TaskStackBuilder.create(this).run {
         addNextIntentWithParentStack(intent)
-        getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)!!
+        getPendingIntent(requestCode, flags)!!
     }
 }
