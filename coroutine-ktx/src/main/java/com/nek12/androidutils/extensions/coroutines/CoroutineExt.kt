@@ -123,6 +123,10 @@ inline fun <T> ApiResult.Companion.flow(crossinline call: suspend () -> T): Flow
     }
 }
 
+fun <T> Flow<T>.asApiResult(): Flow<ApiResult<T>> = map<T, ApiResult<T>> { ApiResult.success(it) }
+    .onStart { emit(ApiResult.Loading) }
+    .catch { throwable -> (throwable as? Exception)?.let { emit(ApiResult.Error(it)) } ?: throw throwable }
+
 inline fun <T, R> Flow<ApiResult<T>>.map(crossinline transform: suspend (T) -> R): Flow<ApiResult<R>> =
     map { result -> result.map { transform(it) } }
 

@@ -218,7 +218,7 @@ inline fun <T, R> ApiResult<T>.mapWrapping(block: (T) -> R): ApiResult<R> {
  */
 inline fun <T> ApiResult<T?>.errorOnNull(
     exception: Exception = ConditionNotSatisfiedException("Value was null")
-): ApiResult<T> = if (this is Success && result != null) Success(result) else Error(exception)
+): ApiResult<T> = errorIf(exception) { it == null }.map { requireNotNull(it) }
 
 /**
  * Maps [Error] values to nulls

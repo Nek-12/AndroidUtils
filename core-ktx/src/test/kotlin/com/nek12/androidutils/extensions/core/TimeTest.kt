@@ -33,7 +33,7 @@ class TimeTest {
 
         assert(with0Seconds.asString(true) == "04:52 PM")
 
-        assert(time.secondsSinceMidnight == 60735)
+        assert(time.totalSeconds == 60735)
         assert(time.minutesSinceMidnight == 1012.25)
 
         assert(time.distanceInSeconds(min) == 60735) {

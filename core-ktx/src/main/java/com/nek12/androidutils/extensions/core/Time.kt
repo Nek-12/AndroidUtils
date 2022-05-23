@@ -32,7 +32,7 @@ open class Time(
     /**
      * Get the amount of seconds since midnight. Convenient for storing [Time] as an [Int] value
      */
-    val secondsSinceMidnight: Int
+    val totalSeconds: Int
         get() = hour * 3600 + minute * 60 + second
 
     val minutesSinceMidnight: Double
@@ -74,7 +74,7 @@ open class Time(
         return add(other.hour, other.minute, other.second)
     }
 
-    operator fun compareTo(time: Time): Int = secondsSinceMidnight.compareTo(time.secondsSinceMidnight)
+    operator fun compareTo(time: Time): Int = totalSeconds.compareTo(time.totalSeconds)
 
     operator fun minus(other: Time): Time = add(-other.hour, -other.minute, -other.second)
 
@@ -182,7 +182,7 @@ open class Time(
         /**
          * Get current time value using specified seconds **since midnight**
          * [seconds] is NOT a timestamp
-         * @see secondsSinceMidnight
+         * @see totalSeconds
          */
         fun fromSecondsSinceMidnight(seconds: Long): Time {
             return fromMillisSinceMidnight(seconds * 1000)

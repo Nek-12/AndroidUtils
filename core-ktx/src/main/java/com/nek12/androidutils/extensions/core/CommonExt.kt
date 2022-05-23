@@ -128,6 +128,6 @@ val ClosedRange<Short>.size @JvmName("sizeShort") get() = endInclusive - start
 val ClosedRange<Byte>.size @JvmName("sizeByte") get() = endInclusive - start
 
 val Iterable<Time?>.totalDuration: Time
-    get() = Time.fromSecondsSinceMidnight(this.sumOf { it?.secondsSinceMidnight?.toLong() ?: 0L })
+    get() = Time.fromSecondsSinceMidnight(this.sumOf { it?.totalSeconds?.toLong() ?: 0L })
 
 fun <T: Number> T?.takeIfNotZero() = takeIf { it != 0 }

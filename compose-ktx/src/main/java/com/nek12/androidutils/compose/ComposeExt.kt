@@ -63,7 +63,7 @@ fun Int.string(vararg args: Any) = stringResource(id = this, *args)
  * For those times when an api requires AnnotatedString but you don't want to build one
  */
 @Composable
-fun String.annotate() = buildAnnotatedString { append(this@annotate) }
+fun String.annotate() = AnnotatedString(this)
 
 @Composable
 fun String.annotate(builder: AnnotatedString.Builder.(String) -> Unit) = buildAnnotatedString { builder(this@annotate) }
