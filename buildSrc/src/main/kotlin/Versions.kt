@@ -1,5 +1,6 @@
 object Versions {
 
+    const val recyclerview = "1.2.1"
     const val lifecycle = "2.5.0-beta01"
     const val gradle = "7.1.3"
     const val kotlin = "1.6.21" //update in buildSrc too

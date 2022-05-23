@@ -25,6 +25,7 @@ inline fun <reified T> Activity.extra(defaultValue: T? = null) =
         override val bundle: Bundle? get() = intent.extras
     }
 
+@Suppress("UNCHECKED_CAST")
 abstract class BundleExtra<in T, V>(
     private val isNullable: Boolean,
     private val defaultValue: V?,

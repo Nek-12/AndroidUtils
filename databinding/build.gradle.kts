@@ -7,3 +7,7 @@ android {
 plugins {
     id("org.jetbrains.kotlin.kapt")
 }
+
+dependencies {
+    implementation("androidx.fragment:fragment-ktx:${Versions.fragmentKtx}")
+}
