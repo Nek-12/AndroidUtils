@@ -6,7 +6,6 @@ plugins {
 
 android {
     compileSdk = 32
-    buildToolsVersion = "32.0.0"
 
     defaultConfig {
         minSdk = 22
@@ -23,10 +22,10 @@ android {
                 project.name
             )
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            // proguardFiles(
+            //     getDefaultProguardFile("proguard-android-optimize.txt"),
+            //     "proguard-rules.pro"
+            // )
         }
     }
 
@@ -40,8 +39,6 @@ android {
         freeCompilerArgs += listOf(
             "-opt-in=kotlin.RequiresOptIn",
             "-Xjvm-default=all",
-            "-P", //TODO: Remove once support 1.6.21
-            "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
         )
     }
 
@@ -56,6 +53,16 @@ android {
         renderScript = false
         mlModelBinding = false
         resValues = false
+    }
+
+    libraryVariants.all {
+        kotlin {
+            sourceSets {
+                getByName(name) {
+                    kotlin.srcDir("build/generated/ksp/$name/kotlin")
+                }
+            }
+        }
     }
 }
 dependencies {

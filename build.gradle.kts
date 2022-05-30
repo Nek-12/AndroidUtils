@@ -5,7 +5,7 @@ plugins {
 }
 
 rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.7.4"
+rootProject.version = "0.7.5"
 
 buildscript {
 
@@ -39,13 +39,4 @@ subprojects {
         else -> apply(plugin = "android-library")
     }
 
-}
-
-kotlin {
-    sourceSets.main {
-        kotlin.srcDir("build/generated/ksp/main/kotlin")
-    }
-    sourceSets.test {
-        kotlin.srcDir("build/generated/ksp/test/kotlin")
-    }
 }
