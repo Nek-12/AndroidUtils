@@ -6,13 +6,10 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import app.cash.turbine.test
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asExecutor
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -60,6 +57,7 @@ class RoomTests {
         )
             .setTransactionExecutor(testDispatcher.asExecutor())
             .setQueryExecutor(testDispatcher.asExecutor())
+            .enableMultiInstanceInvalidation() //may help with callbacks?
             .build()
         dao = db.entryDao()
         repo = EntryRepo(dao)
@@ -71,23 +69,17 @@ class RoomTests {
     }
 
     @Test
-    fun testInvalidationSingleTable(): Unit = runTest {
+    fun testInvalidationSingleTable(): Unit = runTest(dispatchTimeoutMs = 5000) {
 
-        val job = async {
-            dao.getAll()
-                .onEach { println(it) }
-                .take(3)
-                .toList()
+        dao.getAll().test {
+            assertEquals(0, awaitItem().size)
+            dao.add(Entry())
+            val items = awaitItem()
+            assertEquals(1, items.size)
+            dao.delete(items.first().id)
+            assertEquals(0, awaitItem().size)
+            expectNoEvents()
         }
-        advanceUntilIdle()
-        dao.add(Entry())
-        advanceUntilIdle()
-        dao.add(Entry())
-        advanceUntilIdle()
-        val expected = listOf(0, 1, 2)
-        val result = job.await()
-        println(result)
-        assertEquals(expected, result.map { it.size })
     }
 
 

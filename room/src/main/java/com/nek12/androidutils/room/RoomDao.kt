@@ -5,24 +5,14 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Embedded
 import androidx.room.Insert
-import androidx.room.InvalidationTracker
 import androidx.room.OnConflictStrategy
 import androidx.room.RawQuery
 import androidx.room.RoomDatabase
 import androidx.room.Update
-import androidx.room.getQueryDispatcher
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
-import java.nio.ByteBuffer
-import java.util.*
 
 /**
  * A generic dao class that provides CRUD methods for you for free.
@@ -166,8 +156,8 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
      * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
-    fun get(id: I): Flow<T?> {
-        return createFlow { getSync(id) }
+    fun get(id: I): Flow<T?> = CoroutinesRoom.createFlow(db, true, referencedTables) {
+        getBlocking(buildSqlIdQuery(listOf(id)))?.firstOrNull()
     }
 
     /**
@@ -182,8 +172,8 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
      * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
-    fun get(ids: List<I>): Flow<List<T>> {
-        return createFlow { getSync(ids) }
+    fun get(ids: List<I>): Flow<List<T>> = CoroutinesRoom.createFlow(db, true, referencedTables) {
+        getBlocking(buildSqlIdQuery(ids)) ?: emptyList()
     }
 
     /**
@@ -191,7 +181,9 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
      * Re-emits values when any of the [referencedTables] change
      */
     fun getAll(): Flow<List<T>> {
-        return createFlow { getAllSync() }
+        return CoroutinesRoom.createFlow(db, true, referencedTables) {
+            getBlocking(SimpleSQLiteQuery("SELECT * FROM `$tableName`;")) ?: emptyList()
+        }
     }
 
     @RawQuery
@@ -200,10 +192,12 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
     @RawQuery
     protected abstract suspend fun getSync(query: SupportSQLiteQuery): List<T>?
 
+    @RawQuery
+    protected abstract fun getBlocking(query: SupportSQLiteQuery): List<T>?
+
     private fun buildSqlIdList(ids: List<I>): String {
         return buildString {
             ids.forEachIndexed { i, id ->
-                //TODO: Support UUID blobs
                 if (i != 0) {
                     append(",")
                 }
@@ -216,68 +210,18 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
         val idsQ = buildSqlIdList(ids)
         return SimpleSQLiteQuery("SELECT * FROM $tableName WHERE `id` IN ($idsQ);")
     }
-
-    /**
-     * A solution to dynamically subscribe the flow of entities to updates in the database.
-     * Uses invalidation tracker to force to re-query the database when the database is updated
-     * (calls the onInvalidated() lambda)
-     * Used because @RawQuery doesn't support generic type parameters
-     * The channel will post whenever one of the [referencedTables] is changed
-     * Source partially based on [CoroutinesRoom.createFlow] source code
-     */
-    private inline fun <R> createFlow(
-        crossinline onInvalidated: suspend () -> R,
-    ): Flow<@JvmSuppressWildcards R> = flow {
-        coroutineScope {
-            // Observer channel receives signals from the invalidation tracker to emit queries.
-            val observerChannel = Channel<Unit>(Channel.CONFLATED)
-            val observer = object: InvalidationTracker.Observer(referencedTables) {
-                override fun onInvalidated(tables: MutableSet<String>) {
-                    observerChannel.trySend(Unit)
-                }
-            }
-            observerChannel.trySend(Unit) // Initial signal to perform first query.
-            //TODO: Wait for a normal api to get transactionDispatcher from room devs
-            val queryContext = if (db.inTransaction()) {
-                db.transactionExecutor.asCoroutineDispatcher()
-            } else {
-                db.getQueryDispatcher()
-            }
-            val resultChannel = Channel<R>()
-            launch(queryContext) {
-                db.invalidationTracker.addObserver(observer)
-                try {
-                    // Iterate until cancelled, transforming observer signals to query results
-                    // to be emitted to the flow.
-                    for (signal in observerChannel) {
-                        val result = onInvalidated()
-                        resultChannel.send(result)
-                    }
-                } finally {
-                    db.invalidationTracker.removeObserver(observer)
-                }
-            }
-            emitAll(resultChannel)
-        }
-    }
-
-    //TODO: Room createFlow() does not provide an API to pass a suspending function to be executed.
-    //  Therefore, callables that CAN be passed won't work for our purposes - we need a suspending call to retrieve data
-    //  Not using provided implementation and instead using copy-pasted code with few simple additions.
-    //  Although not using provided api to get TransactionExecutor poses bug disaster by circumventing normal transaction dispatchers
-    //  (which are internal)
 }
-
-private fun UUID.toByteBlob(): ByteArray {
-    val bb: ByteBuffer = ByteBuffer.wrap(ByteArray(16))
-    bb.putLong(mostSignificantBits)
-    bb.putLong(leastSignificantBits)
-    return bb.array()
-}
-
-private fun ByteArray.toUUID(): UUID {
-    val bb: ByteBuffer = ByteBuffer.wrap(this)
-    val mostSignificantBits = bb.long
-    val leastSignificantBits = bb.long
-    return UUID(mostSignificantBits, leastSignificantBits)
-}
+//
+// private fun UUID.toByteBlob(): ByteArray {
+//     val bb: ByteBuffer = ByteBuffer.wrap(ByteArray(16))
+//     bb.putLong(mostSignificantBits)
+//     bb.putLong(leastSignificantBits)
+//     return bb.array()
+// }
+//
+// private fun ByteArray.toUUID(): UUID {
+//     val bb: ByteBuffer = ByteBuffer.wrap(this)
+//     val mostSignificantBits = bb.long
+//     val leastSignificantBits = bb.long
+//     return UUID(mostSignificantBits, leastSignificantBits)
+// }
