@@ -11,7 +11,7 @@ android {
 
 
 dependencies {
-    implementation("androidx.core:core-ktx:${Versions.coreKtx}")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
+    implementation(libs.androidx.core)
+    implementation(libs.recyclerview)
     implementation(project(":databinding"))
 }

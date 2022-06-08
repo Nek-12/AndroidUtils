@@ -1,10 +1,18 @@
 plugins {
-    id("com.google.devtools.ksp").version("${Versions.kotlin}-${Versions.ksp}")
+    alias(libs.plugins.ksp)
 }
 
 dependencies {
-    implementation("androidx.room:room-ktx:${Versions.room}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}")
-    implementation("androidx.room:room-runtime:${Versions.room}")
-    ksp("androidx.room:room-compiler:${Versions.room}")
+    implementation(libs.room.ktx)
+    implementation(libs.kotlin.coroutines)
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+
+    testImplementation(libs.bundles.unittest)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.android.test.runner)
+    androidTestImplementation(libs.android.junit)
+    androidTestImplementation(libs.espresso)
+    androidTestImplementation(libs.kotlin.coroutines.test)
 }

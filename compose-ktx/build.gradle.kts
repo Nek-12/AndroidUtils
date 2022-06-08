@@ -4,15 +4,15 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.compose
+        kotlinCompilerExtensionVersion = libs.versions.compose.get().toString()
         useLiveLiterals = true
     }
 }
 
 dependencies {
     implementation(project(":android-ktx"))
-    implementation("androidx.compose.ui:ui:${Versions.compose}")
-    implementation("androidx.compose.foundation:foundation:${Versions.compose}")
-    implementation("androidx.compose.animation:animation-graphics:${Versions.compose}")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}")
+    implementation(libs.compose.ui)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.graphics)
+    implementation(libs.lifecycle.runtime)
 }

@@ -5,5 +5,5 @@ android {
 }
 
 dependencies {
-    implementation("androidx.fragment:fragment-ktx:${Versions.fragmentKtx}")
+    implementation(libs.androidx.fragment)
 }
