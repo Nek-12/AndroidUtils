@@ -13,6 +13,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
 
 /**
  * A generic dao class that provides CRUD methods for you for free.
@@ -172,9 +173,11 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
      * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
-    fun get(ids: List<I>): Flow<List<T>> = CoroutinesRoom.createFlow(db, true, referencedTables) {
-        getBlocking(buildSqlIdQuery(ids)) ?: emptyList()
-    }
+    fun get(ids: List<I>): Flow<List<T>> = ids.takeIf { it.isNotEmpty() }?.let {
+        CoroutinesRoom.createFlow(db, true, referencedTables) {
+            getBlocking(buildSqlIdQuery(ids)) ?: emptyList()
+        }
+    } ?: emptyFlow()
 
     /**
      * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed.
