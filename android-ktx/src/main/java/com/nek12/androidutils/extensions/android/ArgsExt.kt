@@ -9,15 +9,14 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 
-
 inline fun <reified T: Activity> Context.intent(vararg extras: Pair<KProperty1<T, *>, Any?>): Intent {
-    return intentFor<T>(this).setExtras(*extras)
+    return intentFor<T>(this).setExtras(extras = extras)
 }
 
 inline fun <reified T: Any> intentFor(context: Context): Intent = Intent(context, T::class.java)
 
 fun <T: Activity> Intent.setExtras(vararg extras: Pair<KProperty1<T, Any?>, Any?>): Intent = apply {
-    putExtras(bundleOf(*extras.map { it.first.name to it.second }.toTypedArray()))
+    putExtras(bundleOf(pairs = extras.map { it.first.name to it.second }.toTypedArray()))
 }
 
 inline fun <reified T> Activity.extra(defaultValue: T? = null) =

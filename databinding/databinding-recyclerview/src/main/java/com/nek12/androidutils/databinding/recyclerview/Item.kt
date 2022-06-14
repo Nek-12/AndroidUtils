@@ -125,7 +125,8 @@ abstract class Item<T, in VB: ViewDataBinding> {
         const val NO_ID = RecyclerView.NO_ID
 
         fun <T, VB: ViewDataBinding> itemFromData(
-            item: T, id: Long?,
+            item: T,
+            id: Long?,
             @LayoutRes layout: Int,
             binder: RVBinder<T, VB>?
         ): GenericItem<T, VB> = GenericItem(item, id ?: NO_ID, layout, binder)

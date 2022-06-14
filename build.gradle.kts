@@ -66,7 +66,6 @@ subprojects {
     }
 }
 
-
 tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektFormat") {
     description = "Formats whole project."
     parallel = true
@@ -88,7 +87,7 @@ tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektAll") {
     parallel = true
     buildUponDefaultConfig = true
     setSource(file(projectDir))
-    config.setFrom(File(rootDir,"detekt.yml"))
+    config.setFrom(File(rootDir, "detekt.yml"))
     include("**/*.kt", "**/*.kts")
     exclude("**/resources/**", "**/build/**", "**/.idea/**")
     reports {

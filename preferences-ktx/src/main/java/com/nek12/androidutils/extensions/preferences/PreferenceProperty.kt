@@ -37,7 +37,6 @@ internal abstract class PreferenceProperty<in T, V>(
     @SuppressLint("CommitPrefEdits")
     override fun setValue(thisRef: T, property: KProperty<*>, value: V) =
         getPreferences(thisRef).edit().setter(key ?: property.name, value).apply()
-
 }
 
 internal class DefaultPreferenceProperty<T>(

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
-
 typealias Inflater<T> = (inflater: LayoutInflater, container: ViewGroup?, attach: Boolean) -> T
 
 const val VB_NOT_AVAILABLE_MESSAGE = "ViewBinding is not available outside view lifecycle"

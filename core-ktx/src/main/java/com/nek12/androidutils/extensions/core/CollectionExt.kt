@@ -52,7 +52,6 @@ fun <T> MutableCollection<T>.replaceWith(src: Collection<T>) {
 
 fun <T> List<T>.randomElements(count: Int): List<T> = shuffled().take(count)
 
-
 /**
  * @param selector is a function using which the value by which we reorder is going to be selected, must be the same
  * value that is specified in the [order]

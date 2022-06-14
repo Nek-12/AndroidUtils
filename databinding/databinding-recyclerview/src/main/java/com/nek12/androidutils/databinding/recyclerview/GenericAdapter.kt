@@ -52,8 +52,8 @@ open class GenericAdapter(
         val vh = BaseHolder.inflate<ViewDataBinding>(parent, viewType, lifecycleOwner, brVariable)
         (listener as? ItemInflateListener)?.onViewHolderCreated(vh, viewType)
         return applyListenerToAllViews(vh, listener) {
-            //defers getting item by position using a lambda object
-            //when position is available
+            // defers getting item by position using a lambda object
+            // when position is available
             getItem(vh.bindingAdapterPosition)
         }
     }
@@ -120,7 +120,6 @@ inline fun <T: Item<*, *>> applyListenerToAllViews(
     }
     return vh
 }
-
 
 /**
  * Like [submitData], but transforms your data objects into Items for you.

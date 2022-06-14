@@ -90,7 +90,6 @@ class TimeTest {
         assert(time - min == time)
         assert(time - with0Seconds == Time(0, 0, time.second))
 
-
         assert(time > min)
     }
 }

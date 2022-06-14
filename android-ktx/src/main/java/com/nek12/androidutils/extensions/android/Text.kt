@@ -35,6 +35,7 @@ sealed class Text {
         }
     }
 
+    @Suppress("SpreadOperator")
     fun string(context: Context): String = when (this@Text) {
         is Dynamic -> text
         is Resource -> context.getString(id, *args)

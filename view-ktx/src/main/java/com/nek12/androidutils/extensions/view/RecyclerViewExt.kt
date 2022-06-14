@@ -32,7 +32,6 @@ fun ViewGroup.clearRecyclerViewAdapters() {
     }
 }
 
-
 /**
  * Execute the specified [action] for each viewholder that is currently visible.
  */
@@ -53,7 +52,8 @@ fun <T, R: RecyclerView.ViewHolder?> ListAdapter<T, R>.clear() = submitList(empt
  */
 fun RecyclerView.autoFitColumns(columnWidthDP: Int, columnSpacingDp: Int) {
     val displayMetrics = this.resources.displayMetrics
-    val noOfColumns =
-        floor((displayMetrics.widthPixels / displayMetrics.density) / (columnWidthDP.toDouble() + columnSpacingDp.toDouble())).toInt()
-    this.layoutManager = GridLayoutManager(this.context, noOfColumns)
+    val noOfColumns = floor(
+        displayMetrics.widthPixels / displayMetrics.density / (columnWidthDP.toDouble() + columnSpacingDp.toDouble())
+    ).toInt()
+    layoutManager = GridLayoutManager(this.context, noOfColumns)
 }

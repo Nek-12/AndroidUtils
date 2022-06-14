@@ -81,7 +81,6 @@ class RoomTests {
         }
     }
 
-
     @Test
     fun testOperations(): Unit = testScope.runTest(dispatchTimeoutMs = 5000) {
         val entities = (1..10).map { Entry() }
@@ -103,7 +102,6 @@ class RoomTests {
         assertEquals(1, dao.getAllSync().count())
 
         await { dao.delete(entity.id) }
-
     }
 
     private inline fun TestScope.await(call: () -> Unit) {

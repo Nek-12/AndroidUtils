@@ -13,7 +13,6 @@ import androidx.room.Update
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**
  * A generic dao class that provides CRUD methods for you for free.
@@ -154,7 +153,8 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
     }
 
     /**
-     * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
+     * Use [kotlinx.coroutines.flow.distinctUntilChanged] to prevent
+     * duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
     fun get(id: I): Flow<T?> = CoroutinesRoom.createFlow(db, false, referencedTables) {
@@ -162,7 +162,8 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
     }
 
     /**
-     * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
+     * Use [kotlinx.coroutines.flow.distinctUntilChanged] to prevent
+     * duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
     fun get(vararg ids: I): Flow<List<T>> {
@@ -170,7 +171,8 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
     }
 
     /**
-     * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
+     * Use [kotlinx.coroutines.flow.distinctUntilChanged] to prevent
+     * duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
     fun get(ids: List<I>): Flow<List<T>> = CoroutinesRoom.createFlow(db, true, referencedTables) {
@@ -178,7 +180,8 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
     }
 
     /**
-     * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed.
+     * Use [kotlinx.coroutines.flow.distinctUntilChanged] to prevent
+     * duplicate emissions when unrelated entities are changed.
      * Re-emits values when any of the [referencedTables] change
      */
     fun getAll(): Flow<List<T>> = CoroutinesRoom.createFlow(db, false, referencedTables) {

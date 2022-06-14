@@ -82,14 +82,14 @@ open class AlarmHelper(protected val context: Context) {
      * @see sendNotification
      * **/
     fun createNotification(
-        channel_id: String,
+        channelId: String,
         title: String,
         text: String,
         onTap: PendingIntent?,
         @DrawableRes icon: Int,
         vararg actions: Notification.Action,
     ): Notification {
-        return Notification.Builder(context, channel_id)
+        return Notification.Builder(context, channelId)
             .setSmallIcon(icon)
             .setContentTitle(title)
             .setContentText(text)

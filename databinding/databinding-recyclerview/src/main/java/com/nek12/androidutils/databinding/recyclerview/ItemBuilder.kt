@@ -65,9 +65,10 @@ class ItemBuilder {
     /**
      * Add only items satisfying given [predicate]
      */
-    fun <T, VB: ViewDataBinding> filtered(items: Collection<Item<T, VB>>, predicate: (Item<T, VB>) -> Boolean): ItemBuilder {
-        return items(items.filter(predicate))
-    }
+    fun <T, VB: ViewDataBinding> filtered(
+        items: Collection<Item<T, VB>>,
+        predicate: (Item<T, VB>) -> Boolean
+    ): ItemBuilder = items(items.filter(predicate))
 
     /**
      * Add an item if it satisfies [predicate]

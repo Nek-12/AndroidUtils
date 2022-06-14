@@ -69,7 +69,7 @@ fun View.showLazyActionSnackbar(
     }
     snackbar.addCallback(object: Snackbar.Callback() {
         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-            if (event != DISMISS_EVENT_ACTION) //always run the action except when the user clicks undo
+            if (event != DISMISS_EVENT_ACTION) // always run the action except when the user clicks undo
                 onDismiss(snackbar)
             super.onDismissed(transientBottomBar, event)
         }
@@ -110,7 +110,6 @@ fun View.showSnackbar(
     animMode: Int = Snackbar.ANIMATION_MODE_SLIDE,
 ) = showSnackbar(context.getString(msg), duration, animMode)
 
-
 /**
  * Shows a cancelable modal material dialog with specified [message], [title] and [icon].
  * Default icon is material info icon -> (i)
@@ -135,7 +134,6 @@ fun Context.showInfoDialog(
     }
     d.show()
 }
-
 
 /**
  * @see [Context.showInfoDialog]
@@ -164,7 +162,6 @@ fun Context.showConfirmationDialog(
     okAction: (dialog: DialogInterface) ->
     Unit
 ) = showInfoDialog(title, content, icon, {}, okAction)
-
 
 /**
  * @see [Context.showInfoDialog]
@@ -195,7 +192,6 @@ fun Fragment.showInfoDialog(
         icon, onCancel, onAgree
     )
 }
-
 
 /**
  * @param ratio: The percentage of the screen the sheet should take, e.g. 0.6 = 60%
@@ -253,19 +249,17 @@ fun View.addBadge(
     )
 }
 
-
 /**
  * A [FrameLayout] that wraps your layout and hold the behavior of the bottom sheet
  */
-val BottomSheetDialogFragment.bottomSheet: FrameLayout get() = requireDialog().findViewById(com.google.android.material.R.id.design_bottom_sheet)
+val BottomSheetDialogFragment.bottomSheet: FrameLayout
+    get() = requireDialog().findViewById(com.google.android.material.R.id.design_bottom_sheet)
 
 /**
  * Whether the height of this bottom sheet is such that when expanded it's going to be full-screen
  */
 var BottomSheetDialogFragment.fullscreen: Boolean
-    get() {
-        return bottomSheet.layoutParams.height == MATCH_PARENT
-    }
+    get() = bottomSheet.layoutParams.height == MATCH_PARENT
     set(value) {
         bottomSheet.layoutParams.height = if (value) MATCH_PARENT else WRAP_CONTENT
     }

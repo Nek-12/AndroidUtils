@@ -50,7 +50,6 @@ fun SpannableString.withClickableSpan(
     return this
 }
 
-
 /**
  * [span] is a ..Span object like a [ForegroundColorSpan] or a [SuperscriptSpan]
  * Spans this whole string

@@ -50,7 +50,6 @@ val String?.isValid: Boolean
 
 fun String?.takeIfValid(): String? = if (isValid) this else null
 
-
 /**
  * Check if this String has length in [range]
  */
@@ -71,7 +70,6 @@ val Long.asDate get() = Date(this)
 
 val Int.asDate get() = Date(toLong())
 
-
 /**
  * Uses [LazyThreadSafetyMode.NONE] to provide values quicker
  */
@@ -89,7 +87,6 @@ fun List<String>.filterBySubstring(substring: String?): List<String> {
         .toList()
     else this
 }
-
 
 @Suppress("NewApi")
 fun List<DayOfWeek>.sortedByLocale(locale: Locale = Locale.getDefault()): List<DayOfWeek> {

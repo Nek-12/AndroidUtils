@@ -3,7 +3,6 @@ package com.nek12.androidutils.databinding.recyclerview
 import android.view.View
 import androidx.annotation.LayoutRes
 
-
 /**
  * A clicklistener that is fired when the user clicks on **any** of the views inside your Item view.
  * For example, if the user clicks on a button, you will get this button as a [view] parameter
