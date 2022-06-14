@@ -1,6 +1,3 @@
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.include
-
 plugins {
     kotlin("jvm")
     `kotlin-dsl`
@@ -8,7 +5,7 @@ plugins {
 }
 
 rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.7.6"
+rootProject.version = "0.7.7"
 
 buildscript {
 
@@ -69,7 +66,6 @@ subprojects {
     }
 }
 
-
 tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektFormat") {
     description = "Formats whole project."
     parallel = true
@@ -87,11 +83,11 @@ tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektFormat") {
 }
 
 tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektAll") {
-    description = "Runs the whole project at once."
+    description = "Runs detekt on the project."
     parallel = true
     buildUponDefaultConfig = true
     setSource(file(projectDir))
-    config.setFrom(File(rootDir,"detekt.yml"))
+    config.setFrom(File(rootDir, "detekt.yml"))
     include("**/*.kt", "**/*.kts")
     exclude("**/resources/**", "**/build/**", "**/.idea/**")
     reports {

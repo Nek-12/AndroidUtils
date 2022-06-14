@@ -5,7 +5,8 @@
 ![Maintenance](https://img.shields.io/maintenance/yes/2022)
 [![Downloads on Jitpack](https://jitpack.io/v/Nek-12/AndroidUtils/month.svg)](https://jitpack.io/#Nek-12/AndroidUtils.svg)
 
-Latest version is  [![Jitpack Version](https://jitpack.io/v/Nek-12/AndroidUtils.svg)](https://jitpack.io/#Nek-12/AndroidUtils) 
+Latest version
+is  [![Jitpack Version](https://jitpack.io/v/Nek-12/AndroidUtils.svg)](https://jitpack.io/#Nek-12/AndroidUtils)
 
 Extensions available:
 

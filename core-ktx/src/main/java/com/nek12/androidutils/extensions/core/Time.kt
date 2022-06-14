@@ -3,7 +3,10 @@
 package com.nek12.androidutils.extensions.core
 
 import java.io.Serializable
-import java.time.*
+import java.time.Instant
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.math.abs
 
 /**
@@ -21,7 +24,7 @@ open class Time(
     val hour: Int,
     val minute: Int,
     val second: Int = 0,
-): Cloneable, Serializable {
+) : Cloneable, Serializable {
 
     /**
      * Get hour in am/pm format (just the number)
@@ -130,7 +133,6 @@ open class Time(
         else -> throw IndexOutOfBoundsException("Only 0,1 and 2 are valid values")
     }
 
-
     companion object {
 
         /**
@@ -141,7 +143,7 @@ open class Time(
          * - 15 -> "15"
          */
         fun asString(value: Int): String {
-            return if (value < 10) "0${value}" else value.toString()
+            return if (value < 10) "0$value" else value.toString()
         }
 
         /**
@@ -149,7 +151,7 @@ open class Time(
          * @see Time.toInt
          */
         fun fromInt(hms: Int): Time {
-            return Time(hms / 10000, (hms / 100) % 100, hms % 100)
+            return Time(hms / 10000, hms / 100 % 100, hms % 100)
         }
 
         /**
@@ -217,7 +219,6 @@ open class Time(
                 val seconds = if (parts.size == 3) parts[2].toInt() else 0
 
                 return Time(hours, minutes, seconds)
-
             } catch (e: Exception) {
                 throw IllegalArgumentException("Couldn't parse time", e)
             }
@@ -256,7 +257,7 @@ open class Time(
             return try {
                 of(text)
                 true
-            } catch (e: Exception) {
+            } catch (ignored: Exception) {
                 false
             }
         }

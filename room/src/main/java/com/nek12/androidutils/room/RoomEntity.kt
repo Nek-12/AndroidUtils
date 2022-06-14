@@ -20,7 +20,7 @@ package com.nek12.androidutils.room
  * @see RoomDataSource
  * @see RoomDao
  */
-interface RoomEntity<T: Any> {
+interface RoomEntity<T : Any> {
 
     val id: T
 

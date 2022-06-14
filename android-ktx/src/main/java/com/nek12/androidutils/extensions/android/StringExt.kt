@@ -37,7 +37,7 @@ fun SpannableString.withClickableSpan(
     clickablePart: String,
     onClickListener: () -> Unit
 ): SpannableString {
-    val clickableSpan = object: ClickableSpan() {
+    val clickableSpan = object : ClickableSpan() {
         override fun onClick(widget: View) = onClickListener.invoke()
     }
     val clickablePartStart = indexOf(clickablePart)
@@ -49,7 +49,6 @@ fun SpannableString.withClickableSpan(
     )
     return this
 }
-
 
 /**
  * [span] is a ..Span object like a [ForegroundColorSpan] or a [SuperscriptSpan]

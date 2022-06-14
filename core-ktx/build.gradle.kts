@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val compileKotlin: KotlinCompile by tasks
 
-
 plugins {
     kotlin("jvm")
     `maven-publish`
@@ -13,11 +12,9 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-
 compileKotlin.kotlinOptions {
     jvmTarget = "11"
 }
-
 
 publishing {
     publications {
@@ -28,4 +25,8 @@ publishing {
             from(components["java"])
         }
     }
+}
+
+dependencies {
+    testImplementation(libs.bundles.unittest)
 }

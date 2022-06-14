@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
  * @see RoomDao
  * @see RoomEntity
  */
-open class RoomDataSource<I: Any, T: RoomEntity<I>>(private val dao: RoomDao<I, T>) {
+open class RoomDataSource<I : Any, T : RoomEntity<I>>(private val dao: RoomDao<I, T>) {
 
     open suspend fun add(entity: T) = dao.add(entity)
     open suspend fun add(vararg entities: T) = dao.add(*entities)
@@ -33,7 +33,7 @@ open class RoomDataSource<I: Any, T: RoomEntity<I>>(private val dao: RoomDao<I, 
     open suspend fun delete(id: I) = dao.delete(id)
 
     @JvmName("deleteByIds")
-    @Suppress("INAPPLICABLE_JVM_NAME") //TODO: Java incompatibility
+    @Suppress("INAPPLICABLE_JVM_NAME") // TODO: Java incompatibility
     open suspend fun delete(ids: List<I>) = dao.delete(ids)
     open suspend fun delete(vararg ids: I) = dao.delete(*ids)
 

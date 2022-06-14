@@ -3,13 +3,33 @@
 package com.nek12.androidutils.extensions.coroutines
 
 import android.view.View
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import com.nek12.androidutils.extensions.core.ApiResult
 import com.nek12.androidutils.extensions.core.map
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.collections.forEach
 import kotlin.collections.map
 import kotlin.coroutines.CoroutineContext
@@ -129,7 +149,6 @@ fun <T> Flow<T>.asApiResult(): Flow<ApiResult<T>> = map<T, ApiResult<T>> { ApiRe
 
 inline fun <T, R> Flow<ApiResult<T>>.map(crossinline transform: suspend (T) -> R): Flow<ApiResult<R>> =
     map { result -> result.map { transform(it) } }
-
 
 fun View.clicks(delay: Long = 1000L) = callbackFlow {
     var lastTime = 0L

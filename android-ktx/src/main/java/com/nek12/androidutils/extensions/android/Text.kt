@@ -8,9 +8,9 @@ sealed class Text {
     abstract override fun equals(other: Any?): Boolean
     abstract override fun hashCode(): Int
 
-    data class Dynamic(val text: String): Text()
+    data class Dynamic(val text: String) : Text()
 
-    class Resource(@StringRes val id: Int, vararg val args: Any): Text() {
+    class Resource(@StringRes val id: Int, vararg val args: Any) : Text() {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -35,6 +35,7 @@ sealed class Text {
         }
     }
 
+    @Suppress("SpreadOperator")
     fun string(context: Context): String = when (this@Text) {
         is Dynamic -> text
         is Resource -> context.getString(id, *args)

@@ -8,12 +8,11 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.RawQuery
 import androidx.room.RoomDatabase
+import androidx.room.Transaction
 import androidx.room.Update
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emptyFlow
 
 /**
  * A generic dao class that provides CRUD methods for you for free.
@@ -32,7 +31,7 @@ import kotlinx.coroutines.flow.emptyFlow
  * @see RoomDataSource
  **/
 @Dao
-abstract class RoomDao<I: Any, T: RoomEntity<I>>(
+abstract class RoomDao<I : Any, T : RoomEntity<I>>(
     private val db: RoomDatabase,
     private val tableName: String,
     private val referencedTables: Array<String> = arrayOf(tableName),
@@ -154,15 +153,17 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
     }
 
     /**
-     * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
+     * Use [kotlinx.coroutines.flow.distinctUntilChanged] to prevent
+     * duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
-    fun get(id: I): Flow<T?> = CoroutinesRoom.createFlow(db, true, referencedTables) {
+    fun get(id: I): Flow<T?> = CoroutinesRoom.createFlow(db, false, referencedTables) {
         getBlocking(buildSqlIdQuery(listOf(id)))?.firstOrNull()
     }
 
     /**
-     * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
+     * Use [kotlinx.coroutines.flow.distinctUntilChanged] to prevent
+     * duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
     fun get(vararg ids: I): Flow<List<T>> {
@@ -170,33 +171,32 @@ abstract class RoomDao<I: Any, T: RoomEntity<I>>(
     }
 
     /**
-     * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed
+     * Use [kotlinx.coroutines.flow.distinctUntilChanged] to prevent
+     * duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
-    fun get(ids: List<I>): Flow<List<T>> = ids.takeIf { it.isNotEmpty() }?.let {
-        CoroutinesRoom.createFlow(db, true, referencedTables) {
-            getBlocking(buildSqlIdQuery(ids)) ?: emptyList()
-        }
-    } ?: emptyFlow()
+    fun get(ids: List<I>): Flow<List<T>> = CoroutinesRoom.createFlow(db, true, referencedTables) {
+        getBlocking(buildSqlIdQuery(ids)) ?: emptyList()
+    }
 
     /**
-     * Use [Flow.distinctUntilChanged] to prevent duplicate emissions when unrelated entities are changed.
+     * Use [kotlinx.coroutines.flow.distinctUntilChanged] to prevent
+     * duplicate emissions when unrelated entities are changed.
      * Re-emits values when any of the [referencedTables] change
      */
-    fun getAll(): Flow<List<T>> {
-        return CoroutinesRoom.createFlow(db, true, referencedTables) {
-            getBlocking(SimpleSQLiteQuery("SELECT * FROM `$tableName`;")) ?: emptyList()
-        }
+    fun getAll(): Flow<List<T>> = CoroutinesRoom.createFlow(db, false, referencedTables) {
+        getBlocking(SimpleSQLiteQuery("SELECT * FROM `$tableName`;")) ?: emptyList()
     }
 
     @RawQuery
+    @Transaction
     protected abstract suspend fun delete(query: SupportSQLiteQuery): Int
 
     @RawQuery
     protected abstract suspend fun getSync(query: SupportSQLiteQuery): List<T>?
 
     @RawQuery
-    protected abstract fun getBlocking(query: SupportSQLiteQuery): List<T>?
+    internal abstract fun getBlocking(query: SupportSQLiteQuery): List<T>?
 
     private fun buildSqlIdList(ids: List<I>): String {
         return buildString {

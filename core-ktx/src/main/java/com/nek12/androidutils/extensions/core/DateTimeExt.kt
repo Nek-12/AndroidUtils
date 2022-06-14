@@ -20,7 +20,6 @@ import java.util.Calendar.SECOND
 import java.util.Calendar.YEAR
 import java.util.Calendar.getInstance
 
-
 val ZonedDateTime.midnight: ZonedDateTime get() = truncatedTo(ChronoUnit.DAYS)
 
 fun ZonedDateTime.onSameLocalDay(other: ZonedDateTime): Boolean {

@@ -88,7 +88,7 @@ fun stringPreference(
     preferences
 )
 
-//------------------  Default preferences
+// ------------------  Default preferences
 
 fun intPreference(
     defaultValue: Int = 0,

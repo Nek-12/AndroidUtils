@@ -26,7 +26,7 @@ class ItemBuilder {
 
     fun <T> item(item: T, mapper: (T) -> Item<*, *>): ItemBuilder = item(mapper(item))
 
-    fun <T, VB: ViewDataBinding> data(
+    fun <T, VB : ViewDataBinding> data(
         data: T,
         @LayoutRes layout: Int,
         id: Long,
@@ -36,7 +36,7 @@ class ItemBuilder {
         return this
     }
 
-    fun <T, VB: ViewDataBinding> data(
+    fun <T, VB : ViewDataBinding> data(
         data: Collection<T>,
         @LayoutRes layout: Int,
         idSelector: (T) -> Long?,
@@ -65,14 +65,15 @@ class ItemBuilder {
     /**
      * Add only items satisfying given [predicate]
      */
-    fun <T, VB: ViewDataBinding> filtered(items: Collection<Item<T, VB>>, predicate: (Item<T, VB>) -> Boolean): ItemBuilder {
-        return items(items.filter(predicate))
-    }
+    fun <T, VB : ViewDataBinding> filtered(
+        items: Collection<Item<T, VB>>,
+        predicate: (Item<T, VB>) -> Boolean
+    ): ItemBuilder = items(items.filter(predicate))
 
     /**
      * Add an item if it satisfies [predicate]
      */
-    fun <T, VB: ViewDataBinding> filtered(item: Item<T, VB>, predicate: (Item<T, VB>) -> Boolean): ItemBuilder {
+    fun <T, VB : ViewDataBinding> filtered(item: Item<T, VB>, predicate: (Item<T, VB>) -> Boolean): ItemBuilder {
         if (predicate(item)) item(item)
         return this
     }

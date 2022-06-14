@@ -57,7 +57,6 @@ class RoomTests {
         )
             .setTransactionExecutor(testDispatcher.asExecutor())
             .setQueryExecutor(testDispatcher.asExecutor())
-            .enableMultiInstanceInvalidation() //may help with callbacks?
             .build()
         dao = db.entryDao()
         repo = EntryRepo(dao)
@@ -69,7 +68,7 @@ class RoomTests {
     }
 
     @Test
-    fun testInvalidationSingleTable(): Unit = runTest(dispatchTimeoutMs = 5000) {
+    fun testInvalidationSingleTable(): Unit = testScope.runTest(dispatchTimeoutMs = 5000) {
 
         dao.getAllDefault().test {
             assertEquals(0, awaitItem().size)
@@ -82,9 +81,8 @@ class RoomTests {
         }
     }
 
-
     @Test
-    fun testOperations(): Unit = runTest {
+    fun testOperations(): Unit = testScope.runTest(dispatchTimeoutMs = 5000) {
         val entities = (1..10).map { Entry() }
         // multiple
         await { dao.add(entities) }
@@ -104,7 +102,6 @@ class RoomTests {
         assertEquals(1, dao.getAllSync().count())
 
         await { dao.delete(entity.id) }
-
     }
 
     private inline fun TestScope.await(call: () -> Unit) {

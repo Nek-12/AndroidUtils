@@ -7,7 +7,15 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.webkit.*
+import android.webkit.CookieManager
+import android.webkit.DownloadListener
+import android.webkit.URLUtil
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebStorage
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.core.net.toUri
 
 /**
@@ -54,7 +62,7 @@ interface WebClientListener {
 @SuppressLint("SetJavaScriptEnabled")
 open class WebClient(
     private val allowedHosts: List<String?>,
-): WebViewClient(), DownloadListener {
+) : WebViewClient(), DownloadListener {
 
     private var webView: WebView? = null
     private var listener: WebClientListener? = null
@@ -89,7 +97,7 @@ open class WebClient(
      */
     open fun saveState(outState: Bundle) {
         webView?.saveState(outState)
-        //TODO: Restore and save client-specific fields
+        // TODO: Restore and save client-specific fields
     }
 
     /**
@@ -139,9 +147,9 @@ open class WebClient(
         webView?.clearHistory()
         webView?.clearCache(true)
         webView?.clearFormData()
-        WebStorage.getInstance().deleteAllData();
-        CookieManager.getInstance().removeAllCookies(null);
-        CookieManager.getInstance().flush();
+        WebStorage.getInstance().deleteAllData()
+        CookieManager.getInstance().removeAllCookies(null)
+        CookieManager.getInstance().flush()
     }
 
     override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
@@ -160,7 +168,7 @@ open class WebClient(
     override fun onPageFinished(view: WebView?, url: String?) {
         Log.d(TAG, "onPageFinished, url: $url")
         super.onPageFinished(view, url)
-        //workaround bug when onPageFinished is triggered 3 times, last one is for 100%
+        // workaround bug when onPageFinished is triggered 3 times, last one is for 100%
         if (view?.progress == 100) {
             listener?.onSuccess(url?.toUri())
         }
@@ -172,7 +180,7 @@ open class WebClient(
         listener?.onStartedLoading(url?.toUri())
     }
 
-    //OnReceivedError indicates no connection
+    // OnReceivedError indicates no connection
     override fun onReceivedError(
         view: WebView?,
         request: WebResourceRequest?,
@@ -180,10 +188,10 @@ open class WebClient(
     ) {
         super.onReceivedError(view, request, error)
         Log.e(TAG, "Webview error: $error")
-        //only handle the main frame because we get a bunch of errors from images, ads etc.
+        // only handle the main frame because we get a bunch of errors from images, ads etc.
         if (request?.isForMainFrame == true) {
             if (request.url.scheme == "http") {
-                //Try to redirect to https links if policy does not allow http.
+                // Try to redirect to https links if policy does not allow http.
                 load(request.url.asHttps)
             } else {
                 listener?.onError(request.url)
@@ -191,7 +199,7 @@ open class WebClient(
         }
     }
 
-    //when we encounter a link to a file, just open it in the browser, let the system handle it
+    // when we encounter a link to a file, just open it in the browser, let the system handle it
     override fun onDownloadStart(
         url: String?,
         userAgent: String?,

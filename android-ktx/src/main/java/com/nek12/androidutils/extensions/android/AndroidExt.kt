@@ -82,13 +82,13 @@ fun Context.shareAsText(text: String, onAppNotFound: (e: Exception) -> Unit) {
 }
 
 fun Context.sendEmail(mail: Email, onAppNotFound: (e: Exception) -> Unit) {
-    //Use SENDTO to avoid showing pickers and letting non-email apps interfere
+    // Use SENDTO to avoid showing pickers and letting non-email apps interfere
     val sendIntent: Intent = Intent(Intent.ACTION_SENDTO).apply {
-        //EXTRA_EMAIL should be array
+        // EXTRA_EMAIL should be array
         putExtra(Intent.EXTRA_EMAIL, mail.recipients?.toTypedArray())
         putExtra(Intent.EXTRA_SUBJECT, mail.subject)
         putExtra(Intent.EXTRA_TEXT, mail.body)
-        //RFC standard for email
+        // RFC standard for email
         type = "message/rfc822"
     }
     startActivityCatching(sendIntent, onAppNotFound)
@@ -102,7 +102,7 @@ val Context.autofillManager
     }
 
 fun Application.relaunch() {
-    //Obtain the startup Intent of the application with the package name of the application
+    // Obtain the startup Intent of the application with the package name of the application
     val intent: Intent? = packageManager.getLaunchIntentForPackage(packageName)?.apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
@@ -111,7 +111,11 @@ fun Application.relaunch() {
 
 val Context.isSystem24Hour get() = DateFormat.is24HourFormat(this)
 
-inline fun <reified T> Context.makeDeeplinkIntent(uri: Uri, requestCode: Int = 0, flags: Int = PendingIntent.FLAG_UPDATE_CURRENT): PendingIntent {
+inline fun <reified T> Context.makeDeeplinkIntent(
+    uri: Uri,
+    requestCode: Int = 0,
+    flags: Int = PendingIntent.FLAG_UPDATE_CURRENT
+): PendingIntent {
 
     val intent = Intent(
         Intent.ACTION_VIEW,

@@ -30,7 +30,6 @@ import com.nek12.androidutils.extensions.android.Text
 import com.nek12.androidutils.extensions.android.Text.Dynamic
 import com.nek12.androidutils.extensions.android.Text.Resource
 
-
 val isSystem24Hour @Composable get() = DateFormat.is24HourFormat(LocalContext.current)
 
 @ExperimentalComposeUiApi
@@ -66,8 +65,8 @@ fun Int.string(vararg args: Any) = stringResource(id = this, *args)
 fun String.annotate() = AnnotatedString(this)
 
 @Composable
+@Suppress("ComposableEventParameterNaming")
 fun String.annotate(builder: AnnotatedString.Builder.(String) -> Unit) = buildAnnotatedString { builder(this@annotate) }
-
 
 val displayDensity: Int @Composable get() = LocalConfiguration.current.densityDpi
 
@@ -78,14 +77,14 @@ val screenHeigthDp: Int @Composable get() = LocalConfiguration.current.screenHei
 val screenWidthPx: Int @Composable get() = screenWidthDp * displayDensity
 
 @Composable
-inline fun <reified BoundService: Service, reified BoundServiceBinder: Binder> rememberBoundLocalService(
+inline fun <reified BoundService : Service, reified BoundServiceBinder : Binder> rememberBoundLocalService(
     flags: Int = Context.BIND_AUTO_CREATE,
     crossinline getService: @DisallowComposableCalls BoundServiceBinder.() -> BoundService,
 ): State<BoundService?> {
     val context: Context = LocalContext.current
     val boundService = remember(context) { mutableStateOf<BoundService?>(null) }
     val serviceConnection: ServiceConnection = remember(context) {
-        object: ServiceConnection {
+        object : ServiceConnection {
             override fun onServiceConnected(className: ComponentName, service: IBinder) {
                 boundService.value = (service as BoundServiceBinder).getService()
             }
@@ -106,5 +105,5 @@ inline fun <reified BoundService: Service, reified BoundServiceBinder: Binder> r
 @Composable
 fun Text.string(): String = when (this) {
     is Dynamic -> text
-    is Resource -> id.string(*args)
+    is Resource -> id.string(args = args)
 }

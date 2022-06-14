@@ -8,11 +8,11 @@ import com.nek12.androidutils.extensions.core.ApiResult.Success
 
 class NotFinishedException(
     message: String? = "ApiResult is still in Loading state",
-): IllegalArgumentException(message)
+) : IllegalArgumentException(message)
 
 class ConditionNotSatisfiedException(
     message: String? = "ApiResult condition was not satisfied",
-): IllegalArgumentException(message)
+) : IllegalArgumentException(message)
 
 /**
  * A class that wraps a result of a network call.
@@ -22,7 +22,7 @@ sealed class ApiResult<out T> {
     /**
      * Use this to indicate result loading state
      */
-    object Loading: ApiResult<Nothing>() {
+    object Loading : ApiResult<Nothing>() {
 
         override fun toString(): String = "ApiResult.Loading"
     }
@@ -30,7 +30,7 @@ sealed class ApiResult<out T> {
     /**
      * Request has been performed successfully
      */
-    data class Success<out T>(val result: T): ApiResult<T>() {
+    data class Success<out T>(val result: T) : ApiResult<T>() {
 
         override fun toString(): String = "ApiResult.Success: result=$result"
     }
@@ -38,7 +38,7 @@ sealed class ApiResult<out T> {
     /**
      * There was an error completing the request.
      */
-    data class Error(val e: Exception): ApiResult<Nothing>() {
+    data class Error(val e: Exception) : ApiResult<Nothing>() {
 
         val message get() = e.message
 
@@ -76,7 +76,7 @@ sealed class ApiResult<out T> {
     }
 }
 
-fun <R, T: R> ApiResult<T>.or(defaultValue: R): R = orElse { defaultValue }
+fun <R, T : R> ApiResult<T>.or(defaultValue: R): R = orElse { defaultValue }
 
 inline fun <T> ApiResult<List<T>>.orEmpty(): List<T> = or(emptyList())
 
@@ -100,7 +100,7 @@ inline fun <T> ApiResult<T>.orThrow(): T {
 /**
  * [Loading] will result in [NotFinishedException]
  */
-inline fun <R, T: R> ApiResult<T>.orElse(action: (e: Exception) -> R): R = when (this) {
+inline fun <R, T : R> ApiResult<T>.orElse(action: (e: Exception) -> R): R = when (this) {
     is Success -> result
     is Error -> action(e)
     is Loading -> action(NotFinishedException())
@@ -176,7 +176,7 @@ inline fun <T> Iterable<ApiResult<T>>.mapErrors(transform: (Exception) -> Except
 /**
  * Change the exception of the [Error] response without affecting loading/success results
  */
-inline fun <T, R: Exception> ApiResult<T>.mapError(block: (Exception) -> R): ApiResult<T> {
+inline fun <T, R : Exception> ApiResult<T>.mapError(block: (Exception) -> R): ApiResult<T> {
     return when (this) {
         is Success -> this
         is Error -> Error(block(e))
@@ -187,7 +187,7 @@ inline fun <T, R: Exception> ApiResult<T>.mapError(block: (Exception) -> R): Api
 /**
  * Maps [Loading] to a [Success], not touching anything else
  */
-inline fun <R, T: R> ApiResult<T>.mapLoading(block: () -> R): ApiResult<R> {
+inline fun <R, T : R> ApiResult<T>.mapLoading(block: () -> R): ApiResult<R> {
     return when (this) {
         is Success -> this
         is Error -> this

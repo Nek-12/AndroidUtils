@@ -3,7 +3,6 @@ package com.nek12.androidutils.databinding.recyclerview
 import android.view.View
 import androidx.annotation.LayoutRes
 
-
 /**
  * A clicklistener that is fired when the user clicks on **any** of the views inside your Item view.
  * For example, if the user clicks on a button, you will get this button as a [view] parameter
@@ -26,19 +25,19 @@ import androidx.annotation.LayoutRes
  * @see Item
  * @see GenericAdapter
  */
-sealed interface ItemListener<in T: Item<*, *>>
+sealed interface ItemListener<in T : Item<*, *>>
 
-interface ItemClickListener<in T: Item<*, *>>: ItemListener<T> {
+interface ItemClickListener<in T : Item<*, *>> : ItemListener<T> {
 
     fun onItemClicked(view: View, item: T, pos: Int)
 }
 
-interface ItemLongClickListener<in T: Item<*, *>>: ItemListener<T> {
+interface ItemLongClickListener<in T : Item<*, *>> : ItemListener<T> {
 
     fun onItemLongClicked(view: View, item: T, pos: Int): Boolean
 }
 
-interface ItemInflateListener<in T: Item<*, *>>: ItemListener<T> {
+interface ItemInflateListener<in T : Item<*, *>> : ItemListener<T> {
 
     fun onViewHolderCreated(holder: BaseHolder, @LayoutRes layout: Int)
 }

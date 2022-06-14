@@ -83,11 +83,11 @@ val Fragment.screenHeightPx get() = requireActivity().resources.displayMetrics.h
  */
 val Fragment.screenDensity get() = requireActivity().resources.displayMetrics.density
 
-fun <T: Fragment> T.setArgs(vararg args: Pair<KProperty0<Any?>, Any?>): T = apply {
-    arguments = bundleOf(*args.map { it.first.name to it.second }.toTypedArray())
+fun <T : Fragment> T.setArgs(vararg args: Pair<KProperty0<Any?>, Any?>): T = apply {
+    arguments = bundleOf(pairs = args.map { it.first.name to it.second }.toTypedArray())
 }
 
 inline fun <reified T> Fragment.arg(defaultValue: T? = null) =
-    object: BundleExtra<Activity, T>(null is T, defaultValue) {
+    object : BundleExtra<Activity, T>(null is T, defaultValue) {
         override val bundle: Bundle? get() = arguments
     }

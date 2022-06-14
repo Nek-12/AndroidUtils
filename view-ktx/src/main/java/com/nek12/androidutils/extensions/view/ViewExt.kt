@@ -159,7 +159,6 @@ fun View.setVisibility(
     duration: Long = DEF_FADE_DURATION,
 ) = setVisibility(Visibility.of(visible, gone), animated, duration)
 
-
 fun View.hideKeyboard(): Boolean {
     val inputMethodManager =
         context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -185,14 +184,13 @@ fun View.animate(
     duration: Long = DEF_FADE_DURATION,
     onEnd: ((Animator) -> Unit)? = null,
 ) {
-    (AnimatorInflater.loadAnimator(context, animator)).apply {
-        setTarget(this@animate) //Target view
+    AnimatorInflater.loadAnimator(context, animator).apply {
+        setTarget(this@animate) // Target view
         this@apply.duration = duration
         onEnd?.let { doOnEnd(it) }
         start()
     }
 }
-
 
 /**
  * Interpret this as DP value and convert it to px. You are responsible for calling this on right value
@@ -214,7 +212,7 @@ val Number.toDp
         Resources.getSystem().displayMetrics
     )
 
-inline fun <reified T: View> T.onClick(crossinline block: (T) -> Unit) = setOnClickListener {
+inline fun <reified T : View> T.onClick(crossinline block: (T) -> Unit) = setOnClickListener {
     block(
         it as T
     )
@@ -251,7 +249,7 @@ fun View.showPopup(@MenuRes menu: Int, onMenuItemClick: (item: MenuItem) -> Bool
     popup.show()
 }
 
-inline fun <reified T: View> T.onClickOrHide(
+inline fun <reified T : View> T.onClickOrHide(
     noinline onClick: ((view: T) -> Unit)?,
     gone: Boolean = true,
     animated: Boolean = false,
@@ -313,7 +311,7 @@ fun ImageView.applyLoopingAVD(@DrawableRes avdResId: Int) {
 
 @RequiresApi(Build.VERSION_CODES.M)
 fun ImageView.applyLoopingAVD(avd: AnimatedVectorDrawable) {
-    avd.registerAnimationCallback(object: Animatable2.AnimationCallback() {
+    avd.registerAnimationCallback(object : Animatable2.AnimationCallback() {
         override fun onAnimationEnd(drawable: Drawable?) {
             this@applyLoopingAVD.post { avd.start() }
         }
@@ -321,7 +319,6 @@ fun ImageView.applyLoopingAVD(avd: AnimatedVectorDrawable) {
     this.setImageDrawable(avd)
     avd.start()
 }
-
 
 fun TextView.setColorOfSubstring(substring: String, color: Int) {
     if (!text?.toString().isValid || !substring.isValid) return
@@ -340,10 +337,15 @@ fun TextView.setColorOfSubstring(substring: String, color: Int) {
  * A class that invokes [onChanged] **after** the text changes. Also validates the query.
  * @see TextWatcher
  */
-class TextChangeListener(private val onChanged: (newText: String?) -> Unit): TextWatcher {
+class TextChangeListener(private val onChanged: (newText: String?) -> Unit) : TextWatcher {
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        /* do nothing */
+    }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        /* do nothing */
+    }
 
     override fun afterTextChanged(s: Editable?) {
         onChanged(s?.toString().takeIf { it.isValid })

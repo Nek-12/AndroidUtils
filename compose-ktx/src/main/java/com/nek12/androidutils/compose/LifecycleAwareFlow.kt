@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-//credits: https://proandroiddev.com/how-to-collect-flows-lifecycle-aware-in-jetpack-compose-babd53582d0b
+// credits: https://proandroiddev.com/how-to-collect-flows-lifecycle-aware-in-jetpack-compose-babd53582d0b
 
 @Composable
 fun <T> rememberLifecycleFlow(
@@ -28,7 +28,7 @@ fun <T> rememberLifecycleFlow(
 }
 
 @Composable
-fun <T: R, R> Flow<T>.collectAsStateOnLifecycle(
+fun <T : R, R> Flow<T>.collectAsStateOnLifecycle(
     initial: R,
     context: CoroutineContext = EmptyCoroutineContext,
     lifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
@@ -48,10 +48,10 @@ fun <T> StateFlow<T>.collectAsStateOnLifecycle(
 @SuppressLint("ComposableNaming")
 fun <T> Flow<T>.collectOnLifecycle(
     lifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
-    consumer: suspend CoroutineScope.(T) -> Unit,
+    onNext: suspend CoroutineScope.(T) -> Unit,
 ) {
     val lifecycleFlow = rememberLifecycleFlow(this, lifecycleState)
     LaunchedEffect(lifecycleFlow) {
-        lifecycleFlow.collect { consumer(it) }
+        lifecycleFlow.collect { onNext(it) }
     }
 }

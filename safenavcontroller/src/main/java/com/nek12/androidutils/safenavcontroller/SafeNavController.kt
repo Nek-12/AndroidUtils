@@ -9,7 +9,6 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 
-
 /**
  * SafeNavController class is a wrapper around navController that takes care of that
  * DestinationNotFound exception for you. It happens when the user makes multiple fast attempts
@@ -41,8 +40,10 @@ class SafeNavController(
      * @param to The id of the fragment to navigate
      */
     fun navigate(
-        @IdRes to: Int, bundle: Bundle?,
-        navOptions: NavOptions?, navigatorExtras: Navigator.Extras?,
+        @IdRes to: Int,
+        bundle: Bundle?,
+        navOptions: NavOptions?,
+        navigatorExtras: Navigator.Extras?,
     ) {
         if (navController.currentDestination?.id == currentFragmentId) {
             navController.navigate(to, bundle, navOptions, navigatorExtras)
@@ -54,7 +55,8 @@ class SafeNavController(
      * @param directions Generated NavDirections class. Pass argunments to them if you wish.
      */
     fun navigate(
-        directions: NavDirections, extras: Navigator.Extras,
+        directions: NavDirections,
+        extras: Navigator.Extras,
     ) {
         if (navController.currentDestination?.id == currentFragmentId) {
             navController.navigate(directions, extras)

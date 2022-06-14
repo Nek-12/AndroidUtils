@@ -56,6 +56,5 @@ fun NavController.tryNavigate(
 
 val NavController.canNavigateUp get() = previousBackStackEntry != null
 
-
 private fun tryLogging(block: () -> Unit): Boolean =
     runCatching { block() }.onFailure { Log.e("tryNavigate", "Unable to navigate", it) }.isSuccess

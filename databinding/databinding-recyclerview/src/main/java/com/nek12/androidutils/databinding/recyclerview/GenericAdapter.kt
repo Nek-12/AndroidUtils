@@ -40,7 +40,7 @@ open class GenericAdapter(
     private val lifecycleOwner: LifecycleOwner? = null,
     stableIds: Boolean = true,
     private val brVariable: Int = BR.data
-): ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
+) : ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
     init {
         setHasStableIds(stableIds)
@@ -52,8 +52,8 @@ open class GenericAdapter(
         val vh = BaseHolder.inflate<ViewDataBinding>(parent, viewType, lifecycleOwner, brVariable)
         (listener as? ItemInflateListener)?.onViewHolderCreated(vh, viewType)
         return applyListenerToAllViews(vh, listener) {
-            //defers getting item by position using a lambda object
-            //when position is available
+            // defers getting item by position using a lambda object
+            // when position is available
             getItem(vh.bindingAdapterPosition)
         }
     }
@@ -90,7 +90,7 @@ internal fun setLongClickListenersOnViewGroup(view: View, onClick: (v: View) -> 
     }
 }
 
-inline fun <T: Item<*, *>> applyListenerToAllViews(
+inline fun <T : Item<*, *>> applyListenerToAllViews(
     vh: BaseHolder,
     clickListener: ItemListener<T>?,
     crossinline itemSelector: () -> T?
@@ -121,7 +121,6 @@ inline fun <T: Item<*, *>> applyListenerToAllViews(
     return vh
 }
 
-
 /**
  * Like [submitData], but transforms your data objects into Items for you.
  * **If you don't have anything to serve as an ID, let the idSelector return
@@ -129,7 +128,7 @@ inline fun <T: Item<*, *>> applyListenerToAllViews(
  * you will lose some performance, so make sure you
  * resort to this when you truly have no other alternative.
  */
-inline fun <T, VB: ViewDataBinding> GenericAdapter.submitData(
+inline fun <T, VB : ViewDataBinding> GenericAdapter.submitData(
     data: List<T>,
     @LayoutRes layout: Int,
     crossinline idSelector: (T) -> Long?,
