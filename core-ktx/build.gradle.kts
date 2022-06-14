@@ -26,3 +26,7 @@ publishing {
         }
     }
 }
+
+dependencies {
+    testImplementation(libs.bundles.unittest)
+}
