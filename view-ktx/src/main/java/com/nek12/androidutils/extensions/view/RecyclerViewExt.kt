@@ -35,7 +35,7 @@ fun ViewGroup.clearRecyclerViewAdapters() {
 /**
  * Execute the specified [action] for each viewholder that is currently visible.
  */
-inline fun <reified T: RecyclerView.ViewHolder> RecyclerView.forEachVisibleHolder(
+inline fun <reified T : RecyclerView.ViewHolder> RecyclerView.forEachVisibleHolder(
     action: (T) -> Unit,
 ) {
     for (i in 0 until childCount) {
@@ -43,7 +43,7 @@ inline fun <reified T: RecyclerView.ViewHolder> RecyclerView.forEachVisibleHolde
     }
 }
 
-fun <T, R: RecyclerView.ViewHolder?> ListAdapter<T, R>.clear() = submitList(emptyList())
+fun <T, R : RecyclerView.ViewHolder?> ListAdapter<T, R>.clear() = submitList(emptyList())
 
 /**
  * Sets this recyclerview's layout manager to a grid layout manager where the columns are evenly

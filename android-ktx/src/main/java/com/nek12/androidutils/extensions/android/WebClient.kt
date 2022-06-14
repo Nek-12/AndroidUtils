@@ -62,7 +62,7 @@ interface WebClientListener {
 @SuppressLint("SetJavaScriptEnabled")
 open class WebClient(
     private val allowedHosts: List<String?>,
-): WebViewClient(), DownloadListener {
+) : WebViewClient(), DownloadListener {
 
     private var webView: WebView? = null
     private var listener: WebClientListener? = null

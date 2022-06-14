@@ -67,7 +67,7 @@ fun View.showLazyActionSnackbar(
         anchorView = this@showLazyActionSnackbar
         setAction(actionText) { action?.let { action -> action(this) } }
     }
-    snackbar.addCallback(object: Snackbar.Callback() {
+    snackbar.addCallback(object : Snackbar.Callback() {
         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
             if (event != DISMISS_EVENT_ACTION) // always run the action except when the user clicks undo
                 onDismiss(snackbar)

@@ -28,7 +28,7 @@ fun <T> rememberLifecycleFlow(
 }
 
 @Composable
-fun <T: R, R> Flow<T>.collectAsStateOnLifecycle(
+fun <T : R, R> Flow<T>.collectAsStateOnLifecycle(
     initial: R,
     context: CoroutineContext = EmptyCoroutineContext,
     lifecycleState: Lifecycle.State = Lifecycle.State.STARTED,

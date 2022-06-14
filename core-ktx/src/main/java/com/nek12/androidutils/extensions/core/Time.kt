@@ -24,7 +24,7 @@ open class Time(
     val hour: Int,
     val minute: Int,
     val second: Int = 0,
-): Cloneable, Serializable {
+) : Cloneable, Serializable {
 
     /**
      * Get hour in am/pm format (just the number)

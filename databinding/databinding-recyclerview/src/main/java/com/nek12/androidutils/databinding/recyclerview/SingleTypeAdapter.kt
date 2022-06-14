@@ -16,14 +16,14 @@ import androidx.lifecycle.LifecycleOwner
  * For cases when you have multiple view types, it is recommended to use [GenericAdapter] and [Item]
  */
 @Suppress("UNCHECKED_CAST")
-open class SingleTypeAdapter<T, in VB: ViewDataBinding>(
+open class SingleTypeAdapter<T, in VB : ViewDataBinding>(
     @LayoutRes private val layout: Int,
     itemClickListener: ItemListener<Item<T, VB>>? = null,
     lifecycleOwner: LifecycleOwner? = null,
     stableIds: Boolean = true,
     brVariable: Int = BR.data,
     private val binder: RVBinder<T, VB>? = null,
-): GenericAdapter(itemClickListener as? ItemListener<Item<*, *>>?, lifecycleOwner, stableIds, brVariable) {
+) : GenericAdapter(itemClickListener as? ItemListener<Item<*, *>>?, lifecycleOwner, stableIds, brVariable) {
 
     override fun getItem(pos: Int): Item<T, VB> {
         return super.getItem(pos) as Item<T, VB>
@@ -58,4 +58,4 @@ open class SimpleAdapter<T>(
     lifecycleOwner: LifecycleOwner? = null,
     brVariable: Int = BR.data,
     stableIds: Boolean = true,
-): SingleTypeAdapter<T, ViewDataBinding>(layout, itemClickListener, lifecycleOwner, stableIds, brVariable, null)
+) : SingleTypeAdapter<T, ViewDataBinding>(layout, itemClickListener, lifecycleOwner, stableIds, brVariable, null)

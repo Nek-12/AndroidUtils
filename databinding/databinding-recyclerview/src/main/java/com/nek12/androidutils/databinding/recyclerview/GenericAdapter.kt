@@ -40,7 +40,7 @@ open class GenericAdapter(
     private val lifecycleOwner: LifecycleOwner? = null,
     stableIds: Boolean = true,
     private val brVariable: Int = BR.data
-): ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
+) : ListAdapter<Item<*, *>, BaseHolder>(ItemDiffCallback()) {
 
     init {
         setHasStableIds(stableIds)
@@ -90,7 +90,7 @@ internal fun setLongClickListenersOnViewGroup(view: View, onClick: (v: View) -> 
     }
 }
 
-inline fun <T: Item<*, *>> applyListenerToAllViews(
+inline fun <T : Item<*, *>> applyListenerToAllViews(
     vh: BaseHolder,
     clickListener: ItemListener<T>?,
     crossinline itemSelector: () -> T?
@@ -128,7 +128,7 @@ inline fun <T: Item<*, *>> applyListenerToAllViews(
  * you will lose some performance, so make sure you
  * resort to this when you truly have no other alternative.
  */
-inline fun <T, VB: ViewDataBinding> GenericAdapter.submitData(
+inline fun <T, VB : ViewDataBinding> GenericAdapter.submitData(
     data: List<T>,
     @LayoutRes layout: Int,
     crossinline idSelector: (T) -> Long?,

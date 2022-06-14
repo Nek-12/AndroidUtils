@@ -212,7 +212,7 @@ val Number.toDp
         Resources.getSystem().displayMetrics
     )
 
-inline fun <reified T: View> T.onClick(crossinline block: (T) -> Unit) = setOnClickListener {
+inline fun <reified T : View> T.onClick(crossinline block: (T) -> Unit) = setOnClickListener {
     block(
         it as T
     )
@@ -249,7 +249,7 @@ fun View.showPopup(@MenuRes menu: Int, onMenuItemClick: (item: MenuItem) -> Bool
     popup.show()
 }
 
-inline fun <reified T: View> T.onClickOrHide(
+inline fun <reified T : View> T.onClickOrHide(
     noinline onClick: ((view: T) -> Unit)?,
     gone: Boolean = true,
     animated: Boolean = false,
@@ -311,7 +311,7 @@ fun ImageView.applyLoopingAVD(@DrawableRes avdResId: Int) {
 
 @RequiresApi(Build.VERSION_CODES.M)
 fun ImageView.applyLoopingAVD(avd: AnimatedVectorDrawable) {
-    avd.registerAnimationCallback(object: Animatable2.AnimationCallback() {
+    avd.registerAnimationCallback(object : Animatable2.AnimationCallback() {
         override fun onAnimationEnd(drawable: Drawable?) {
             this@applyLoopingAVD.post { avd.start() }
         }
@@ -337,7 +337,7 @@ fun TextView.setColorOfSubstring(substring: String, color: Int) {
  * A class that invokes [onChanged] **after** the text changes. Also validates the query.
  * @see TextWatcher
  */
-class TextChangeListener(private val onChanged: (newText: String?) -> Unit): TextWatcher {
+class TextChangeListener(private val onChanged: (newText: String?) -> Unit) : TextWatcher {
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
         /* do nothing */

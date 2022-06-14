@@ -74,7 +74,7 @@ typealias RVBinder<T, VB> = (BindPayload<T, VB>) -> Unit
  * }
  * ```
  */
-abstract class Item<T, in VB: ViewDataBinding> {
+abstract class Item<T, in VB : ViewDataBinding> {
 
     /**
      * The data that will be passed to the xml as a "data" variable
@@ -124,7 +124,7 @@ abstract class Item<T, in VB: ViewDataBinding> {
          */
         const val NO_ID = RecyclerView.NO_ID
 
-        fun <T, VB: ViewDataBinding> itemFromData(
+        fun <T, VB : ViewDataBinding> itemFromData(
             item: T,
             id: Long?,
             @LayoutRes layout: Int,
@@ -144,7 +144,7 @@ abstract class Item<T, in VB: ViewDataBinding> {
 data class BlankItem(
     @LayoutRes override val layout: Int,
     val alwaysRebound: Boolean = false
-): Item<Unit, ViewDataBinding>() {
+) : Item<Unit, ViewDataBinding>() {
 
     override val data: Unit get() = Unit
     override val id: Long get() = RecyclerView.NO_ID
@@ -158,12 +158,12 @@ data class BlankItem(
  * encapsulation.
  * Most useful for use with [SimpleAdapter] and [SingleTypeAdapter]
  */
-data class GenericItem<T, VB: ViewDataBinding>(
+data class GenericItem<T, VB : ViewDataBinding>(
     override val data: T,
     override val id: Long,
     override val layout: Int,
     val binder: RVBinder<T, VB>? = null,
-): Item<T, VB>() {
+) : Item<T, VB>() {
 
     override fun bind(binding: VB, bindingPos: Int) {
         binder?.invoke(BindPayload(this, binding, bindingPos))
@@ -177,7 +177,7 @@ data class GenericItem<T, VB: ViewDataBinding>(
 data class ResHeaderItem(
     @StringRes override val data: Int,
     override val layout: Int
-): Item<Int, ViewDataBinding>() {
+) : Item<Int, ViewDataBinding>() {
 
     override val id: Long
         get() = data.toLong()
@@ -189,7 +189,7 @@ data class ResHeaderItem(
 data class StringHeaderItem(
     override val data: String,
     override val layout: Int,
-): Item<String, ViewDataBinding>() {
+) : Item<String, ViewDataBinding>() {
 
     override val id: Long = NO_ID
 }
@@ -198,7 +198,7 @@ data class StringHeaderItem(
  * You get this payload if you're using [RVBinder].
  * Here's the data you might need when binding.
  */
-data class BindPayload<T, VB: ViewDataBinding>(
+data class BindPayload<T, VB : ViewDataBinding>(
     val item: Item<T, VB>,
     val binding: VB,
     val bindingPos: Int,

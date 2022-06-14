@@ -83,7 +83,7 @@ tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektFormat") {
 }
 
 tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektAll") {
-    description = "Runs the whole project at once."
+    description = "Runs detekt on the project."
     parallel = true
     buildUponDefaultConfig = true
     setSource(file(projectDir))

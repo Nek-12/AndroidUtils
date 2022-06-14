@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
  * @see RoomDataSource
  **/
 @Dao
-abstract class RoomDao<I: Any, T: RoomEntity<I>>(
+abstract class RoomDao<I : Any, T : RoomEntity<I>>(
     private val db: RoomDatabase,
     private val tableName: String,
     private val referencedTables: Array<String> = arrayOf(tableName),

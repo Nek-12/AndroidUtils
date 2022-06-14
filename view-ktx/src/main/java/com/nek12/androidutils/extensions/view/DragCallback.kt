@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
  */
 sealed interface RecyclerViewActions {
 
-    interface SwipeActions: RecyclerViewActions {
+    interface SwipeActions : RecyclerViewActions {
 
         fun onItemSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
     }
 
-    interface DragActions: RecyclerViewActions {
+    interface DragActions : RecyclerViewActions {
 
         fun onItemSelected(viewHolder: RecyclerView.ViewHolder)
         fun onItemReleased(viewHolder: RecyclerView.ViewHolder)
@@ -49,7 +49,7 @@ open class DragCallback(
     private val actions: RecyclerViewActions,
     var swipeEnabled: Boolean = actions is RecyclerViewActions.SwipeActions,
     var dragEnabled: Boolean = actions is RecyclerViewActions.DragActions
-): ItemTouchHelper.Callback() {
+) : ItemTouchHelper.Callback() {
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,

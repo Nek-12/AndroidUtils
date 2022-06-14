@@ -100,7 +100,7 @@ fun List<DayOfWeek>.sortedByLocale(locale: Locale = Locale.getDefault()): List<D
 /**
  * Returns the sign of the number, as a char
  */
-val <T: Number> T.signChar: String
+val <T : Number> T.signChar: String
     get() {
         val repr = this.toByte()
         return when {
@@ -127,4 +127,4 @@ val ClosedRange<Byte>.size @JvmName("sizeByte") get() = endInclusive - start
 val Iterable<Time?>.totalDuration: Time
     get() = Time.fromSecondsSinceMidnight(this.sumOf { it?.totalSeconds?.toLong() ?: 0L })
 
-fun <T: Number> T?.takeIfNotZero() = takeIf { it != 0 }
+fun <T : Number> T?.takeIfNotZero() = takeIf { it != 0 }

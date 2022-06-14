@@ -77,14 +77,14 @@ val screenHeigthDp: Int @Composable get() = LocalConfiguration.current.screenHei
 val screenWidthPx: Int @Composable get() = screenWidthDp * displayDensity
 
 @Composable
-inline fun <reified BoundService: Service, reified BoundServiceBinder: Binder> rememberBoundLocalService(
+inline fun <reified BoundService : Service, reified BoundServiceBinder : Binder> rememberBoundLocalService(
     flags: Int = Context.BIND_AUTO_CREATE,
     crossinline getService: @DisallowComposableCalls BoundServiceBinder.() -> BoundService,
 ): State<BoundService?> {
     val context: Context = LocalContext.current
     val boundService = remember(context) { mutableStateOf<BoundService?>(null) }
     val serviceConnection: ServiceConnection = remember(context) {
-        object: ServiceConnection {
+        object : ServiceConnection {
             override fun onServiceConnected(className: ComponentName, service: IBinder) {
                 boundService.value = (service as BoundServiceBinder).getService()
             }

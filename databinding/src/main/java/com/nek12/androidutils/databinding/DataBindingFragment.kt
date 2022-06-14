@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment
  * @param b your new binding variable
  * @param layoutRes a layout for this fraagment
  */
-abstract class DataBindingFragment<T: ViewDataBinding>: Fragment() {
+abstract class DataBindingFragment<T : ViewDataBinding> : Fragment() {
 
     @get:LayoutRes
     protected abstract val layoutRes: Int
