@@ -31,7 +31,7 @@ fun <T> T.copies(count: Int): List<T> {
     return list
 }
 
-fun <T> Iterable<T>.indexOfFirstOrNull(predicate: (T) -> Boolean) = indexOfFirst(predicate).takeIf { it != -1 }
+inline fun <T> Iterable<T>.indexOfFirstOrNull(predicate: (T) -> Boolean) = indexOfFirst(predicate).takeIf { it != -1 }
 
 /**
  * @return a new list, where each item that matches [predicate] is replaced with [with]
@@ -58,7 +58,7 @@ fun <T> List<T>.randomElements(count: Int): List<T> = shuffled().take(count)
  * @param order a list of objects that represents the order which should be used to sort the original list
  * @returns A copy of this list ordered according to the order
  */
-fun <T, R> Iterable<T>.reorderBy(order: List<R>, selector: (T) -> R): List<T> {
+inline fun <T, R> Iterable<T>.reorderBy(order: List<R>, crossinline selector: (T) -> R): List<T> {
     // associate the values with indexes and create a map
     val orderMap = order.withIndex().associate { it.value to it.index }
     // sort the habits sorted using the comparator that places values not present in a map last

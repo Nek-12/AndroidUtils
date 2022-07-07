@@ -55,7 +55,7 @@ fun String?.takeIfValid(): String? = if (isValid) this else null
  */
 infix fun String.spans(range: IntRange) = length in range
 
-fun Float.format(digits: Int) = "%.${digits}f".format(this)
+fun Float.format(digits: Int, locale: Locale? = null) = "%.${digits}f".format(locale, this)
 
 val String.isAscii: Boolean get() = toCharArray().none { it < ' ' || it > '~' }
 
@@ -127,4 +127,9 @@ val ClosedRange<Byte>.size @JvmName("sizeByte") get() = endInclusive - start
 val Iterable<Time?>.totalDuration: Time
     get() = Time.fromSecondsSinceMidnight(this.sumOf { it?.totalSeconds?.toLong() ?: 0L })
 
-fun <T : Number> T?.takeIfNotZero() = takeIf { it != 0 }
+fun Int?.takeIfNotZero() = takeIf { it != 0 }
+fun Long?.takeIfNotZero() = takeIf { it != 0L }
+fun Double?.takeIfNotZero() = takeIf { it != 0.0 }
+fun Float?.takeIfNotZero() = takeIf { it != 0.0f }
+fun Short?.takeIfNotZero() = takeIf { it != 0.toShort() }
+fun Byte?.takeIfNotZero() = takeIf { it != 0.toByte() }

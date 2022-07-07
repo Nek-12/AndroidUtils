@@ -44,7 +44,7 @@ class TimeTest : FreeSpec({
 
         "total seconds and minutes should match expected" {
             assert(time.totalSeconds == 60735)
-            assert(time.minutesSinceMidnight == 1012.25)
+            assert(time.totalMinutes == 1012.25)
         }
 
         "distance in seconds should match expected" {
