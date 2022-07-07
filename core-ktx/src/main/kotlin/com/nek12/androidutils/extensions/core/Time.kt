@@ -26,7 +26,7 @@ open class Time(
 ) : Cloneable, Serializable, Comparable<Time> {
 
     init {
-        require(hour !in 0 until 24 || minute !in 0 until 60 || second !in 0 until 60) {
+        require(hour in 0 until 24 || minute in 0 until 60 || second in 0 until 60) {
             "Invalid time value: $hour:$minute:$second"
         }
     }
@@ -214,15 +214,18 @@ open class Time(
          */
         fun with(hours: Int = 0, minutes: Int = 0, seconds: Int = 0) = MIN.add(hours, minutes, seconds)
 
-        /** example: 12:45:00 or 4:30, 24h format only.
+        /** example: 12:45:00, 4:30, 7:00 AM, 24 or 12h format, word separator is " ".
          * On a value that is not a valid time, will throw.
          * **/
         fun of(s: String): Time {
             try {
-                val parts = s.split(':', '.', '-', ' ', ',', '_', ignoreCase = true)
+                val words = s.split(" ")
+                require(words.size in 1..2) { "Not a time" }
+
+                val parts = words.first().split(':', '.', '-', ' ', ',', '_', ignoreCase = true)
                 require(parts.size in 2..3) { "Invalid delimiter count" }
 
-                val hours = parts[0].toInt()
+                val hours = parts[0].toInt() + if (words.size == 2 && words[1] == Clock.PM.value) 12 else 0
 
                 val minutes = parts[1].toInt()
 
