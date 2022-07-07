@@ -16,6 +16,10 @@ compileKotlin.kotlinOptions {
     jvmTarget = "11"
 }
 
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+
 publishing {
     publications {
         create<MavenPublication>("release") {

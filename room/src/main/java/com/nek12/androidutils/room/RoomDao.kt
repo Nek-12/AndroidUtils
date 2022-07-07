@@ -3,7 +3,6 @@ package com.nek12.androidutils.room
 import androidx.room.CoroutinesRoom
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Embedded
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.RawQuery
@@ -24,9 +23,6 @@ import kotlinx.coroutines.flow.Flow
  *   ```
  *   abstract class MyDao(db: RoomDatabase) : RoomDao<MyEntity>(db, MyEntity.TABLE_NAME)
  *   ```
- * @param referencedTables A list of tables that your [T] entity references. For example, [Embedded] entities.
- *   This is used in `get(): Flow<T>` queries to trigger flow emission when any of the [referencedTables] changes.
- *   By default, emissions are triggered when just the [tableName] table changes
  * @see RoomEntity
  * @see RoomDataSource
  **/
