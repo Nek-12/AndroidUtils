@@ -20,11 +20,15 @@ import java.util.*
  * A class that simplifies work with [NotificationManager] and [AlarmManager]
  */
 @Deprecated("Not really extensible. Create your own class")
-@RequiresApi(VERSION_CODES.M)
+@RequiresApi(VERSION_CODES.O)
 open class AlarmHelper(protected val context: Context) {
 
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    private fun calendar() = Calendar.getInstance().apply {
+        timeInMillis = System.currentTimeMillis()
+    }
 
     /**
      * Create a notification action, i.e. a button to add to the notification.
@@ -62,15 +66,15 @@ open class AlarmHelper(protected val context: Context) {
     }
 
     private fun getAlarmTimeMillis(time: Time, dayOfWeek: DayOfWeek? = null): Long {
-        calendar.apply {
+        calendar().apply {
             dayOfWeek?.let {
                 setDayOfWeek(dayOfWeek)
             }
             set(Calendar.HOUR_OF_DAY, time.hour)
             set(Calendar.MINUTE, time.minute)
             set(Calendar.SECOND, time.second)
+            return timeInMillis
         }
-        return calendar.timeInMillis
     }
 
     /** create a new notification. The channel must be already created
