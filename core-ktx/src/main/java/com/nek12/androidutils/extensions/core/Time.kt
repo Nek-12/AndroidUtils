@@ -10,13 +10,12 @@ import java.time.ZonedDateTime
 import kotlin.math.abs
 
 /**
- * A class that represents time of day.
- * [hour] - Hour in 24h format
- * [minute] - Minute
- * [second] - seconds
+ * A class that represents time, of day as well as a duration.
+ * [hour] hour in 24h format
+ * [minute] minute
+ * [second] second
  * [Time.toString] method returns a string representation for 24-hour format. If you want 12-hour
  * time, use [asString].
- * The object is immutable.
  * @throws IllegalArgumentException if the specified values are invalid. Validation happens at
  * object creation time
  */
@@ -24,7 +23,13 @@ open class Time(
     val hour: Int,
     val minute: Int,
     val second: Int = 0,
-) : Cloneable, Serializable {
+) : Cloneable, Serializable, Comparable<Time> {
+
+    init {
+        require(hour !in 0 until 24 || minute !in 0 until 60 || second !in 0 until 60) {
+            "Invalid time value: $hour:$minute:$second"
+        }
+    }
 
     /**
      * Get hour in am/pm format (just the number)
@@ -38,17 +43,25 @@ open class Time(
     val totalSeconds: Int
         get() = hour * 3600 + minute * 60 + second
 
-    val minutesSinceMidnight: Double
+    /** * Get the amount of minutes since midnight.
+     */
+    val totalMinutes: Double
         get() = hour * 60 + minute + second.toDouble() / 60
-
-    init {
-        if (hour !in 0 until 24 || minute !in 0 until 60 || second !in 0 until 60)
-            throw IllegalArgumentException("Invalid time value: $hour:$minute:$second")
-    }
 
     override fun toString(): String = asString()
 
     val clock: Clock get() = if (hour >= 12) Clock.PM else Clock.AM
+
+    /**
+     * Returns an integer that represents this time, like a string, but without the ":"
+     * Examples:
+     * - 17:12:45 -> 171245
+     * - 00:00:00 -> 0
+     * - 05:00:00 -> 50000
+     */
+    fun toInt(): Int {
+        return hour * 10000 + minute * 100 + second
+    }
 
     /**
      * @return the amount of seconds from this object's value [to]
@@ -73,13 +86,11 @@ open class Time(
         }
     }
 
-    operator fun plus(other: Time): Time {
-        return add(other.hour, other.minute, other.second)
-    }
-
-    operator fun compareTo(time: Time): Int = totalSeconds.compareTo(time.totalSeconds)
+    operator fun plus(other: Time): Time = add(other.hour, other.minute, other.second)
 
     operator fun minus(other: Time): Time = add(-other.hour, -other.minute, -other.second)
+
+    override operator fun compareTo(other: Time): Int = totalSeconds.compareTo(other.totalSeconds)
 
     /**
      * Add specified number of [hours], [minutes], or [seconds] to this time.
@@ -130,7 +141,7 @@ open class Time(
         0 -> hour
         1 -> minute
         2 -> second
-        else -> throw IndexOutOfBoundsException("Only 0,1 and 2 are valid values")
+        else -> throw IndexOutOfBoundsException("Only 0, 1 and 2 are valid values")
     }
 
     companion object {
@@ -155,20 +166,23 @@ open class Time(
         }
 
         /**
-         * Gets a time from this [value]. Uses [ZoneId.systemDefault] internally.
+         * Gets a time from this [zdt]. Uses [ZoneId.systemDefault] by default.
          * @see now
          */
-        fun fromLocalInstant(value: Instant): Time {
-            val zdt = ZonedDateTime.ofInstant(value, ZoneId.systemDefault())
+        fun fromZDT(zdt: ZonedDateTime): Time {
             return Time(zdt.hour, zdt.minute, zdt.second)
         }
 
+        fun fromInstant(instant: Instant, zone: ZoneId): Time {
+            return fromZDT(instant.toZDT(zone))
+        }
+
         /**
-         * Get current local time
+         * Get current local time.
          * @return A new Time using current timezone and timestamp.
-         * @see fromLocalInstant
+         * @see fromZDT
          */
-        fun now() = fromLocalInstant(Instant.now())
+        fun now(zoneId: ZoneId = ZoneId.systemDefault()) = fromZDT(ZonedDateTime.now(zoneId))
 
         /**
          * Create a time from milliseconds since midnight.
@@ -200,19 +214,15 @@ open class Time(
          */
         fun with(hours: Int = 0, minutes: Int = 0, seconds: Int = 0) = MIN.add(hours, minutes, seconds)
 
-        /** example: 12:45:00 or 4:30, 24h format only **/
+        /** example: 12:45:00 or 4:30, 24h format only.
+         * On a value that is not a valid time, will throw.
+         * **/
         fun of(s: String): Time {
             try {
-                val words = s.split(" ")
-                if (words.size !in 1..2) throw IllegalArgumentException("Not a time")
+                val parts = s.split(':', '.', '-', ' ', ',', '_', ignoreCase = true)
+                require(parts.size in 2..3) { "Invalid delimiter count" }
 
-                val parts = words.first().split(':', '.', '-', ignoreCase = true)
-                if (parts.size !in 2..3) throw IllegalArgumentException("Invalid delimiter count")
-
-                val hours = if (words.size == 2 && words[1] == Clock.PM.value)
-                    parts[0].toInt() + 12
-                else
-                    parts[0].toInt()
+                val hours = parts[0].toInt()
 
                 val minutes = parts[1].toInt()
 
@@ -236,7 +246,8 @@ open class Time(
         val MIN: Time
             get() = Time(0, 0)
 
-        /**
+        /** Normalize a set of values for hours, minutes, or seconds, to a valid time value.
+         *
          * @returns values of hours, minutes and seconds adjusted if necessary to fit into their respective
          * ranges. Any excess is added to the value of the next order. The values can also wrap
          * around if the resulting time is bigger than [Time.MAX]
@@ -262,7 +273,7 @@ open class Time(
             }
         }
 
-        private const val serialVersionUID = 0L
+        private const val serialVersionUID = -29334L
     }
 
     enum class Clock(val value: String) {
@@ -274,13 +285,4 @@ fun LocalTime.toTime() = Time(hour, minute, second)
 
 fun Time.toLocalTime(): LocalTime = LocalTime.of(hour, minute, second)
 
-/**
- * Returns an integer that represents this time, like a string, but without the ":"
- * Examples:
- * - 17:12:45 -> 171245
- * - 00:00:00 -> 0
- * - 05:00:00 -> 50000
- */
-fun Time.toInt(): Int {
-    return hour * 10000 + minute * 100 + second
-}
+val ZonedDateTime.time get() = Time.fromZDT(this)

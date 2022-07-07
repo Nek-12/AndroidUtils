@@ -17,18 +17,19 @@ import kotlinx.coroutines.flow.Flow
  * @see RoomDao
  * @see RoomEntity
  */
+@Deprecated("There's no reason to use this wrapper as it does not follow clean architecture")
 open class RoomDataSource<I : Any, T : RoomEntity<I>>(private val dao: RoomDao<I, T>) {
 
     open suspend fun add(entity: T) = dao.add(entity)
-    open suspend fun add(vararg entities: T) = dao.add(*entities)
+    open suspend fun add(vararg entities: T) = dao.add(entities = entities)
     open suspend fun add(entities: List<T>) = dao.add(entities)
 
     open suspend fun update(entity: T) = dao.update(entity)
     open suspend fun update(entities: List<T>) = dao.update(entities)
-    open suspend fun update(vararg entities: T) = dao.update(*entities)
+    open suspend fun update(vararg entities: T) = dao.update(entities = entities)
 
     open suspend fun delete(entity: T) = dao.delete(entity)
-    open suspend fun delete(vararg entities: T) = dao.delete(*entities)
+    open suspend fun delete(vararg entities: T) = dao.delete(entities = entities)
     open suspend fun delete(entities: List<T>) = dao.delete(entities)
     open suspend fun delete(id: I) = dao.delete(id)
 
@@ -46,6 +47,6 @@ open class RoomDataSource<I : Any, T : RoomEntity<I>>(private val dao: RoomDao<I
 
     open fun get(id: I): Flow<T?> = dao.get(id)
     open fun get(ids: List<I>): Flow<List<T>> = dao.get(ids)
-    open fun get(vararg ids: I): Flow<List<T>> = dao.get(*ids)
+    open fun get(vararg ids: I): Flow<List<T>> = dao.get(ids = ids)
     open fun getAll(): Flow<List<T>> = dao.getAll()
 }

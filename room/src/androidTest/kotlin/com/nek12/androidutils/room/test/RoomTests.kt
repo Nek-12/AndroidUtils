@@ -17,10 +17,8 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.AfterClass
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -31,32 +29,16 @@ class RoomTests {
     private lateinit var dao: EntryDao
     private lateinit var repo: EntryRepo
 
-    companion object {
-
-        private val testDispatcher by lazy { StandardTestDispatcher() }
-        private val testScope by lazy { TestScope(testDispatcher) }
-
-        @JvmStatic
-        @BeforeClass
-        fun prepare() {
-            Dispatchers.setMain(testDispatcher)
-        }
-
-        @JvmStatic
-        @AfterClass
-        fun cleanup() {
-            Dispatchers.resetMain()
-        }
-    }
-
     @Before
     fun init() {
+        val dispatcher = StandardTestDispatcher()
+        Dispatchers.setMain(dispatcher)
         val context: Context = ApplicationProvider.getApplicationContext()
         db = Room.inMemoryDatabaseBuilder(
             context, EntryDatabase::class.java
         )
-            .setTransactionExecutor(testDispatcher.asExecutor())
-            .setQueryExecutor(testDispatcher.asExecutor())
+            .setTransactionExecutor(dispatcher.asExecutor())
+            .setQueryExecutor(dispatcher.asExecutor())
             .build()
         dao = db.entryDao()
         repo = EntryRepo(dao)
@@ -64,11 +46,12 @@ class RoomTests {
 
     @After
     fun destroy() {
+        Dispatchers.resetMain()
         db.close()
     }
 
     @Test
-    fun testInvalidationSingleTable(): Unit = testScope.runTest(dispatchTimeoutMs = 5000) {
+    fun testInvalidationSingleTable(): Unit = runTest(dispatchTimeoutMs = 5000) {
 
         dao.getAllDefault().test {
             assertEquals(0, awaitItem().size)
@@ -82,13 +65,13 @@ class RoomTests {
     }
 
     @Test
-    fun testOperations(): Unit = testScope.runTest(dispatchTimeoutMs = 5000) {
+    fun testOperations(): Unit = runTest(dispatchTimeoutMs = 5000) {
         val entities = (1..10).map { Entry() }
         // multiple
         await { dao.add(entities) }
         assertEquals(10, dao.getAllSync().count())
 
-        await { dao.add(entities.first()) }
+        await { dao.save(entities.first()) }
         assertEquals(10, dao.getAllSync().count())
 
         assertEquals(entities.size, dao.getSync(entities.map { it.id }).count())

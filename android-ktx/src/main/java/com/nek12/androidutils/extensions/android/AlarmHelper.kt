@@ -8,7 +8,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.os.Build
+import android.os.Build.VERSION_CODES
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import com.nek12.androidutils.extensions.core.Time
@@ -19,14 +19,14 @@ import java.util.*
 /**
  * A class that simplifies work with [NotificationManager] and [AlarmManager]
  */
-@RequiresApi(Build.VERSION_CODES.O)
+@Deprecated("Not really extensible. Create your own class")
+@RequiresApi(VERSION_CODES.O)
 open class AlarmHelper(protected val context: Context) {
 
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    private val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    private val calendar: Calendar = Calendar.getInstance().apply {
+    private fun calendar() = Calendar.getInstance().apply {
         timeInMillis = System.currentTimeMillis()
     }
 
@@ -66,15 +66,15 @@ open class AlarmHelper(protected val context: Context) {
     }
 
     private fun getAlarmTimeMillis(time: Time, dayOfWeek: DayOfWeek? = null): Long {
-        calendar.apply {
+        calendar().apply {
             dayOfWeek?.let {
                 setDayOfWeek(dayOfWeek)
             }
             set(Calendar.HOUR_OF_DAY, time.hour)
             set(Calendar.MINUTE, time.minute)
             set(Calendar.SECOND, time.second)
+            return timeInMillis
         }
-        return calendar.timeInMillis
     }
 
     /** create a new notification. The channel must be already created
