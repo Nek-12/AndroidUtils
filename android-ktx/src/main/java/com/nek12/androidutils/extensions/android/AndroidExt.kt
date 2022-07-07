@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.DownloadManager
 import android.app.PendingIntent
 import android.content.ActivityNotFoundException
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -129,3 +130,12 @@ inline fun <reified T> Context.makeDeeplinkIntent(
         getPendingIntent(requestCode, flags)!!
     }
 }
+
+/**
+ * Returns an URI to [this] raw resource id
+ */
+fun Int.raw(context: Context): Uri = Uri.Builder()
+    .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+    .authority(context.applicationContext.packageName)
+    .appendPath(toString())
+    .build()

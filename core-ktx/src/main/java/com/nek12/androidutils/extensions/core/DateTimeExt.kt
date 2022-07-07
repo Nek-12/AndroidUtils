@@ -5,6 +5,7 @@ package com.nek12.androidutils.extensions.core
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.Month
+import java.time.Year
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -119,3 +120,8 @@ fun Calendar.setToMinimum(field: Int) {
 fun Calendar.setToMaximum(field: Int) {
     set(field, getActualMaximum(field))
 }
+
+val ZonedDateTime.lengthOfMonth get() = month.length(Year.isLeap(year.toLong()))
+
+fun ZonedDateTime.withTime(time: Time): ZonedDateTime =
+    ZonedDateTime.of(year, monthValue, dayOfMonth, time.hour, time.minute, time.second, nano, zone)
