@@ -16,7 +16,7 @@ compileKotlin.kotlinOptions {
     jvmTarget = "11"
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
