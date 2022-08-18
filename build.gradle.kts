@@ -2,10 +2,11 @@ plugins {
     kotlin("jvm")
     `kotlin-dsl`
     alias(libs.plugins.detekt)
+    alias(libs.plugins.version.catalog.update)
 }
 
 rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.7.10"
+rootProject.version = "0.7.11"
 
 buildscript {
 
@@ -52,6 +53,16 @@ allprojects {
     }
     tasks.withType<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>().configureEach {
         jvmTarget = "1.8"
+    }
+}
+
+versionCatalogUpdate {
+    sortByKey.set(true)
+
+    keep {
+        keepUnusedVersions.set(true)
+        keepUnusedLibraries.set(true)
+        keepUnusedPlugins.set(true)
     }
 }
 
