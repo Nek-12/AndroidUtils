@@ -85,12 +85,12 @@ fun Context.shareAsText(text: String, onAppNotFound: (e: Exception) -> Unit) {
 fun Context.sendEmail(mail: Email, onAppNotFound: (e: Exception) -> Unit) {
     // Use SENDTO to avoid showing pickers and letting non-email apps interfere
     val sendIntent: Intent = Intent(Intent.ACTION_SENDTO).apply {
+        data = Uri.parse("mailto:")
         // EXTRA_EMAIL should be array
         putExtra(Intent.EXTRA_EMAIL, mail.recipients?.toTypedArray())
         putExtra(Intent.EXTRA_SUBJECT, mail.subject)
         putExtra(Intent.EXTRA_TEXT, mail.body)
         // RFC standard for email
-        type = "message/rfc822"
     }
     startActivityCatching(sendIntent, onAppNotFound)
 }
