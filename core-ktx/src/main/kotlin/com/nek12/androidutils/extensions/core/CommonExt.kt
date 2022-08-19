@@ -100,12 +100,47 @@ fun List<DayOfWeek>.sortedByLocale(locale: Locale = Locale.getDefault()): List<D
 /**
  * Returns the sign of the number, as a char
  */
-val <T : Number> T.signChar: String
+val Int.signChar: String
     get() {
-        val repr = this.toByte()
         return when {
-            repr < 0 -> "-"
-            repr > 0 -> "+"
+            this < 0 -> "-"
+            this > 0 -> "+"
+            else -> ""
+        }
+    }
+
+/**
+ * Returns the sign of the number, as a char
+ */
+val Float.signChar: String
+    get() {
+        return when {
+            this < 0f -> "-"
+            this > 0f -> "+"
+            else -> ""
+        }
+    }
+
+/**
+ * Returns the sign of the number, as a char
+ */
+val Double.signChar: String
+    get() {
+        return when {
+            this < 0.0 -> "-"
+            this > 0.0 -> "+"
+            else -> ""
+        }
+    }
+
+/**
+ * Returns the sign of the number, as a char
+ */
+val Long.signChar: String
+    get() {
+        return when {
+            this < 0L -> "-"
+            this > 0L -> "+"
             else -> ""
         }
     }
