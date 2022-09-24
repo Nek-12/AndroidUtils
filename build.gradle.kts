@@ -6,7 +6,7 @@ plugins {
 }
 
 rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.7.11"
+rootProject.version = "0.7.12"
 
 buildscript {
 
@@ -34,7 +34,6 @@ allprojects {
             io.gitlab.arturbosch.detekt.extensions.DetektExtension.DEFAULT_TEST_SRC_DIR_KOTLIN,
         )
         buildUponDefaultConfig = true
-        // baseline = file("$rootDir/config/detekt/baseline.xml")
     }
 
     dependencies {
@@ -43,7 +42,6 @@ allprojects {
     }
 
     tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-        jvmTarget = "1.8"
         reports {
             xml.required.set(false)
             html.required.set(true)
@@ -51,13 +49,10 @@ allprojects {
             sarif.required.set(false)
         }
     }
-    tasks.withType<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>().configureEach {
-        jvmTarget = "1.8"
-    }
 }
 
 versionCatalogUpdate {
-    sortByKey.set(true)
+    sortByKey.set(false)
 
     keep {
         keepUnusedVersions.set(true)

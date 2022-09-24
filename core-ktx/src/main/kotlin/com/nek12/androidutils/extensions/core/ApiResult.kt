@@ -1,4 +1,4 @@
-@file:Suppress("MemberVisibilityCanBePrivate", "unused", "NOTHING_TO_INLINE")
+@file:Suppress("MemberVisibilityCanBePrivate", "unused", "NOTHING_TO_INLINE", "TooManyFunctions")
 
 package com.nek12.androidutils.extensions.core
 
@@ -58,8 +58,8 @@ sealed class ApiResult<out T> {
         inline fun <T> wrap(call: () -> T): ApiResult<T> {
             return try {
                 Success(call())
-            } catch (e: Exception) {
-                Error(e)
+            } catch (expected: Exception) {
+                Error(expected)
             }
         }
 
@@ -228,17 +228,17 @@ inline fun <T> ApiResult<T>.nullOnError(): ApiResult<T?> = if (this is Error) Su
 /**
  * Returns a list containing only [Error] values
  */
-inline fun <T> Iterable<ApiResult<T>>.filterError() = filterIsInstance<Error>()
+inline fun <T> Iterable<ApiResult<T>>.filterErrors() = filterIsInstance<Error>()
 
 /**
  * Returns a list containing only [Success] values
  */
-inline fun <T> Iterable<ApiResult<T>>.filterSuccess(): List<Success<T>> = filterIsInstance<Success<T>>()
+inline fun <T> Iterable<ApiResult<T>>.filterSuccesses() = filterIsInstance<Success<T>>()
 
 /**
  * Returns a new list containing only items that are both [Success] an not null
  */
-inline fun <T> Iterable<ApiResult<T?>>.filterNulls(): List<ApiResult<T>> =
+inline fun <T> Iterable<ApiResult<T?>>.filterNulls() =
     filter { it !is Success || it.result != null }.mapResults { it!! }
 
 /**
@@ -249,6 +249,48 @@ inline fun <T, R> Sequence<ApiResult<T>>.mapResults(crossinline transform: (T) -
 /**
  * Makes [Success] an [Error] using provided [exception] if the collection is empty
  */
-inline fun <T> ApiResult<Collection<T>>.errorIfEmpty(
+inline fun <T, R : Collection<T>> ApiResult<R>.errorIfEmpty(
     exception: Exception = ConditionNotSatisfiedException("Collection was empty")
 ) = errorIf(exception) { it.isEmpty() }
+
+/**
+ * Recover from an exception of type [R], else no-op.
+ * Does not affect [Loading]
+ */
+inline fun <reified T, reified R : Exception> ApiResult<T>.recover(block: (R) -> T) = when (this) {
+    is Success, is Loading -> this
+    is Error -> if (e is R) Success(block(e)) else this
+}
+
+/**
+ * Recover from an [Error] only if the [condition] is true, else no-op.
+ * Does not affect [Loading]
+ */
+inline fun <reified T> ApiResult<T>.recoverIf(condition: (Exception) -> Boolean, block: (Exception) -> T) =
+    when (this) {
+        is Success, is Loading -> this
+        is Error -> if (condition(e)) Success(block(e)) else this
+    }
+
+/**
+ * Call [another] and retrieve the result.
+ * If the result is success, continue (**the result of calling [another] is discarded**)
+ * If the result is an error, propagate it to [this]
+ * Effectively, requires for another ApiResult to succeed before proceeding with this one
+ * @see [ApiResult.then]
+ */
+inline fun <reified T, reified R> ApiResult<T>.chain(another: (result: T) -> ApiResult<R>) = when (this) {
+    is Loading, is Error -> this
+    is Success -> another(result).fold(
+        onSuccess = { this },
+        onError = { Error(it) },
+    )
+}
+
+/**
+ * Call [another] and if it succeeds, continue with [another]'s result.
+ * If it fails, propagate the error.
+ * Effectively, map to another result.
+ * @see [ApiResult.chain]
+ */
+inline fun <reified T, reified R> ApiResult<T>.then(another: (T) -> ApiResult<R>) = map { another(it) }.unwrap()

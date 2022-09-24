@@ -36,8 +36,11 @@ sealed class Text {
     }
 
     @Suppress("SpreadOperator")
-    fun string(context: Context): String = when (this@Text) {
+    fun string(context: Context): String = when (this) {
         is Dynamic -> text
-        is Resource -> context.getString(id, *args)
+        is Resource -> context.getString(
+            id,
+            *args.map { if (it is Text) it.string(context) else it }.toTypedArray()
+        )
     }
 }

@@ -34,6 +34,8 @@ abstract class BundleExtra<in T, V>(
 
     private var internalValue: Any? = UNINITIALIZED_VALUE
 
+    // this relies on type-unsafe api
+    @Suppress("DEPRECATION", "UseRequire")
     override fun getValue(thisRef: T, property: KProperty<*>): V = when (internalValue) {
         is UNINITIALIZED_VALUE -> {
             internalValue = bundle?.get(property.name)
@@ -50,5 +52,6 @@ abstract class BundleExtra<in T, V>(
 @Suppress("ClassName")
 private object UNINITIALIZED_VALUE
 
+@Deprecated("Use the Tiramisu bundle type-safe api")
 inline fun <reified T> Intent.requireExtra(key: String) =
     requireNotNull(extras?.get(key)) { "required extra \"$key\" not provided" } as T

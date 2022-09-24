@@ -84,7 +84,8 @@ class RoomTests {
         await { dao.add(entity) }
         assertEquals(1, dao.getAllSync().count())
 
-        await { dao.delete(entity.id) }
+        await { dao.save(Entry()) }
+        assertEquals(2, dao.getAllSync().count())
     }
 
     private inline fun TestScope.await(call: () -> Unit) {

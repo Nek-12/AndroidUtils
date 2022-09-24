@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+android {
+    namespace = "${rootProject.group}.room"
+}
+
 dependencies {
     implementation(libs.room.ktx)
     implementation(libs.kotlin.coroutines)

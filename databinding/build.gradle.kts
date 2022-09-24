@@ -2,6 +2,8 @@ android {
     buildFeatures {
         dataBinding = true
     }
+
+    namespace = "${rootProject.group}.databinding"
 }
 
 plugins {

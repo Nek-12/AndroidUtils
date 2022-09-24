@@ -22,10 +22,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.nek12.androidutils.extensions.android.Text
 import com.nek12.androidutils.extensions.android.Text.Dynamic
 import com.nek12.androidutils.extensions.android.Text.Resource
@@ -57,6 +61,12 @@ fun Int?.string(vararg args: Any) = this?.let { stringResource(id = this, *args)
 @Composable
 fun Int.string(vararg args: Any) = stringResource(id = this, *args)
 
+@Composable
+fun Int.painter() = painterResource(this)
+
+@Composable
+fun Int?.painter() = this?.let { painterResource(it) }
+
 /**
  * Produces an annotated string identical to the original string
  * For those times when an api requires AnnotatedString but you don't want to build one
@@ -77,6 +87,7 @@ val screenHeigthDp: Int @Composable get() = LocalConfiguration.current.screenHei
 val screenWidthPx: Int @Composable get() = screenWidthDp * displayDensity
 
 @Composable
+@Suppress("ComposableParametersOrdering")
 inline fun <reified BoundService : Service, reified BoundServiceBinder : Binder> rememberBoundLocalService(
     flags: Int = Context.BIND_AUTO_CREATE,
     crossinline getService: @DisallowComposableCalls BoundServiceBinder.() -> BoundService,
@@ -105,5 +116,21 @@ inline fun <reified BoundService : Service, reified BoundServiceBinder : Binder>
 @Composable
 fun Text.string(): String = when (this) {
     is Dynamic -> text
-    is Resource -> id.string(args = args)
+    is Resource -> string(LocalContext.current)
+}
+
+@Composable
+fun ObserveLifecycle(onEvent: (event: Lifecycle.Event) -> Unit) {
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    DisposableEffect(lifecycle) {
+        val observer = LifecycleEventObserver { _, event ->
+            onEvent(event)
+        }
+
+        lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycle.removeObserver(observer)
+        }
+    }
 }
