@@ -144,6 +144,8 @@ open class Time(
         else -> throw IndexOutOfBoundsException("Only 0, 1 and 2 are valid values")
     }
 
+    fun copy(hour: Int = this.hour, minute: Int = this.minute, second: Int = this.second) = Time(hour, minute, second)
+
     companion object {
 
         /**
