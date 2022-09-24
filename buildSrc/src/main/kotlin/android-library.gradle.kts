@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.com.amazonaws.util.XpathUtils.asNode
+
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -9,7 +11,6 @@ android {
 
     defaultConfig {
         minSdk = 22
-        targetSdk = 33
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         consumerProguardFiles("consumer-rules.pro")
@@ -35,6 +36,11 @@ android {
         freeCompilerArgs += listOf(
             "-opt-in=kotlin.RequiresOptIn",
             "-Xjvm-default=all",
+            "-Xbackend-threads=0", // parallel IR compilation
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+            "-opt-in=kotlinx.coroutines.FlowPreview",
+            "-opt-in=kotlin.Experimental",
+            "-opt-in=kotlin.RequiresOptIn",
         )
     }
 
