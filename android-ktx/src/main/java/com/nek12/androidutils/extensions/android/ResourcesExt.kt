@@ -5,6 +5,8 @@ package com.nek12.androidutils.extensions.android
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.core.content.ContextCompat
@@ -58,6 +60,13 @@ fun Int.asDrawable(context: Context) = ContextCompat.getDrawable(context, this)
 val Resources.currentLocale: Locale
     get() = ConfigurationCompat.getLocales(configuration).get(0)!!
 
+@Deprecated("Use the Tiramisu bundle typesafe api")
 inline fun <reified T : Parcelable> Bundle.requireParcelable(name: String): T {
-    return requireNotNull(getParcelable(name)) { "Bundle does not contain a $name" }
+    return requireNotNull(
+        if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+            getParcelable(name, T::class.java)
+        } else {
+            getParcelable(name)
+        }
+    ) { "Bundle does not contain a $name" }
 }

@@ -37,8 +37,6 @@ android {
             "-opt-in=kotlin.RequiresOptIn",
             "-Xjvm-default=all",
             "-Xbackend-threads=0", // parallel IR compilation
-            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "-opt-in=kotlinx.coroutines.FlowPreview",
             "-opt-in=kotlin.Experimental",
             "-opt-in=kotlin.RequiresOptIn",
         )
