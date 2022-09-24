@@ -87,6 +87,7 @@ val screenHeigthDp: Int @Composable get() = LocalConfiguration.current.screenHei
 val screenWidthPx: Int @Composable get() = screenWidthDp * displayDensity
 
 @Composable
+@Suppress("ComposableParametersOrdering")
 inline fun <reified BoundService : Service, reified BoundServiceBinder : Binder> rememberBoundLocalService(
     flags: Int = Context.BIND_AUTO_CREATE,
     crossinline getService: @DisallowComposableCalls BoundServiceBinder.() -> BoundService,

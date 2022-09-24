@@ -1,3 +1,5 @@
+@file:Suppress("Filename")
+
 package com.nek12.androidutils.databinding.recyclerview
 
 import androidx.databinding.BindingAdapter

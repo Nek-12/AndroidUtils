@@ -52,7 +52,6 @@ abstract class BundleExtra<in T, V>(
 @Suppress("ClassName")
 private object UNINITIALIZED_VALUE
 
-
 @Deprecated("Use the Tiramisu bundle type-safe api")
 inline fun <reified T> Intent.requireExtra(key: String) =
     requireNotNull(extras?.get(key)) { "required extra \"$key\" not provided" } as T

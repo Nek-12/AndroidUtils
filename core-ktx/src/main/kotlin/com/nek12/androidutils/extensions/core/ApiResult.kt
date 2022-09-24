@@ -272,7 +272,6 @@ inline fun <reified T> ApiResult<T>.recoverIf(condition: (Exception) -> Boolean,
         is Error -> if (condition(e)) Success(block(e)) else this
     }
 
-
 /**
  * Call [another] and retrieve the result.
  * If the result is success, continue (**the result of calling [another] is discarded**)
