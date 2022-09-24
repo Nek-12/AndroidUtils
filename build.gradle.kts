@@ -57,7 +57,7 @@ allprojects {
 }
 
 versionCatalogUpdate {
-    sortByKey.set(true)
+    sortByKey.set(false)
 
     keep {
         keepUnusedVersions.set(true)

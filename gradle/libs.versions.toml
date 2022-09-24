@@ -1,12 +1,15 @@
 [versions]
 
-gradleAndroid = "7.2.1"
-kotlin = "1.6.21"
+gradleAndroid = "7.4.0-alpha10"
+
+# @pin
+kotlin = "1.7.10"
 activity = "1.6.0-alpha03"
 detekt = "1.21.0-RC1"
 paging = "3.1.1"
 room = "2.5.0-alpha01"
-ksp = "1.6.21-1.0.5"
+# @pin
+ksp = "1.7.10-1.0.6"
 
 paging-compose = "1.0.0-alpha14"
 lifecycle = "2.5.0-rc01"
@@ -33,7 +36,8 @@ turbine = "0.8.0"
 detektFormattingPlugin = "1.20.0"
 versionsPlugin = "0.42.0"
 composeDetektPlugin = "1.0.1"
-versionCatalogUpdatePlugin = "0.5.4-SNAPSHOT"
+versionCatalogUpdatePlugin = "0.6.1"
+gradleDoctorPlugin = "0.8.1"
 
 [libraries]
 
@@ -111,3 +115,4 @@ versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin
 parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+gradleDoctor = { id = "com.osacky.doctor", version.ref = "gradleDoctorPlugin" }
