@@ -4,7 +4,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.get().toString()
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
         useLiveLiterals = true
     }
 }

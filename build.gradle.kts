@@ -34,7 +34,6 @@ allprojects {
             io.gitlab.arturbosch.detekt.extensions.DetektExtension.DEFAULT_TEST_SRC_DIR_KOTLIN,
         )
         buildUponDefaultConfig = true
-        // baseline = file("$rootDir/config/detekt/baseline.xml")
     }
 
     dependencies {
@@ -43,16 +42,12 @@ allprojects {
     }
 
     tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-        jvmTarget = "1.8"
         reports {
             xml.required.set(false)
             html.required.set(true)
             txt.required.set(true)
             sarif.required.set(false)
         }
-    }
-    tasks.withType<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>().configureEach {
-        jvmTarget = "1.8"
     }
 }
 

@@ -1,112 +1,97 @@
 [versions]
-
+# @pin
 gradleAndroid = "7.4.0-alpha10"
-
 # @pin
 kotlin = "1.7.10"
 activity = "1.6.0-alpha03"
-detekt = "1.21.0-RC1"
-paging = "3.1.1"
-room = "2.5.0-alpha01"
+detekt = "1.22.0-RC1"
+paging = "3.2.0-alpha02"
+room = "2.5.0-alpha03"
 # @pin
 ksp = "1.7.10-1.0.6"
-
 paging-compose = "1.0.0-alpha14"
-lifecycle = "2.5.0-rc01"
-coroutines = "1.6.2"
-material = "1.6.0-alpha01"
+lifecycle = "2.6.0-alpha02"
+coroutines = "1.6.4"
+material = "1.8.0-alpha01"
 collection-ktx = "1.2.0"
 core-ktx = "1.9.0-alpha04"
 preferences-ktx = "1.2.0"
-recyclerview = "1.2.1"
-androidx-navigation = "2.5.0-rc01"
-fragment = "1.4.0"
-
-compose = "1.2.0-beta03"
-
-test-runner = "1.5.0-alpha02"
-espresso = "3.5.0-alpha05"
+recyclerview = "1.3.0-rc01"
+androidx-navigation = "2.6.0-alpha01"
+fragment = "1.6.0-alpha02"
+compose = "1.3.0-beta03"
+compose-compiler = "1.3.1"
+test-runner = "1.5.0-alpha04"
+espresso = "3.5.0-alpha07"
 junit = "4.13.2"
-androidJunit = "1.1.4-alpha05"
+androidJunit = "1.1.4-alpha07"
 robolectric = "4.7.3"
-kotest = "5.3.0"
-mockk = "1.12.4"
-turbine = "0.8.0"
-
-detektFormattingPlugin = "1.20.0"
+kotest = "5.4.2"
+mockk = "1.13.1"
+turbine = "0.11.0"
+detektFormattingPlugin = "1.22.0-RC1"
 versionsPlugin = "0.42.0"
-composeDetektPlugin = "1.0.1"
+composeDetektPlugin = "1.2.1"
 versionCatalogUpdatePlugin = "0.6.1"
 gradleDoctorPlugin = "0.8.1"
 
 [libraries]
-
-android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "gradleAndroid" }
-kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-version-gradle = { group = "com.github.ben-manes", name = "gradle-versions-plugin", version.ref = "versionsPlugin" }
-detekt-compose = { group = "ru.kode", name = "detekt-rules-compose", version.ref = "composeDetektPlugin" }
-detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detektFormattingPlugin" }
-
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
-kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
-
-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-
-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
-
-paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "paging" }
-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging-compose" }
-
-androidx-collection = { group = "androidx.collection", name = "collection-ktx", version.ref = "collection-ktx" }
-androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
-androidx-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
-androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
-androidx-preferences = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferences-ktx" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-
-androidx-navigation = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "androidx-navigation" }
-androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidx-navigation" }
-androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidx-navigation" }
-
-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
-
-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
-compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose" }
-compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
-compose-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
-compose-testing = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose" }
-compose-graphics = { group = "androidx.compose.animation", name = "animation-graphics", version.ref = "compose" }
-
-kotlin-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
-android-test-runner = { group = "androidx.test", name = "runner", version.ref = "test-runner" }
-android-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidJunit" }
-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
-kotest-junit = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
-kotest-assertions = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
-kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
-mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
-mockk-jvm = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = "mockk" }
-turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+android-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradleAndroid" }
+kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+version-gradle = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "versionsPlugin" }
+detekt-compose = { module = "ru.kode:detekt-rules-compose", version.ref = "composeDetektPlugin" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detektFormattingPlugin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+paging = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
+paging-common = "androidx.paging:paging-common:3.1.1"
+paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging-compose" }
+androidx-collection = { module = "androidx.collection:collection-ktx", version.ref = "collection-ktx" }
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
+androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
+androidx-preferences = { module = "androidx.preference:preference-ktx", version.ref = "preferences-ktx" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+androidx-navigation = { module = "androidx.navigation:navigation-runtime-ktx", version.ref = "androidx-navigation" }
+androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
+androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
+recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
+compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
+compose-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+compose-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+compose-testing = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
+compose-graphics = { module = "androidx.compose.animation:animation-graphics", version.ref = "compose" }
+kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+junit = { module = "junit:junit", version.ref = "junit" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+android-test-runner = { module = "androidx.test:runner", version.ref = "test-runner" }
+android-junit = { module = "androidx.test.ext:junit", version.ref = "androidJunit" }
+espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
+kotest-junit = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
+mockk-jvm = { module = "io.mockk:mockk-agent-jvm", version.ref = "mockk" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [bundles]
-
 unittest = [
-    "kotest-junit",
     "kotest-assertions",
+    "kotest-junit",
     "kotest-property",
+    "kotlin-reflect",
     "mockk",
     "mockk-jvm",
-    "kotlin-reflect"
 ]
 
 [plugins]
