@@ -2,6 +2,8 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    namespace = "${rootProject.group}.viewbinding"
 }
 
 dependencies {

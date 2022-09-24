@@ -7,6 +7,8 @@ android {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
         useLiveLiterals = true
     }
+
+    namespace = "${rootProject.group}.compose"
 }
 
 dependencies {

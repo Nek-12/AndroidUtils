@@ -1,3 +1,7 @@
+android {
+    namespace = "${rootProject.group}.extensions.view"
+}
+
 dependencies {
     implementation(libs.lifecycle.viewmodel)
     implementation(libs.recyclerview)
