@@ -105,5 +105,5 @@ inline fun <reified BoundService : Service, reified BoundServiceBinder : Binder>
 @Composable
 fun Text.string(): String = when (this) {
     is Dynamic -> text
-    is Resource -> id.string(args = args)
+    is Resource -> string(LocalContext.current)
 }
