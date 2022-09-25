@@ -1,6 +1,6 @@
 [versions]
 # @pin
-gradleAndroid = "7.4.0-alpha10"
+gradleAndroid = "8.0.0-alpha01"
 # @pin
 kotlin = "1.7.10"
 activity = "1.6.0-alpha03"

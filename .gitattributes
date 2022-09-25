@@ -16,3 +16,5 @@
 *.png binary
 *.jpg binary
 *.db binary
+
+scripts/* linguist-vendored

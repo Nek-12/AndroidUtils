@@ -443,7 +443,7 @@ naming:
   InvalidPackageDeclaration:
     active: true
     excludes: [ '**/*.kts' ]
-    rootPackage: 'com.nek12.respawn'
+    rootPackage: 'com.nek12.androidutils'
   MatchingDeclarationName:
     active: false
     mustBeFirst: true
