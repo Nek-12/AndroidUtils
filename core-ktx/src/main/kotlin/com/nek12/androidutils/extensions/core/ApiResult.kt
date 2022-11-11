@@ -257,7 +257,7 @@ inline fun <T, R : Collection<T>> ApiResult<R>.errorIfEmpty(
  * Recover from an exception of type [R], else no-op.
  * Does not affect [Loading]
  */
-inline fun <reified T, reified R : Exception> ApiResult<T>.recover(block: (R) -> T) = when (this) {
+inline fun <T, reified R : Exception> ApiResult<T>.recover(block: (R) -> T) = when (this) {
     is Success, is Loading -> this
     is Error -> if (e is R) Success(block(e)) else this
 }
@@ -266,7 +266,7 @@ inline fun <reified T, reified R : Exception> ApiResult<T>.recover(block: (R) ->
  * Recover from an [Error] only if the [condition] is true, else no-op.
  * Does not affect [Loading]
  */
-inline fun <reified T> ApiResult<T>.recoverIf(condition: (Exception) -> Boolean, block: (Exception) -> T) =
+inline fun <T> ApiResult<T>.recoverIf(condition: (Exception) -> Boolean, block: (Exception) -> T) =
     when (this) {
         is Success, is Loading -> this
         is Error -> if (condition(e)) Success(block(e)) else this
@@ -279,7 +279,7 @@ inline fun <reified T> ApiResult<T>.recoverIf(condition: (Exception) -> Boolean,
  * Effectively, requires for another ApiResult to succeed before proceeding with this one
  * @see [ApiResult.then]
  */
-inline fun <reified T, reified R> ApiResult<T>.chain(another: (result: T) -> ApiResult<R>) = when (this) {
+inline fun <T, R> ApiResult<T>.chain(another: (result: T) -> ApiResult<R>) = when (this) {
     is Loading, is Error -> this
     is Success -> another(result).fold(
         onSuccess = { this },
@@ -293,4 +293,4 @@ inline fun <reified T, reified R> ApiResult<T>.chain(another: (result: T) -> Api
  * Effectively, map to another result.
  * @see [ApiResult.chain]
  */
-inline fun <reified T, reified R> ApiResult<T>.then(another: (T) -> ApiResult<R>) = map { another(it) }.unwrap()
+inline fun <T, R> ApiResult<T>.then(another: (T) -> ApiResult<R>) = map { another(it) }.unwrap()
