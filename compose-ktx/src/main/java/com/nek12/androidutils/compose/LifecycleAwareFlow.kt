@@ -28,6 +28,7 @@ fun <T> rememberLifecycleFlow(
 }
 
 @Composable
+@Deprecated("Use collectAsStateWithLifecycle from androix instead")
 fun <T : R, R> Flow<T>.collectAsStateOnLifecycle(
     initial: R,
     context: CoroutineContext = EmptyCoroutineContext,
@@ -39,6 +40,7 @@ fun <T : R, R> Flow<T>.collectAsStateOnLifecycle(
 
 @Suppress("StateFlowValueCalledInComposition")
 @Composable
+@Deprecated("Use collectAsStateWithLifecycle from androix instead")
 fun <T> StateFlow<T>.collectAsStateOnLifecycle(
     context: CoroutineContext = EmptyCoroutineContext,
     lifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
