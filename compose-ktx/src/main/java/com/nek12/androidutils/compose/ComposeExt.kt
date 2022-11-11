@@ -17,8 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -90,11 +92,12 @@ val screenWidthPx: Int @Composable get() = screenWidthDp * displayDensity
 @Suppress("ComposableParametersOrdering")
 inline fun <reified BoundService : Service, reified BoundServiceBinder : Binder> rememberBoundLocalService(
     flags: Int = Context.BIND_AUTO_CREATE,
-    crossinline getService: @DisallowComposableCalls BoundServiceBinder.() -> BoundService,
+    noinline getService: @DisallowComposableCalls BoundServiceBinder.() -> BoundService,
 ): State<BoundService?> {
     val context: Context = LocalContext.current
     val boundService = remember(context) { mutableStateOf<BoundService?>(null) }
-    val serviceConnection: ServiceConnection = remember(context) {
+
+    val serviceConnection: ServiceConnection = remember(context, getService) {
         object : ServiceConnection {
             override fun onServiceConnected(className: ComponentName, service: IBinder) {
                 boundService.value = (service as BoundServiceBinder).getService()
@@ -105,7 +108,7 @@ inline fun <reified BoundService : Service, reified BoundServiceBinder : Binder>
             }
         }
     }
-    DisposableEffect(context, serviceConnection) {
+    DisposableEffect(context, serviceConnection, flags) {
         context.bindService(Intent(context, BoundService::class.java), serviceConnection, flags)
 
         onDispose { context.unbindService(serviceConnection) }
@@ -121,16 +124,17 @@ fun Text.string(): String = when (this) {
 
 @Composable
 fun ObserveLifecycle(onEvent: (event: Lifecycle.Event) -> Unit) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val lifecycle = LocalLifecycleOwner.current
+    val action by rememberUpdatedState(onEvent)
     DisposableEffect(lifecycle) {
         val observer = LifecycleEventObserver { _, event ->
-            onEvent(event)
+            action(event)
         }
 
-        lifecycle.addObserver(observer)
+        lifecycle.lifecycle.addObserver(observer)
 
         onDispose {
-            lifecycle.removeObserver(observer)
+            lifecycle.lifecycle.removeObserver(observer)
         }
     }
 }
