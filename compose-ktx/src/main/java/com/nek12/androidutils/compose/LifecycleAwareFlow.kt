@@ -37,9 +37,9 @@ fun <T : R, R> Flow<T>.collectAsStateOnLifecycle(
     return lifecycleAwareFlow.collectAsState(initial, context)
 }
 
-@Suppress("StateFlowValueCalledInComposition")
-@Composable
 @Deprecated("Use collectAsStateWithLifecycle from androix instead")
+@Suppress("StateFlowValueCalledInComposition", "DEPRECATION")
+@Composable
 fun <T> StateFlow<T>.collectAsStateOnLifecycle(
     context: CoroutineContext = EmptyCoroutineContext,
     lifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
