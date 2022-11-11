@@ -96,18 +96,15 @@ fun <T> Flow<T?>.collectNotNullOnLifecycle(
  * Convert this flow to a stateflow that will be observed on this scope and sharing is going to
  * continue while there are active subscribers. Most similar to livedata
  */
-fun <T> Flow<T?>.toState(scope: CoroutineScope): StateFlow<T?> {
-    return stateIn(scope, SharingStarted.WhileSubscribed(), null)
-}
+fun <T> Flow<T?>.toState(scope: CoroutineScope): StateFlow<T?> = stateIn(scope, SharingStarted.WhileSubscribed(), null)
 
 /**
  * Convert this flow to a stateflow that will be observed on this scope and sharing is going to
  * continue while there are active subscribers. Instead of null like in live data, has an
  * [initialValue]
  */
-fun <T> Flow<T>.toState(scope: CoroutineScope, initialValue: T): StateFlow<T> {
-    return stateIn(scope, SharingStarted.WhileSubscribed(), initialValue)
-}
+fun <T> Flow<T>.toState(scope: CoroutineScope, initialValue: T): StateFlow<T> =
+    stateIn(scope, SharingStarted.WhileSubscribed(), initialValue)
 
 /**
  * Launches the specified block as a coroutine
@@ -136,12 +133,11 @@ fun LifecycleOwner.delayOnLifecycle(
 /**
  * Emits [Loading], then executes [call] and [wrap]s it in [ApiResult]
  */
-inline fun <T> ApiResult.Companion.flow(crossinline call: suspend () -> T): Flow<ApiResult<T>> {
-    return kotlinx.coroutines.flow.flow {
+inline fun <T> ApiResult.Companion.flow(crossinline call: suspend () -> T): Flow<ApiResult<T>> =
+    kotlinx.coroutines.flow.flow {
         emit(ApiResult.Loading)
         emit(wrap { call() })
     }
-}
 
 fun <T> Flow<T>.asApiResult(): Flow<ApiResult<T>> = map<T, ApiResult<T>> { ApiResult.success(it) }
     .onStart { emit(ApiResult.Loading) }

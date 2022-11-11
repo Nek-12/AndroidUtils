@@ -7,6 +7,7 @@ import androidx.annotation.StringRes
 import androidx.databinding.ViewDataBinding
 import com.nek12.androidutils.databinding.recyclerview.Item.Companion.itemFromData
 
+@Suppress("TooManyFunctions")
 class ItemBuilder {
 
     private var currentList = mutableListOf<Item<*, *>>()

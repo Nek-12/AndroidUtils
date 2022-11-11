@@ -1,4 +1,4 @@
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "NewApi")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "NewApi", "MagicNumber")
 
 package com.nek12.androidutils.extensions.core
 
@@ -19,6 +19,7 @@ import kotlin.math.abs
  * @throws IllegalArgumentException if the specified values are invalid. Validation happens at
  * object creation time
  */
+@Suppress("TooManyFunctions")
 open class Time(
     val hour: Int,
     val minute: Int,
@@ -59,17 +60,14 @@ open class Time(
      * - 00:00:00 -> 0
      * - 05:00:00 -> 50000
      */
-    fun toInt(): Int {
-        return hour * 10000 + minute * 100 + second
-    }
+    fun toInt(): Int = hour * 10000 + minute * 100 + second
 
     /**
      * @return the amount of seconds from this object's value [to]
      * The amount is always positive
      */
-    fun distanceInSeconds(to: Time): Int {
-        return abs(to.hour - hour) * 60 * 60 + abs(to.minute - minute) * 60 + abs(to.second - second)
-    }
+    fun distanceInSeconds(to: Time): Int =
+        abs(to.hour - hour) * 60 * 60 + abs(to.minute - minute) * 60 + abs(to.second - second)
 
     /** Same as toString but gives you a choice on whether to use 12H scheme.
      * [toString] uses asString(false)
@@ -78,12 +76,10 @@ open class Time(
      * the resulting string back to Time won't result in a valid value, if you have this parameter true
      * true => "17:00:00", false => "17:00"
      * **/
-    fun asString(use12h: Boolean = false, addSecondsIfZero: Boolean = false): String {
-        return buildString {
-            append("${asString(if (use12h) hourAs12H else hour)}:${asString(minute)}")
-            if (addSecondsIfZero || second != 0) append(":${asString(second)}")
-            if (use12h) append(" ${clock.value}")
-        }
+    fun asString(use12h: Boolean = false, addSecondsIfZero: Boolean = false): String = buildString {
+        append("${asString(if (use12h) hourAs12H else hour)}:${asString(minute)}")
+        if (addSecondsIfZero || second != 0) append(":${asString(second)}")
+        if (use12h) append(" ${clock.value}")
     }
 
     operator fun plus(other: Time): Time = add(other.hour, other.minute, other.second)
@@ -155,29 +151,21 @@ open class Time(
          * - 1 -> "01"
          * - 15 -> "15"
          */
-        fun asString(value: Int): String {
-            return if (value < 10) "0$value" else value.toString()
-        }
+        fun asString(value: Int): String = if (value < 10) "0$value" else value.toString()
 
         /**
          * Parse a new time object using the int representation of it.
          * @see Time.toInt
          */
-        fun fromInt(hms: Int): Time {
-            return Time(hms / 10000, hms / 100 % 100, hms % 100)
-        }
+        fun fromInt(hms: Int): Time = Time(hms / 10000, hms / 100 % 100, hms % 100)
 
         /**
          * Gets a time from this [zdt]. Uses [ZoneId.systemDefault] by default.
          * @see now
          */
-        fun fromZDT(zdt: ZonedDateTime): Time {
-            return Time(zdt.hour, zdt.minute, zdt.second)
-        }
+        fun fromZDT(zdt: ZonedDateTime): Time = Time(zdt.hour, zdt.minute, zdt.second)
 
-        fun fromInstant(instant: Instant, zone: ZoneId): Time {
-            return fromZDT(instant.toZDT(zone))
-        }
+        fun fromInstant(instant: Instant, zone: ZoneId): Time = fromZDT(instant.toZDT(zone))
 
         /**
          * Get current local time.
@@ -202,9 +190,7 @@ open class Time(
          * [seconds] is NOT a timestamp
          * @see totalSeconds
          */
-        fun fromSecondsSinceMidnight(seconds: Long): Time {
-            return fromMillisSinceMidnight(seconds * 1000)
-        }
+        fun fromSecondsSinceMidnight(seconds: Long): Time = fromMillisSinceMidnight(seconds * 1000)
 
         /**
          * Create a new time using specified [hours], [minutes], or [seconds]
@@ -234,8 +220,8 @@ open class Time(
                 val seconds = if (parts.size == 3) parts[2].toInt() else 0
 
                 return Time(hours, minutes, seconds)
-            } catch (e: Exception) {
-                throw IllegalArgumentException("Couldn't parse time", e)
+            } catch (expected: Exception) {
+                throw IllegalArgumentException("Couldn't parse time", expected)
             }
         }
 

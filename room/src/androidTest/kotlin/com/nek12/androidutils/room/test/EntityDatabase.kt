@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import com.nek12.androidutils.room.RoomDao
-import com.nek12.androidutils.room.RoomDataSource
 import com.nek12.androidutils.room.RoomEntity
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -30,8 +29,6 @@ abstract class EntryDao(db: RoomDatabase) : RoomDao<String, Entry>(db, Entry.TAB
     @Query("SELECT * FROM ${Entry.TABLE_NAME}")
     abstract fun getAllDefault(): Flow<List<Entry>>
 }
-
-class EntryRepo(dao: EntryDao) : RoomDataSource<String, Entry>(dao)
 
 @Database(
     entities = [Entry::class],

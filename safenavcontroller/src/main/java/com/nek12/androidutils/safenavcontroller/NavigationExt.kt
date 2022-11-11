@@ -34,13 +34,11 @@ fun Fragment.tryNavigate(
 
 fun Fragment.canNavigateUp() = findNavController().canNavigateUp
 
-fun NavController.tryNavigate(directions: NavDirections, navOptions: NavOptions? = null): Boolean {
-    return tryLogging { navigate(directions, navOptions) }
-}
+fun NavController.tryNavigate(directions: NavDirections, navOptions: NavOptions? = null): Boolean =
+    tryLogging { navigate(directions, navOptions) }
 
-fun NavController.tryNavigate(directions: NavDirections, extras: Navigator.Extras): Boolean {
-    return tryLogging { navigate(directions, extras) }
-}
+fun NavController.tryNavigate(directions: NavDirections, extras: Navigator.Extras): Boolean =
+    tryLogging { navigate(directions, extras) }
 
 /**
  * @return true if navigation was successful
@@ -50,9 +48,7 @@ fun NavController.tryNavigate(
     args: Bundle? = null,
     navOptions: NavOptions? = null,
     navigatorExtras: Navigator.Extras? = null,
-): Boolean {
-    return tryLogging { navigate(to, args, navOptions, navigatorExtras) }
-}
+): Boolean = tryLogging { navigate(to, args, navOptions, navigatorExtras) }
 
 val NavController.canNavigateUp get() = previousBackStackEntry != null
 

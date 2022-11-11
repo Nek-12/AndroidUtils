@@ -39,7 +39,7 @@ fun String.weight(weight: FontWeight) = span(SpanStyle(fontWeight = weight))
 
 fun String.style(style: FontStyle) = span(SpanStyle(fontStyle = style))
 
-fun String.shadow(color: Color = Color(0xFF000000), offset: Offset = Offset.Zero, blurRadius: Float = 0.0f) =
+fun String.shadow(color: Color, offset: Offset = Offset.Zero, blurRadius: Float = 0.0f) =
     span(SpanStyle(shadow = Shadow(color, offset, blurRadius)))
 
 fun String.fontFamily(fontFamily: FontFamily) = span(SpanStyle(fontFamily = fontFamily))

@@ -1,6 +1,5 @@
 package com.nek12.androidutils.compose
 
-import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -28,6 +27,7 @@ fun <T> rememberLifecycleFlow(
 }
 
 @Composable
+@Deprecated("Use collectAsStateWithLifecycle from androix instead")
 fun <T : R, R> Flow<T>.collectAsStateOnLifecycle(
     initial: R,
     context: CoroutineContext = EmptyCoroutineContext,
@@ -37,7 +37,8 @@ fun <T : R, R> Flow<T>.collectAsStateOnLifecycle(
     return lifecycleAwareFlow.collectAsState(initial, context)
 }
 
-@Suppress("StateFlowValueCalledInComposition")
+@Deprecated("Use collectAsStateWithLifecycle from androix instead")
+@Suppress("StateFlowValueCalledInComposition", "DEPRECATION")
 @Composable
 fun <T> StateFlow<T>.collectAsStateOnLifecycle(
     context: CoroutineContext = EmptyCoroutineContext,
@@ -45,7 +46,7 @@ fun <T> StateFlow<T>.collectAsStateOnLifecycle(
 ): State<T> = collectAsStateOnLifecycle(value, context, lifecycleState)
 
 @Composable
-@SuppressLint("ComposableNaming", "ComposableParametersOrdering")
+@Suppress("ComposableNaming", "ComposableParametersOrdering")
 fun <T> Flow<T>.collectOnLifecycle(
     lifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
     onNext: suspend CoroutineScope.(T) -> Unit,

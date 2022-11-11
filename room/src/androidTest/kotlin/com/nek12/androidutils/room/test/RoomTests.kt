@@ -22,12 +22,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
 class RoomTests {
 
     private lateinit var db: EntryDatabase
     private lateinit var dao: EntryDao
-    private lateinit var repo: EntryRepo
 
     @Before
     fun init() {
@@ -41,7 +41,6 @@ class RoomTests {
             .setQueryExecutor(dispatcher.asExecutor())
             .build()
         dao = db.entryDao()
-        repo = EntryRepo(dao)
     }
 
     @After

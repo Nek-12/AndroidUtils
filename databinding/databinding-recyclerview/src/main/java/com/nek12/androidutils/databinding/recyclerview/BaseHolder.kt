@@ -1,4 +1,4 @@
-@file:Suppress("UnusedImport")
+@file:Suppress("UnusedImport", "KDocReferencesNonPublicProperty")
 
 package com.nek12.androidutils.databinding.recyclerview
 

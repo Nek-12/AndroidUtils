@@ -81,12 +81,10 @@ fun <T> fastLazy(initializer: () -> T) = lazy(LazyThreadSafetyMode.NONE, initial
  * @param substring a string, that must be [String.isValid]
  * @return a resulting list
  */
-fun List<String>.filterBySubstring(substring: String?): List<String> {
-    return if (substring.isValid) asSequence()
-        .filter { it.contains(substring!!, true) }
-        .toList()
-    else this
-}
+fun List<String>.filterBySubstring(substring: String?): List<String> = if (substring.isValid) asSequence()
+    .filter { it.contains(substring!!, true) }
+    .toList()
+else this
 
 @Suppress("NewApi")
 fun List<DayOfWeek>.sortedByLocale(locale: Locale = Locale.getDefault()): List<DayOfWeek> {
