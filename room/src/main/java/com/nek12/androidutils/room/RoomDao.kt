@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.Flow
  * @see RoomDataSource
  **/
 @Dao
+@Suppress("MethodOverloading", "TooManyFunctions")
 abstract class RoomDao<I : Any, T : RoomEntity<I>>(
     private val db: RoomDatabase,
     private val tableName: String,
@@ -119,9 +120,7 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
     /**
      * @return The number of items that were deleted
      */
-    suspend fun delete(vararg ids: I): Int {
-        return delete(ids.toList())
-    }
+    suspend fun delete(vararg ids: I): Int = delete(ids.toList())
 
     /**
      * @return The number of items that were deleted
@@ -135,17 +134,13 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
      * Get an entity synchronously
      * @return null if no value found
      */
-    suspend fun getSync(id: I): T? {
-        return getSync(listOf(id)).firstOrNull()
-    }
+    suspend fun getSync(id: I): T? = getSync(listOf(id)).firstOrNull()
 
     /**
      * Get entities synchronously
      * @return empty list if no values found
      */
-    suspend fun getSync(vararg ids: I): List<T> {
-        return getSync(ids.toList())
-    }
+    suspend fun getSync(vararg ids: I): List<T> = getSync(ids.toList())
 
     /**
      * Get entities synchronously
@@ -160,9 +155,7 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
      * Get entities synchronously
      * @return empty list if no values found
      */
-    suspend fun getSync(ids: List<I>): List<T> {
-        return getSync(buildSqlIdQuery(ids)) ?: emptyList()
-    }
+    suspend fun getSync(ids: List<I>): List<T> = getSync(buildSqlIdQuery(ids)) ?: emptyList()
 
     /**
      * Use [kotlinx.coroutines.flow.distinctUntilChanged] to prevent
@@ -182,9 +175,8 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
      * duplicate emissions when unrelated entities are changed
      * Does not support setting referencedTables
      */
-    fun get(referencedTables: List<String> = emptyList(), vararg ids: I): Flow<List<T>> {
-        return get(ids.toList(), referencedTables = referencedTables.toTypedArray())
-    }
+    fun get(referencedTables: List<String> = emptyList(), vararg ids: I): Flow<List<T>> =
+        get(ids.toList(), referencedTables = referencedTables.toTypedArray())
 
     /**
      * Use [kotlinx.coroutines.flow.distinctUntilChanged] to prevent
@@ -217,14 +209,12 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
     @RawQuery
     internal abstract fun getBlocking(query: SupportSQLiteQuery): List<T>?
 
-    private fun buildSqlIdList(ids: List<I>): String {
-        return buildString {
-            ids.forEachIndexed { i, id ->
-                if (i != 0) {
-                    append(",")
-                }
-                append("'$id'")
+    private fun buildSqlIdList(ids: List<I>): String = buildString {
+        ids.forEachIndexed { i, id ->
+            if (i != 0) {
+                append(",")
             }
+            append("'$id'")
         }
     }
 

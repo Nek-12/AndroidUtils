@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.nek12.androidutils.room
 
 import android.os.Build
@@ -24,24 +26,16 @@ private fun capped(instant: Instant): Instant {
 class RoomConverters {
 
     @TypeConverter
-    fun toDuration(seconds: Long?): Duration? {
-        return seconds?.let { Duration.ofSeconds(it) }
-    }
+    fun toDuration(seconds: Long?): Duration? = seconds?.let { Duration.ofSeconds(it) }
 
     @TypeConverter
-    fun fromDuration(value: Duration?): Long? {
-        return value?.seconds
-    }
+    fun fromDuration(value: Duration?): Long? = value?.seconds
 
     @TypeConverter
-    fun fromInstant(instant: Instant?): Long? {
-        return instant?.let { capped(it).toEpochMilli() }
-    }
+    fun fromInstant(instant: Instant?): Long? = instant?.let { capped(it).toEpochMilli() }
 
     @TypeConverter
-    fun toInstant(millisSinceEpoch: Long?): Instant? {
-        return millisSinceEpoch?.let {
-            Instant.ofEpochMilli(millisSinceEpoch)
-        }
+    fun toInstant(millisSinceEpoch: Long?): Instant? = millisSinceEpoch?.let {
+        Instant.ofEpochMilli(millisSinceEpoch)
     }
 }

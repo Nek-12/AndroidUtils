@@ -55,12 +55,10 @@ sealed class ApiResult<out T> {
          * Execute [call] catching any exceptions.
          * Throwables are not caught on purpose.
          */
-        inline fun <T> wrap(call: () -> T): ApiResult<T> {
-            return try {
-                Success(call())
-            } catch (expected: Exception) {
-                Error(expected)
-            }
+        inline fun <T> wrap(call: () -> T): ApiResult<T> = try {
+            Success(call())
+        } catch (expected: Exception) {
+            Error(expected)
         }
 
         /**
@@ -89,12 +87,10 @@ inline fun <T> ApiResult<T>.orNull(): T? = or(null)
 /**
  * Throws [ApiResult.Error.e], or [NotFinishedException] if the request has not been completed yet.
  */
-inline fun <T> ApiResult<T>.orThrow(): T {
-    return when (this) {
-        is Loading -> throw NotFinishedException()
-        is Error -> throw e
-        is Success -> result
-    }
+inline fun <T> ApiResult<T>.orThrow(): T = when (this) {
+    is Loading -> throw NotFinishedException()
+    is Error -> throw e
+    is Success -> result
 }
 
 /**
@@ -113,12 +109,10 @@ inline fun <T, R> ApiResult<T>.fold(
     onSuccess: (result: T) -> R,
     onError: (exception: Exception) -> R,
     noinline onLoading: (() -> R)? = null,
-): R {
-    return when (this) {
-        is Success -> onSuccess(result)
-        is Error -> onError(e)
-        is Loading -> onLoading?.let { it() } ?: onError(NotFinishedException())
-    }
+): R = when (this) {
+    is Success -> onSuccess(result)
+    is Error -> onError(e)
+    is Loading -> onLoading?.let { it() } ?: onError(NotFinishedException())
 }
 
 inline fun <T> ApiResult<T>.onError(block: (Exception) -> Unit): ApiResult<T> {
@@ -155,12 +149,10 @@ inline fun <T> ApiResult<T>.errorIf(
 /**
  * Change the type of the [Success] to [R] without affecting error/loading results
  */
-inline fun <T, R> ApiResult<T>.map(block: (T) -> R): ApiResult<R> {
-    return when (this) {
-        is Success -> Success(block(result))
-        is Error -> Error(e)
-        is Loading -> this
-    }
+inline fun <T, R> ApiResult<T>.map(block: (T) -> R): ApiResult<R> = when (this) {
+    is Success -> Success(block(result))
+    is Error -> Error(e)
+    is Loading -> this
 }
 
 /**
@@ -176,42 +168,35 @@ inline fun <T> Iterable<ApiResult<T>>.mapErrors(transform: (Exception) -> Except
 /**
  * Change the exception of the [Error] response without affecting loading/success results
  */
-inline fun <T, R : Exception> ApiResult<T>.mapError(block: (Exception) -> R): ApiResult<T> {
-    return when (this) {
-        is Success -> this
-        is Error -> Error(block(e))
-        is Loading -> this
-    }
+inline fun <T, R : Exception> ApiResult<T>.mapError(block: (Exception) -> R): ApiResult<T> = when (this) {
+    is Success -> this
+    is Error -> Error(block(e))
+    is Loading -> this
 }
 
 /**
  * Maps [Loading] to a [Success], not touching anything else
  */
-inline fun <R, T : R> ApiResult<T>.mapLoading(block: () -> R): ApiResult<R> {
-    return when (this) {
-        is Success -> this
-        is Error -> this
-        is Loading -> Success(block())
-    }
+inline fun <R, T : R> ApiResult<T>.mapLoading(block: () -> R): ApiResult<R> = when (this) {
+    is Success -> this
+    is Error -> this
+    is Loading -> Success(block())
 }
 
 /**
  * Fix situations where you have ApiResult<ApiResult<T>>
  */
-inline fun <T> ApiResult<ApiResult<T>>.unwrap(): ApiResult<T> {
-    return fold(
-        { it },
-        { Error(it) },
-        { Loading }
-    )
-}
+inline fun <T> ApiResult<ApiResult<T>>.unwrap(): ApiResult<T> = fold(
+    { it },
+    { Error(it) },
+    { Loading }
+)
 
 /**
  * Change the type of successful result to [R], also wrapping [block] in another result then folding it (handling exceptions)
  */
-inline fun <T, R> ApiResult<T>.mapWrapping(block: (T) -> R): ApiResult<R> {
-    return map { ApiResult.wrap { block(it) } }.unwrap()
-}
+inline fun <T, R> ApiResult<T>.mapWrapping(block: (T) -> R): ApiResult<R> =
+    map { ApiResult.wrap { block(it) } }.unwrap()
 
 /**
  * Make this result an error if [Success] value was null

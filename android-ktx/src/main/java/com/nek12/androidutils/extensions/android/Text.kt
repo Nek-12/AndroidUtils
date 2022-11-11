@@ -30,9 +30,7 @@ sealed class Text {
             return result
         }
 
-        override fun toString(): String {
-            return "TextResource.Resource(id=$id, args=${args.contentToString()})"
-        }
+        override fun toString(): String = "TextResource.Resource(id=$id, args=${args.contentToString()})"
     }
 
     @Suppress("SpreadOperator")

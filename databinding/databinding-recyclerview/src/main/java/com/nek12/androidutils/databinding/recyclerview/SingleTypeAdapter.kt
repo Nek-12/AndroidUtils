@@ -25,9 +25,7 @@ open class SingleTypeAdapter<T, in VB : ViewDataBinding>(
     private val binder: RVBinder<T, VB>? = null,
 ) : GenericAdapter(itemClickListener as? ItemListener<Item<*, *>>?, lifecycleOwner, stableIds, brVariable) {
 
-    override fun getItem(pos: Int): Item<T, VB> {
-        return super.getItem(pos) as Item<T, VB>
-    }
+    override fun getItem(pos: Int): Item<T, VB> = super.getItem(pos) as Item<T, VB>
 
     fun submitData(data: List<T>, idSelector: (T) -> Long?) = this.submitData(data, layout, idSelector, binder)
 

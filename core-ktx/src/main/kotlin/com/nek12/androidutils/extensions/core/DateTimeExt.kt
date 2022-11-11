@@ -23,13 +23,10 @@ import java.util.Calendar.getInstance
 
 val ZonedDateTime.midnight: ZonedDateTime get() = truncatedTo(ChronoUnit.DAYS)
 
-fun ZonedDateTime.onSameLocalDay(other: ZonedDateTime): Boolean {
-    return truncatedTo(ChronoUnit.DAYS) == other.truncatedTo(ChronoUnit.DAYS)
-}
+fun ZonedDateTime.onSameLocalDay(other: ZonedDateTime): Boolean =
+    truncatedTo(ChronoUnit.DAYS) == other.truncatedTo(ChronoUnit.DAYS)
 
-fun Instant.onSameUTCDay(other: Instant): Boolean {
-    return truncatedTo(ChronoUnit.DAYS) == other.truncatedTo(ChronoUnit.DAYS)
-}
+fun Instant.onSameUTCDay(other: Instant): Boolean = truncatedTo(ChronoUnit.DAYS) == other.truncatedTo(ChronoUnit.DAYS)
 
 val ZonedDateTime.isToday: Boolean get() = onSameLocalDay(ZonedDateTime.now())
 
@@ -39,17 +36,11 @@ val Instant.localMonthDay get() = toZDT().dayOfMonth
 
 val ZonedDateTime.localWeekDay: Int get() = dayOfWeek.value
 
-fun Instant.plusDays(offset: Long): Instant {
-    return plus(offset, ChronoUnit.DAYS)
-}
+fun Instant.plusDays(offset: Long): Instant = plus(offset, ChronoUnit.DAYS)
 
-fun Instant.minusDays(offset: Long): Instant {
-    return minus(offset, ChronoUnit.DAYS)
-}
+fun Instant.minusDays(offset: Long): Instant = minus(offset, ChronoUnit.DAYS)
 
-fun Instant.asString(formatter: DateTimeFormatter): String {
-    return formatter.format(this)
-}
+fun Instant.asString(formatter: DateTimeFormatter): String = formatter.format(this)
 
 /**
  * @return ISO8601 -> Monday = 1
@@ -57,9 +48,8 @@ fun Instant.asString(formatter: DateTimeFormatter): String {
 
 fun DayOfWeek.asString(): String = getDisplayName(TextStyle.FULL, Locale.getDefault())
 
-fun Month.asString(textStyle: TextStyle = TextStyle.FULL, locale: Locale = Locale.getDefault()): String {
-    return getDisplayName(textStyle, locale)
-}
+fun Month.asString(textStyle: TextStyle = TextStyle.FULL, locale: Locale = Locale.getDefault()): String =
+    getDisplayName(textStyle, locale)
 
 fun Calendar.setToMidnight() {
     set(HOUR_OF_DAY, 0)
@@ -71,9 +61,7 @@ fun Calendar.setToMidnight() {
 fun Long.toCalendar(
     timeZone: TimeZone = TimeZone.getDefault(),
     locale: Locale = Locale.getDefault()
-): Calendar {
-    return getInstance(timeZone, locale).also { it.timeInMillis = this }
-}
+): Calendar = getInstance(timeZone, locale).also { it.timeInMillis = this }
 
 fun Date.toCalendar(
     timeZone: TimeZone = TimeZone.getDefault(),
@@ -85,9 +73,7 @@ fun Calendar.isCurrentMonth(): Boolean {
     return now[MONTH] == this[MONTH] && now[YEAR] == this[YEAR]
 }
 
-fun Calendar.isCurrentYear(): Boolean {
-    return getInstance(timeZone)[YEAR] == this[YEAR]
-}
+fun Calendar.isCurrentYear(): Boolean = getInstance(timeZone)[YEAR] == this[YEAR]
 
 fun Calendar.resetToStartOfDay() {
     setToMinimum(HOUR_OF_DAY)

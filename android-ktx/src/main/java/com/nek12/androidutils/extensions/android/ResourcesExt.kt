@@ -2,6 +2,7 @@
 
 package com.nek12.androidutils.extensions.android
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
@@ -14,9 +15,7 @@ import java.util.*
  * When you use [Resources.getDimension] you get the amount of pixels for that dimen.
  * This function returns a proper dp value just like what you wrote in your dimen.xml
  */
-fun Resources.getDimenInDP(id: Int): Int {
-    return (getDimension(id) / displayMetrics.density).toInt()
-}
+fun Resources.getDimenInDP(id: Int): Int = (getDimension(id) / displayMetrics.density).toInt()
 
 /**
  * Rescales the bitmap
@@ -39,9 +38,10 @@ fun Bitmap.scale(maxSize: Int): Bitmap {
  * Returns an id of the resource by its name as you wrote it in the xml
  * @see Resources.getIdentifier
  */
-fun Context.resIdByName(resIdName: String, resType: String): Int {
-    return resources.getIdentifier(resIdName, resType, packageName)
-}
+@SuppressLint("DiscouragedApi")
+@Deprecated("Avoid using reflection for resources")
+fun Context.resIdByName(resIdName: String, resType: String): Int =
+    resources.getIdentifier(resIdName, resType, packageName)
 
 /**
  * Uses the value of this int as a **resource id** to parse an [android.graphics.Color] object

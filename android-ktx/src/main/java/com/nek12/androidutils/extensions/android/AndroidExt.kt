@@ -29,7 +29,6 @@ private const val EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key"
 private const val EXTRA_SHOW_FRAGMENT_ARGUMENTS = ":settings:show_fragment_args"
 private const val EXTRA_SYSTEM_ALERT_WINDOW = "system_alert_window"
 
-
 /**
  * @param numberUri uri of the form tel:+1234567890, containing countryCode
  */
@@ -41,9 +40,9 @@ fun Context.dialNumber(numberUri: Uri, onNotFound: (e: Exception) -> Unit) {
 fun Context.startActivityCatching(intent: Intent, onNotFound: (Exception) -> Unit) {
     try {
         startActivity(intent)
-    } catch (e: Exception) {
-        Log.e("StartActivityCatching", "Exception: ", e)
-        onNotFound(e)
+    } catch (expected: Exception) {
+        Log.e("StartActivityCatching", "Exception: ", expected)
+        onNotFound(expected)
     }
 }
 
@@ -76,8 +75,8 @@ fun Context.downloadFile(
         ContextCompat.getSystemService(
             this, DownloadManager::class.java
         )?.enqueue(request) ?: throw ActivityNotFoundException("DownloadManager not found")
-    } catch (e: Exception) {
-        onFailure(e)
+    } catch (expected: Exception) {
+        onFailure(expected)
         return
     }
 }

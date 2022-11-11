@@ -53,7 +53,7 @@ class TimeTest : FreeSpec({
         }
 
         "should be convertible from millis and seconds" {
-            time shouldBe Time.fromMillisSinceMidnight(60735000)
+            time shouldBe Time.fromMillisSinceMidnight(60_735_000)
             min shouldBe Time.fromMillisSinceMidnight(0)
         }
 

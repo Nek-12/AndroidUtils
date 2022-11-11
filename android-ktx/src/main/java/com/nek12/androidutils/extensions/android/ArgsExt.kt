@@ -12,9 +12,8 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 
-inline fun <reified T : Activity> Context.intent(vararg extras: Pair<KProperty1<T, *>, Any?>): Intent {
-    return intentFor<T>(this).setExtras(extras = extras)
-}
+inline fun <reified T : Activity> Context.intent(vararg extras: Pair<KProperty1<T, *>, Any?>): Intent =
+    intentFor<T>(this).setExtras(extras = extras)
 
 inline fun <reified T : Any> intentFor(context: Context): Intent = Intent(context, T::class.java)
 

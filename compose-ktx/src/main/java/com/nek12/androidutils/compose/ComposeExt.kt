@@ -43,9 +43,7 @@ val isSystem24Hour @Composable get() = DateFormat.is24HourFormat(LocalContext.cu
 fun Int.plural(
     quantity: Int,
     vararg formatArgs: Any = emptyArray(),
-): String {
-    return pluralStringResource(this, quantity, *formatArgs)
-}
+): String = pluralStringResource(this, quantity, *formatArgs)
 
 @ExperimentalAnimationGraphicsApi
 @Composable

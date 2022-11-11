@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber") // TODO: Move to Config object
+
 import org.gradle.internal.impldep.com.amazonaws.util.XpathUtils.asNode
 
 plugins {
