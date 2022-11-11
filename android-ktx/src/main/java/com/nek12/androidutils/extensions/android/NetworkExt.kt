@@ -7,10 +7,6 @@ import androidx.core.net.MailTo
 
 val Uri.asHttps: Uri get() = if (scheme == "http") buildUpon().scheme("https").build() else this
 
-@Deprecated("use toUri()", ReplaceWith("this.toUri()", "androidx.core.net.toUri"))
-val String?.asUri
-    get() = this?.let { Uri.parse(it) }
-
 val Uri.linkType
     get() = when (this.scheme) {
         null -> LinkType.Unknown
