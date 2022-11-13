@@ -83,7 +83,6 @@ fun Context.downloadFile(
 
 fun Context.openBrowser(url: Uri, onAppNotFound: (e: Exception) -> Unit) {
     val intent = Intent(Intent.ACTION_VIEW, url).apply {
-        type = "text/html"
         addCategory(Intent.CATEGORY_BROWSABLE)
     }
     startActivityCatching(intent, onAppNotFound)
