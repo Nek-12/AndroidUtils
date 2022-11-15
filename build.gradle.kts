@@ -5,8 +5,8 @@ plugins {
     alias(libs.plugins.version.catalog.update)
 }
 
-rootProject.group = "com.nek12.androidutils"
-rootProject.version = "0.7.14"
+rootProject.group = Config.group
+rootProject.version = Config.version
 
 buildscript {
 
@@ -27,12 +27,6 @@ allprojects {
     apply(plugin = "com.github.ben-manes.versions")
 
     detekt {
-        source = objects.fileCollection().from(
-            io.gitlab.arturbosch.detekt.extensions.DetektExtension.DEFAULT_SRC_DIR_JAVA,
-            io.gitlab.arturbosch.detekt.extensions.DetektExtension.DEFAULT_TEST_SRC_DIR_JAVA,
-            io.gitlab.arturbosch.detekt.extensions.DetektExtension.DEFAULT_SRC_DIR_KOTLIN,
-            io.gitlab.arturbosch.detekt.extensions.DetektExtension.DEFAULT_TEST_SRC_DIR_KOTLIN,
-        )
         buildUponDefaultConfig = true
     }
 
@@ -72,33 +66,51 @@ subprojects {
     }
 }
 
-tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektFormat") {
-    description = "Formats whole project."
-    parallel = true
-    buildUponDefaultConfig = true
-    autoCorrect = true
-    setSource(file(projectDir))
-    config.setFrom(File(rootDir, "detekt.yml"))
-    include("**/*.kt", "**/*.kts")
-    exclude("**/resources/**", "**/build/**", "**/.idea/**")
-    reports {
-        xml.required.set(false)
-        html.required.set(false)
-        txt.required.set(false)
-    }
-}
+tasks {
 
-tasks.register<io.gitlab.arturbosch.detekt.Detekt>("detektAll") {
-    description = "Runs detekt on the project."
-    parallel = true
-    buildUponDefaultConfig = true
-    setSource(file(projectDir))
-    config.setFrom(File(rootDir, "detekt.yml"))
-    include("**/*.kt", "**/*.kts")
-    exclude("**/resources/**", "**/build/**", "**/.idea/**")
-    reports {
-        xml.required.set(false)
-        html.required.set(false)
-        txt.required.set(false)
+    register<io.gitlab.arturbosch.detekt.Detekt>("detektAll") {
+        description = "Runs detekt on the project."
+        parallel = true
+        buildUponDefaultConfig = true
+        setSource(file(projectDir))
+        config.setFrom(File(rootDir, "detekt.yml"))
+        include("**/*.kt", "**/*.kts")
+        exclude("**/resources/**", "**/build/**", "**/.idea/**")
+        reports {
+            xml.required.set(false)
+            html.required.set(false)
+            txt.required.set(false)
+        }
+    }
+    register<io.gitlab.arturbosch.detekt.Detekt>("detektFormat") {
+        description = "Formats whole project."
+        parallel = true
+        buildUponDefaultConfig = true
+        autoCorrect = true
+        setSource(file(projectDir))
+        config.setFrom(File(rootDir, "detekt.yml"))
+        include("**/*.kt", "**/*.kts")
+        exclude("**/resources/**", "**/build/**", "**/.idea/**")
+        reports {
+            xml.required.set(false)
+            html.required.set(false)
+            txt.required.set(false)
+        }
+    }
+
+    withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask>().configureEach {
+        // outputFormatter = "json"
+
+        fun stabilityLevel(version: String): Int {
+            Config.stabilityLevels.forEachIndexed { index, postfix ->
+                val regex = ".*[.\\-]$postfix[.\\-\\d]*".toRegex(RegexOption.IGNORE_CASE)
+                if (version.matches(regex)) return index
+            }
+            return Config.stabilityLevels.size
+        }
+
+        rejectVersionIf {
+            stabilityLevel(currentVersion) > stabilityLevel(candidate.version)
+        }
     }
 }

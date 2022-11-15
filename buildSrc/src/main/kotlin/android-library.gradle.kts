@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber") // TODO: Move to Config object
-
 import org.gradle.internal.impldep.com.amazonaws.util.XpathUtils.asNode
 
 plugins {
@@ -9,10 +7,10 @@ plugins {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = Config.compileSdk
 
     defaultConfig {
-        minSdk = 22
+        minSdk = Config.minSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         consumerProguardFiles("consumer-rules.pro")
@@ -34,18 +32,8 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "11"
-        freeCompilerArgs += listOf(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-Xjvm-default=all",
-            "-Xbackend-threads=0", // parallel IR compilation
-            "-opt-in=kotlin.Experimental",
-            "-opt-in=kotlin.RequiresOptIn",
-        )
-    }
-
-    sourceSets.all {
-        java.srcDir("src/$name/kotlin")
+        jvmTarget = Config.jvmTarget
+        freeCompilerArgs += Config.kotlinCompilerArgs
     }
 
     buildFeatures {
