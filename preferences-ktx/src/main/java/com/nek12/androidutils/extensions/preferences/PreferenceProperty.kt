@@ -13,7 +13,8 @@ typealias PreferenceSetter<T> = SharedPreferences.Editor.(String, T) -> SharedPr
  * A sharedPreferences delegate that allows you to write one-liners for loading and saving data
  * from/to your app's default SharedPreferences.
  * Uses [SharedPreferences.Editor.apply] that does sharedpreferences operations on background thread
- * SharedPreferences is a Singleton object so you can easily get as many references as you want, it opens file only when you call getSharedPreferences first time, or create only one reference for it.
+ * SharedPreferences is a Singleton object so you can easily get as many references as you want,
+ * it opens file only when you call getSharedPreferences first time, or create only one reference for it.
  * example:
  * ```
  *  var isFirstLaunch: Boolean = booleanPreference()
