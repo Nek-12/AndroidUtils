@@ -30,7 +30,6 @@ import kotlin.DeprecationLevel.WARNING
 val String?.isValid: Boolean
     get() = !isNullOrBlank() && !equals("null", true)
 
-
 val String?.isValidEmail: Boolean
     get() = isValid && Patterns.EMAIL_ADDRESS.matcher(this!!).matches()
 

@@ -1,3 +1,5 @@
+@file:Suppress("MissingPackageDeclaration")
+
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.plugin.use.PluginDependency
 
