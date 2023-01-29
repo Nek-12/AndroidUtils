@@ -21,7 +21,7 @@ jobs:
       - name: set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 17
+          java-version: 19
 
       - name: Make files executable
         run: chmod +x ./gradlew && chmod +x ./scripts/checksum.sh
@@ -41,9 +41,6 @@ jobs:
             ~/.gradle/caches/jars-*
             ~/.gradle/caches/build-cache-*
           key: gradle-${{ hashFiles('checksum.txt') }}
-
-      #      - name: Lint
-      #        run: ./gradlew lintDebug --stacktrace
 
       - name: Run detekt
         run: ./gradlew detektAll
