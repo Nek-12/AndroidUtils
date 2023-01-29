@@ -2,6 +2,7 @@
 
 package com.nek12.androidutils.extensions.android
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.text.Spannable
@@ -21,8 +22,14 @@ import android.util.Patterns
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.core.text.HtmlCompat
-import com.nek12.androidutils.extensions.core.isValid
+import com.nek12.androidutils.extensions.android.Text.Dynamic
+import com.nek12.androidutils.extensions.android.Text.Resource
 import java.util.*
+import kotlin.DeprecationLevel.WARNING
+
+val String?.isValid: Boolean
+    get() = !isNullOrBlank() && !equals("null", true)
+
 
 val String?.isValidEmail: Boolean
     get() = isValid && Patterns.EMAIL_ADDRESS.matcher(this!!).matches()
@@ -110,3 +117,13 @@ fun Int.colorToHexString() = String.format(Locale.ROOT, "#%06X", -0x1 and this).
 
 val String.asHTML: Spanned
     get() = HtmlCompat.fromHtml(this, 0)
+
+@Suppress("SpreadOperator")
+@Deprecated(TEXT_DEPRECATION_MESSAGE, level = WARNING)
+fun Text.string(context: Context): String = when (this) {
+    is Dynamic -> text
+    is Resource -> context.getString(
+        id,
+        *args.map { if (it is Text) it.string(context) else it }.toTypedArray()
+    )
+}

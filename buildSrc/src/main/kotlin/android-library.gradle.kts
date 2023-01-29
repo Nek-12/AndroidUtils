@@ -1,4 +1,4 @@
-import org.gradle.internal.impldep.com.amazonaws.util.XpathUtils.asNode
+import Config.compileSdk
 
 plugins {
     id("com.android.library")
@@ -8,6 +8,7 @@ plugins {
 
 android {
     compileSdk = Config.compileSdk
+    resourcePrefix  =  "${Config.name}_"
 
     defaultConfig {
         minSdk = Config.minSdk
@@ -32,7 +33,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = Config.jvmTarget
+        jvmTarget = Config.jvmTarget.target
         freeCompilerArgs += Config.kotlinCompilerArgs
     }
 

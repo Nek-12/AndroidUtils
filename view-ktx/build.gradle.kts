@@ -8,5 +8,4 @@ dependencies {
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.activity)
     api(project(":android-ktx"))
-    api(project(":core-ktx"))
 }

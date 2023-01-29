@@ -1,8 +1,9 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-    kotlin("jvm")
-    `kotlin-dsl`
     alias(libs.plugins.detekt)
     alias(libs.plugins.version.catalog.update)
+    alias(libs.plugins.versions)
 }
 
 rootProject.group = Config.group
@@ -22,27 +23,13 @@ buildscript {
     }
 }
 
-allprojects {
-    apply(plugin = "io.gitlab.arturbosch.detekt")
-    apply(plugin = "com.github.ben-manes.versions")
+detekt {
+    buildUponDefaultConfig = true
+}
 
-    detekt {
-        buildUponDefaultConfig = true
-    }
-
-    dependencies {
-        detektPlugins(rootProject.libs.detekt.formatting)
-        detektPlugins(rootProject.libs.detekt.compose)
-    }
-
-    tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-        reports {
-            xml.required.set(false)
-            html.required.set(true)
-            txt.required.set(true)
-            sarif.required.set(false)
-        }
-    }
+dependencies {
+    detektPlugins(rootProject.libs.detekt.formatting)
+    detektPlugins(rootProject.libs.detekt.compose)
 }
 
 versionCatalogUpdate {
@@ -61,41 +48,41 @@ subprojects {
 
     when (name) {
         "app" -> apply(plugin = "com.android.application")
-        "core-ktx" -> apply(plugin = "java-library")
         else -> apply(plugin = "android-library")
     }
 }
 
 tasks {
-
-    register<io.gitlab.arturbosch.detekt.Detekt>("detektAll") {
-        description = "Runs detekt on the project."
-        parallel = true
+    withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
         buildUponDefaultConfig = true
-        setSource(file(projectDir))
-        config.setFrom(File(rootDir, "detekt.yml"))
-        include("**/*.kt", "**/*.kts")
-        exclude("**/resources/**", "**/build/**", "**/.idea/**")
+        parallel = true
+        setSource(projectDir)
+        config.setFrom(File(rootDir, Config.Detekt.configFile))
+        basePath = projectDir.absolutePath
+        jvmTarget = Config.jvmTarget.target
+        include(Config.Detekt.includedFiles)
+        exclude(Config.Detekt.excludedFiles)
         reports {
             xml.required.set(false)
-            html.required.set(false)
+            html.required.set(true)
             txt.required.set(false)
+            sarif.required.set(true)
+            md.required.set(false)
         }
     }
+
     register<io.gitlab.arturbosch.detekt.Detekt>("detektFormat") {
         description = "Formats whole project."
-        parallel = true
-        buildUponDefaultConfig = true
         autoCorrect = true
-        setSource(file(projectDir))
-        config.setFrom(File(rootDir, "detekt.yml"))
-        include("**/*.kt", "**/*.kts")
-        exclude("**/resources/**", "**/build/**", "**/.idea/**")
-        reports {
-            xml.required.set(false)
-            html.required.set(false)
-            txt.required.set(false)
-        }
+    }
+
+    register<io.gitlab.arturbosch.detekt.Detekt>("detektAll") {
+        description = "Run detekt on whole project"
+        autoCorrect = false
+    }
+
+    withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask>().configureEach {
+        outputFormatter = "json"
     }
 
     withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask>().configureEach {
@@ -111,6 +98,14 @@ tasks {
 
         rejectVersionIf {
             stabilityLevel(currentVersion) > stabilityLevel(candidate.version)
+        }
+    }
+}
+
+allprojects {
+    tasks.withType<KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = Config.jvmTarget.target
         }
     }
 }

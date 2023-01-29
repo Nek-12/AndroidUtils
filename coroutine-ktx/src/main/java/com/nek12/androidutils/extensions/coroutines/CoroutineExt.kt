@@ -9,8 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import com.nek12.androidutils.extensions.core.ApiResult
-import com.nek12.androidutils.extensions.core.map
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -24,14 +22,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.collections.forEach
-import kotlin.collections.map
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -43,7 +36,7 @@ suspend fun <T> Collection<T>.forEachParallel(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.(T) -> Unit,
 ): Unit = withContext(context) {
-    map { async(context, start) { this@withContext.block(it) } }.forEach { it.await() }
+    map { async(context, start) { block(it) } }.forEach { it.await() }
 }
 
 /**
@@ -54,7 +47,7 @@ suspend fun <A, B> Collection<A>.mapParallel(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.(A) -> B,
 ): List<B> = withContext(context) {
-    map { async(context, start) { this@withContext.block(it) } }.map { it.await() }
+    map { async(context, start) { block(it) } }.map { it.await() }
 }
 
 /** Starts a new coroutine that will collect values from a flow while the lifecycle is in a
@@ -129,22 +122,6 @@ fun LifecycleOwner.delayOnLifecycle(
         action()
     }
 }
-
-/**
- * Emits [Loading], then executes [call] and [wrap]s it in [ApiResult]
- */
-inline fun <T> ApiResult.Companion.flow(crossinline call: suspend () -> T): Flow<ApiResult<T>> =
-    kotlinx.coroutines.flow.flow {
-        emit(ApiResult.Loading)
-        emit(wrap { call() })
-    }
-
-fun <T> Flow<T>.asApiResult(): Flow<ApiResult<T>> = map<T, ApiResult<T>> { ApiResult.success(it) }
-    .onStart { emit(ApiResult.Loading) }
-    .catch { throwable -> (throwable as? Exception)?.let { emit(ApiResult.Error(it)) } ?: throw throwable }
-
-inline fun <T, R> Flow<ApiResult<T>>.map(crossinline transform: suspend (T) -> R): Flow<ApiResult<R>> =
-    map { result -> result.map { transform(it) } }
 
 fun View.clicks(delay: Long = 1000L) = callbackFlow {
     var lastTime = 0L

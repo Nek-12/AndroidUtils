@@ -35,15 +35,16 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.nek12.androidutils.extensions.android.Text
 import com.nek12.androidutils.extensions.android.Text.Dynamic
 import com.nek12.androidutils.extensions.android.Text.Resource
+import com.nek12.androidutils.extensions.android.string
 
 val isSystem24Hour @Composable get() = DateFormat.is24HourFormat(LocalContext.current)
 
-@ExperimentalComposeUiApi
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Int.plural(
     quantity: Int,
     vararg formatArgs: Any = emptyArray(),
-): String = pluralStringResource(this, quantity, *formatArgs)
+) = pluralStringResource(this, quantity, *formatArgs)
 
 @ExperimentalAnimationGraphicsApi
 @Composable

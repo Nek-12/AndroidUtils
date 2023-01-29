@@ -1,8 +1,14 @@
 package com.nek12.androidutils.extensions.android
 
-import android.content.Context
 import androidx.annotation.StringRes
+import kotlin.DeprecationLevel.WARNING
 
+internal const val TEXT_DEPRECATION_MESSAGE = """
+      Using resource wrappers is discouraged because it inhibits SoC and multiplatform compatibility.
+      Use UI-level resolution instead
+"""
+
+@Deprecated(TEXT_DEPRECATION_MESSAGE, level = WARNING)
 sealed class Text {
 
     abstract override fun equals(other: Any?): Boolean
@@ -31,14 +37,5 @@ sealed class Text {
         }
 
         override fun toString(): String = "TextResource.Resource(id=$id, args=${args.contentToString()})"
-    }
-
-    @Suppress("SpreadOperator")
-    fun string(context: Context): String = when (this) {
-        is Dynamic -> text
-        is Resource -> context.getString(
-            id,
-            *args.map { if (it is Text) it.string(context) else it }.toTypedArray()
-        )
     }
 }
