@@ -37,8 +37,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.animation.doOnEnd
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import com.nek12.androidutils.extensions.core.isValid
-import com.nek12.androidutils.extensions.core.takeIfValid
+import com.nek12.androidutils.extensions.android.isValid
 
 const val DEF_FADE_DURATION = 250L
 
@@ -284,7 +283,7 @@ fun ImageView.setDrawableOrHide(
 /**
  * [EditText.getText] as a [String], if it [isValid]
  */
-val EditText.input get() = text?.toString()?.takeIfValid()
+val EditText.input get() = text?.toString()?.takeIf { it.isValid }
 
 /**
  * You can use this to try and filter actions that weren't triggered by a user (e.g. you setting text yourself)

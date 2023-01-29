@@ -852,16 +852,16 @@ compose:
   ComposableFunctionName:
     active: false # TODO: Broken
 
-#libraries:
-#  ForbiddenPublicDataClass:
-#    active: false
-#    excludes: [ '**' ]
-#    ignorePackages:
-#      - '*.internal'
-#      - '*.internal.*'
-#  LibraryCodeMustSpecifyReturnType:
-#    active: true
-#    excludes: [ '**' ]
-#  LibraryEntitiesShouldNotBePublic:
-#    active: true
-#    excludes: [ '**' ]
+libraries:
+  ForbiddenPublicDataClass:
+    active: false
+    excludes: [ '**' ]
+    ignorePackages:
+      - '*.internal'
+      - '*.internal.*'
+  LibraryCodeMustSpecifyReturnType:
+    active: true
+    excludes: [ '**' ]
+  LibraryEntitiesShouldNotBePublic:
+    active: true
+    excludes: [ '**' ]

@@ -24,26 +24,31 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.nek12.androidutils.extensions.android.Text
 import com.nek12.androidutils.extensions.android.Text.Dynamic
 import com.nek12.androidutils.extensions.android.Text.Resource
+import com.nek12.androidutils.extensions.android.string
 
 val isSystem24Hour @Composable get() = DateFormat.is24HourFormat(LocalContext.current)
 
-@ExperimentalComposeUiApi
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Int.plural(
     quantity: Int,
     vararg formatArgs: Any = emptyArray(),
-): String = pluralStringResource(this, quantity, *formatArgs)
+) = pluralStringResource(this, quantity, *formatArgs)
 
 @ExperimentalAnimationGraphicsApi
 @Composable
@@ -80,11 +85,17 @@ fun String.annotate(builder: AnnotatedString.Builder.(String) -> Unit) = buildAn
 
 val displayDensity: Int @Composable get() = LocalConfiguration.current.densityDpi
 
-val screenWidthDp: Int @Composable get() = LocalConfiguration.current.screenWidthDp
+@Composable
+inline fun <T> withDensity(block: @Composable Density.() -> T) = with(LocalDensity.current) { block() }
 
-val screenHeigthDp: Int @Composable get() = LocalConfiguration.current.screenHeightDp
+val screenWidth: Dp @Composable get() = LocalConfiguration.current.screenWidthDp.dp
 
-val screenWidthPx: Int @Composable get() = screenWidthDp * displayDensity
+val screenHeight: Dp @Composable get() = LocalConfiguration.current.screenHeightDp.dp
+
+val screenWidthPx: Float @Composable get() = withDensity { screenWidth.toPx() }
+
+val screenHeightPx: Float @Composable get() = withDensity { screenHeight.toPx() }
+
 
 @Composable
 @Suppress("ComposableParametersOrdering")
