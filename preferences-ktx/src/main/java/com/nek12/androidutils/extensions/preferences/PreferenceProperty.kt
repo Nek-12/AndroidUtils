@@ -6,7 +6,8 @@ import android.content.SharedPreferences
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-typealias PreferenceProvider = () -> SharedPreferences
+typealias PreferenceGetter<T> = SharedPreferences.(String, T) -> T
+typealias PreferenceSetter<T> = SharedPreferences.Editor.(String, T) -> SharedPreferences.Editor
 
 /**
  * A sharedPreferences delegate that allows you to write one-liners for loading and saving data
@@ -15,18 +16,18 @@ typealias PreferenceProvider = () -> SharedPreferences
  * SharedPreferences is a Singleton object so you can easily get as many references as you want, it opens file only when you call getSharedPreferences first time, or create only one reference for it.
  * example:
  * ```
- *  var isFirstLaunch: Boolean = booleanPreference(KEY_FIRST_LAUNCH)
+ *  var isFirstLaunch: Boolean = booleanPreference()
  *  if (isFirstLaunch) {
  *      //...
  *  }
  *  isFirstLaunch = false
  * ```
  */
-internal abstract class PreferenceProperty<in T, V>(
+abstract class PreferenceProperty<in T, V>(
     private val defaultValue: V,
     private val key: String? = null,
-    private val getter: SharedPreferences.(String, V) -> V,
-    private val setter: SharedPreferences.Editor.(String, V) -> SharedPreferences.Editor,
+    private val getter: PreferenceGetter<V>,
+    private val setter: PreferenceSetter<V>,
 ) : ReadWriteProperty<T, V> {
 
     abstract fun getPreferences(thisRef: T): SharedPreferences
@@ -39,24 +40,24 @@ internal abstract class PreferenceProperty<in T, V>(
         getPreferences(thisRef).edit().setter(key ?: property.name, value).apply()
 }
 
-internal class DefaultPreferenceProperty<T>(
+open class DefaultPreferenceProperty<T>(
     defaultValue: T,
     key: String? = null,
-    getter: SharedPreferences.(String, T) -> T,
-    setter: SharedPreferences.Editor.(String, T) -> SharedPreferences.Editor,
+    getter: PreferenceGetter<T>,
+    setter: PreferenceSetter<T>,
 ) : PreferenceProperty<Context, T>(defaultValue, key, getter, setter) {
 
     private var _prefs: SharedPreferences? = null
 
     override fun getPreferences(thisRef: Context): SharedPreferences =
-        _prefs ?: thisRef.getDefaultPreferences().also { _prefs = it }
+        _prefs ?: thisRef.defaultPreferences().also { _prefs = it }
 }
 
-internal class ProvidedPreferenceProperty<T>(
+open class ProvidedPreferenceProperty<T>(
     defaultValue: T,
     key: String? = null,
-    getter: SharedPreferences.(String, T) -> T,
-    setter: SharedPreferences.Editor.(String, T) -> SharedPreferences.Editor,
+    getter: PreferenceGetter<T>,
+    setter: PreferenceSetter<T>,
     private val preferences: SharedPreferences,
 ) : PreferenceProperty<Any?, T>(defaultValue, key, getter, setter) {
 

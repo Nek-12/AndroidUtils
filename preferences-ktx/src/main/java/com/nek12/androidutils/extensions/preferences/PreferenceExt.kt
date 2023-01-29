@@ -10,7 +10,7 @@ import kotlin.properties.ReadWriteProperty
 /**
  * Obtains default shared preferences for this application
  */
-fun Context.getDefaultPreferences(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+fun Context.defaultPreferences(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
 fun intPreference(
     preferences: SharedPreferences,
