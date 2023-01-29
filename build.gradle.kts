@@ -30,6 +30,7 @@ detekt {
 dependencies {
     detektPlugins(rootProject.libs.detekt.formatting)
     detektPlugins(rootProject.libs.detekt.compose)
+    detektPlugins(rootProject.libs.detekt.libraries)
 }
 
 versionCatalogUpdate {
