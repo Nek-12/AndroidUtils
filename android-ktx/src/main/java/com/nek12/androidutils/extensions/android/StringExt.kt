@@ -25,7 +25,6 @@ import androidx.core.text.HtmlCompat
 import com.nek12.androidutils.extensions.android.Text.Dynamic
 import com.nek12.androidutils.extensions.android.Text.Resource
 import java.util.*
-import kotlin.DeprecationLevel.WARNING
 
 val String?.isValid: Boolean
     get() = !isNullOrBlank() && !equals("null", true)
@@ -118,7 +117,6 @@ val String.asHTML: Spanned
     get() = HtmlCompat.fromHtml(this, 0)
 
 @Suppress("SpreadOperator")
-@Deprecated(TEXT_DEPRECATION_MESSAGE, level = WARNING)
 fun Text.string(context: Context): String = when (this) {
     is Dynamic -> text
     is Resource -> context.getString(

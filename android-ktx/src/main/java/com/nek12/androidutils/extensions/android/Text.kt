@@ -1,14 +1,7 @@
 package com.nek12.androidutils.extensions.android
 
 import androidx.annotation.StringRes
-import kotlin.DeprecationLevel.WARNING
 
-internal const val TEXT_DEPRECATION_MESSAGE = """
-      Using resource wrappers is discouraged because it inhibits SoC and multiplatform compatibility.
-      Use UI-level resolution instead
-"""
-
-@Deprecated(TEXT_DEPRECATION_MESSAGE, level = WARNING)
 sealed class Text {
 
     abstract override fun equals(other: Any?): Boolean
@@ -17,6 +10,8 @@ sealed class Text {
     data class Dynamic(val text: String) : Text()
 
     class Resource(@StringRes val id: Int, vararg val args: Any) : Text() {
+
+        fun copy(id: Int, vararg args: Any) = Resource(id, args = args.takeIf { it.isNotEmpty() } ?: this.args)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -39,3 +34,6 @@ sealed class Text {
         override fun toString(): String = "TextResource.Resource(id=$id, args=${args.contentToString()})"
     }
 }
+
+fun String.text() = Text.Dynamic(this)
+fun Int.text(vararg args: Any) = Text.Resource(this, args)
