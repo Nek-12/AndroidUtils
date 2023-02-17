@@ -1,6 +1,5 @@
 package com.nek12.androidutils.extensions.view
 
-import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -88,6 +87,6 @@ fun <T : Fragment> T.setArgs(vararg args: Pair<KProperty0<Any?>, Any?>): T = app
 }
 
 inline fun <reified T> Fragment.arg(defaultValue: T? = null) =
-    object : BundleExtra<Activity, T>(null is T, defaultValue) {
+    object : BundleExtra<Fragment, T>(null is T, defaultValue) {
         override val bundle: Bundle? get() = arguments
     }
