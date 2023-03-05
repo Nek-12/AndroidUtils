@@ -7,7 +7,10 @@ sealed class Text {
     abstract override fun equals(other: Any?): Boolean
     abstract override fun hashCode(): Int
 
-    data class Dynamic(val text: String) : Text()
+    data class Dynamic(val text: String) : Text() {
+
+        override fun toString() = "Text.Dynamic(text=$text)"
+    }
 
     class Resource(@StringRes val id: Int, vararg val args: Any) : Text() {
 
@@ -31,9 +34,9 @@ sealed class Text {
             return result
         }
 
-        override fun toString(): String = "TextResource.Resource(id=$id, args=${args.contentToString()})"
+        override fun toString(): String = "Text.Resource(id=$id, args=${args.contentToString()})"
     }
 }
 
 fun String.text() = Text.Dynamic(this)
-fun Int.text(vararg args: Any) = Text.Resource(this, args)
+fun Int.text(vararg args: Any) = Text.Resource(this, args = args)

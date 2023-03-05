@@ -5,8 +5,10 @@ package com.nek12.androidutils.databinding.recyclerview
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.databinding.ViewDataBinding
+import com.nek12.androidutils.databinding.DEPRECATION_WARNING
 import com.nek12.androidutils.databinding.recyclerview.Item.Companion.itemFromData
 
+@Deprecated(DEPRECATION_WARNING)
 @Suppress("TooManyFunctions")
 class ItemBuilder {
 

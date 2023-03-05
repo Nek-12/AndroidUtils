@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
+import com.nek12.androidutils.databinding.DEPRECATION_WARNING
 
 /**
  * This is an implementation of a [GenericAdapter] for pagination library.
@@ -15,6 +16,7 @@ import androidx.paging.PagingDataAdapter
  * @see GenericAdapter
  * @see BaseHolder
  */
+@Deprecated(DEPRECATION_WARNING)
 open class GenericPagingAdapter(
     private val listener: ItemListener<Item<*, *>>? = null,
     private val lifecycleOwner: LifecycleOwner? = null,
@@ -35,11 +37,13 @@ open class GenericPagingAdapter(
     }
 }
 
+@Deprecated(DEPRECATION_WARNING)
 @Suppress("UNCHECKED_CAST")
 suspend fun <T, VB : ViewDataBinding> GenericPagingAdapter.submitData(data: PagingData<Item<T, VB>>) {
     submitData(data as PagingData<Item<*, *>>)
 }
 
+@Deprecated(DEPRECATION_WARNING)
 @Suppress("UNCHECKED_CAST")
 fun <T, VB : ViewDataBinding> GenericPagingAdapter.submitData(
     lifecycle: Lifecycle,

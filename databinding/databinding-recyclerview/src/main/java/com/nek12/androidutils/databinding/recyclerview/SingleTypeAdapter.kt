@@ -5,6 +5,7 @@ package com.nek12.androidutils.databinding.recyclerview
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
+import com.nek12.androidutils.databinding.DEPRECATION_WARNING
 
 /**
  * A concrete implementation of [GenericAdapter] that is intended for use with lists that have
@@ -16,6 +17,7 @@ import androidx.lifecycle.LifecycleOwner
  * For cases when you have multiple view types, it is recommended to use [GenericAdapter] and [Item]
  */
 @Suppress("UNCHECKED_CAST")
+@Deprecated(DEPRECATION_WARNING)
 open class SingleTypeAdapter<T, in VB : ViewDataBinding>(
     @LayoutRes private val layout: Int,
     itemClickListener: ItemListener<Item<T, VB>>? = null,
@@ -50,6 +52,7 @@ open class SingleTypeAdapter<T, in VB : ViewDataBinding>(
  * @see GenericAdapter
  * @see GenericItem
  */
+@Deprecated(DEPRECATION_WARNING)
 open class SimpleAdapter<T>(
     @LayoutRes layout: Int,
     itemClickListener: ItemListener<Item<T, ViewDataBinding>>? = null,

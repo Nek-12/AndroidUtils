@@ -9,6 +9,7 @@ plugins {
 android {
     compileSdk = Config.compileSdk
     resourcePrefix = "${Config.name}_"
+    buildToolsVersion = Config.buildToolsVersion
 
     defaultConfig {
         minSdk = Config.minSdk

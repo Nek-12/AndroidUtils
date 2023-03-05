@@ -65,11 +65,11 @@ inline fun <reified T : Serializable> Bundle.serializable(key: String) =
         getSerializable(key, T::class.java)
     else getSerializable(key) as? T?
 
-inline fun <reified T : Serializable> Intent.serializable(key: String): T? = extras?.serializable<T>(key)
+inline fun <reified T : Serializable> Intent.serializable(key: String): T? = extras?.serializable(key)
 
-inline fun <reified T : Serializable> Bundle.requireSerializable(key: String): T = requireNotNull(serializable<T>(key))
+inline fun <reified T : Serializable> Bundle.requireSerializable(key: String): T = requireNotNull(serializable(key))
 
-inline fun <reified T : Serializable> Intent.requireSerializable(key: String): T = requireNotNull(serializable<T>(key))
+inline fun <reified T : Serializable> Intent.requireSerializable(key: String): T = requireNotNull(serializable(key))
 
 @Suppress("DEPRECATION")
 inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? =
@@ -77,8 +77,8 @@ inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? =
         getParcelable(key, T::class.java)
     else getParcelable(key) as? T?
 
-inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = extras?.parcelable<T>(key)
+inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = extras?.parcelable(key)
 
-inline fun <reified T : Parcelable> Bundle.requireParcelable(key: String): T = requireNotNull(parcelable<T>(key))
+inline fun <reified T : Parcelable> Bundle.requireParcelable(key: String): T = requireNotNull(parcelable(key))
 
-inline fun <reified T : Parcelable> Intent.requireParcelable(key: String): T = requireNotNull(parcelable<T>(key))
+inline fun <reified T : Parcelable> Intent.requireParcelable(key: String): T = requireNotNull(parcelable(key))

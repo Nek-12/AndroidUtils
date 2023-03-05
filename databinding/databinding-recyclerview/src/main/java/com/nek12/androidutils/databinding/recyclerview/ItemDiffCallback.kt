@@ -1,6 +1,7 @@
 package com.nek12.androidutils.databinding.recyclerview
 
 import androidx.recyclerview.widget.DiffUtil
+import com.nek12.androidutils.databinding.DEPRECATION_WARNING
 
 /**
  * If any of the items' id is null, returns false, this way the diff will always be recalculated
@@ -8,6 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
  * Compares items using equals()
  * You should not be required to use this class at all.
  */
+
+@Deprecated(DEPRECATION_WARNING)
 class ItemDiffCallback<T : Item<*, *>> : DiffUtil.ItemCallback<T>() {
 
     override fun areItemsTheSame(oldItem: T, newItem: T): Boolean = oldItem.id == newItem.id
