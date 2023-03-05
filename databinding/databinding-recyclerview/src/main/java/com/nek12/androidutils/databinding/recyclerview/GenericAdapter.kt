@@ -10,6 +10,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
 import com.nek12.androidutils.databinding.BR
+import com.nek12.androidutils.databinding.DEPRECATION_WARNING
 
 /**
  * The base class for your adapter implementations. In general, you should not be required to
@@ -35,6 +36,7 @@ import com.nek12.androidutils.databinding.BR
  * @see SimpleAdapter
  * @see GenericItem
  */
+@Deprecated(DEPRECATION_WARNING)
 open class GenericAdapter(
     private val listener: ItemListener<Item<*, *>>? = null,
     private val lifecycleOwner: LifecycleOwner? = null,

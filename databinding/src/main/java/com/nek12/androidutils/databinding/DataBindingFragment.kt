@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
  * @param b your new binding variable
  * @param layoutRes a layout for this fraagment
  */
+@Deprecated(DEPRECATION_WARNING)
 abstract class DataBindingFragment<T : ViewDataBinding> : Fragment() {
 
     @get:LayoutRes

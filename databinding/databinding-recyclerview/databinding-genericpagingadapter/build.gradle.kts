@@ -11,5 +11,6 @@ android {
 
 dependencies {
     implementation(project(":databinding:databinding-recyclerview"))
+    implementation(project(":databinding"))
     implementation(libs.paging)
 }

@@ -10,6 +10,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.nek12.androidutils.databinding.BR
+import com.nek12.androidutils.databinding.DEPRECATION_WARNING
 
 /**
  * The generic databinding ViewHolder class that is used internally in the library.
@@ -21,6 +22,7 @@ import com.nek12.androidutils.databinding.BR
  * item is called exactly "data" and the type is of the first type argument for your [Item] class
  * implementation (i.e. the type of the "data" field).**
  */
+@Deprecated(DEPRECATION_WARNING)
 class BaseHolder(val binding: ViewDataBinding, private val brVariable: Int = BR.data) :
     RecyclerView.ViewHolder(binding.root) {
 

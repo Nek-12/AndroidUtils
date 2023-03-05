@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import com.nek12.androidutils.databinding.DEPRECATION_WARNING
 import com.nek12.androidutils.databinding.recyclerview.Item.Companion.NO_ID
 
 internal const val CAST_MESSAGE = """
@@ -74,6 +75,7 @@ typealias RVBinder<T, VB> = (BindPayload<T, VB>) -> Unit
  * }
  * ```
  */
+@Deprecated(DEPRECATION_WARNING)
 abstract class Item<T, in VB : ViewDataBinding> {
 
     /**
@@ -141,6 +143,7 @@ abstract class Item<T, in VB : ViewDataBinding> {
  * @param alwaysRebound Whether this item should be rebound on **every** diffing pass. If false,
  * the item is **never** rebound.
  */
+@Deprecated(DEPRECATION_WARNING)
 data class BlankItem(
     @LayoutRes override val layout: Int,
     val alwaysRebound: Boolean = false
@@ -158,6 +161,7 @@ data class BlankItem(
  * encapsulation.
  * Most useful for use with [SimpleAdapter] and [SingleTypeAdapter]
  */
+@Deprecated(DEPRECATION_WARNING)
 data class GenericItem<T, VB : ViewDataBinding>(
     override val data: T,
     override val id: Long,
@@ -174,6 +178,7 @@ data class GenericItem<T, VB : ViewDataBinding>(
  * An item that has a single [data] value - a String resource. Good for usage with [textResOrString] in your layout.
  * Set the id in the viewmodel, and do not worry about contexts and other stuff.
  */
+@Deprecated(DEPRECATION_WARNING)
 data class ResHeaderItem(
     @StringRes override val data: Int,
     override val layout: Int
@@ -186,6 +191,7 @@ data class ResHeaderItem(
 /**
  * An item that has a single [data] value - a String. Good for usage with [textResOrString] in your layout
  */
+@Deprecated(DEPRECATION_WARNING)
 data class StringHeaderItem(
     override val data: String,
     override val layout: Int,
@@ -198,6 +204,7 @@ data class StringHeaderItem(
  * You get this payload if you're using [RVBinder].
  * Here's the data you might need when binding.
  */
+@Deprecated(DEPRECATION_WARNING)
 data class BindPayload<T, VB : ViewDataBinding>(
     val item: Item<T, VB>,
     val binding: VB,
