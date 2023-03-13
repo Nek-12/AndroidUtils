@@ -11,6 +11,7 @@ dependencies {
     implementation(libs.kotlin.coroutines)
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
+    implementation(libs.androidx.core)
 
     testImplementation(libs.bundles.unittest)
 

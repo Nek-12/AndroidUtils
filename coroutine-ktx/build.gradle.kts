@@ -6,4 +6,5 @@ dependencies {
     implementation(libs.kotlin.coroutines)
     implementation(libs.lifecycle.runtime)
     implementation(libs.lifecycle.viewmodel)
+    implementation(libs.androidx.core)
 }
