@@ -12,4 +12,5 @@ plugins {
 
 dependencies {
     implementation(libs.androidx.fragment)
+    implementation(libs.androidx.core)
 }

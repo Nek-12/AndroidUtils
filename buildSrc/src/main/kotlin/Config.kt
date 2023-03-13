@@ -10,8 +10,9 @@ object Config {
     const val name = "androidutils"
     const val minSdk = 22
     const val compileSdk = 33
+    const val targetSdk = 34
     val jvmTarget = JvmTarget.JVM_11
-    const val version = "1.0.2"
+    const val version = "1.0.3"
     const val buildToolsVersion = "33.0.0"
 
     val kotlinCompilerArgs = listOf(

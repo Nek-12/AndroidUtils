@@ -17,4 +17,5 @@ dependencies {
     implementation(libs.compose.foundation)
     implementation(libs.compose.graphics)
     implementation(libs.lifecycle.runtime)
+    implementation(libs.androidx.core)
 }
