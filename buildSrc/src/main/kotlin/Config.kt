@@ -12,7 +12,7 @@ object Config {
     const val compileSdk = 33
     const val targetSdk = 34
     val jvmTarget = JvmTarget.JVM_11
-    const val version = "1.0.3"
+    const val version = "1.0.4"
     const val buildToolsVersion = "33.0.0"
 
     val kotlinCompilerArgs = listOf(
