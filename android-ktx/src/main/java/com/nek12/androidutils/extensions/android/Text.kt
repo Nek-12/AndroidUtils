@@ -6,8 +6,8 @@ import androidx.annotation.StringRes
 
 sealed interface Text {
 
-    abstract override fun equals(other: Any?): Boolean
-    abstract override fun hashCode(): Int
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
 
     @JvmInline
     value class Dynamic(val text: String) : Text {
@@ -15,6 +15,7 @@ sealed interface Text {
         override fun toString() = "Text.Dynamic(text=$text)"
     }
 
+    @Suppress("UseDataClass") // vararg arguments are not supported for data classes
     class Resource(@StringRes val id: Int, vararg val args: Any) : Text {
 
         fun copy(id: Int, vararg args: Any) = Resource(id, args = args.takeIf { it.isNotEmpty() } ?: this.args)

@@ -34,6 +34,7 @@ fun Bitmap.scale(maxSize: Int): Bitmap {
     }
     return Bitmap.createScaledBitmap(this@scale, newWidth, newHeight, true)
 }
+
 /**
  * Uses the value of this int as a **resource id** to parse an [android.graphics.Color] object
  */

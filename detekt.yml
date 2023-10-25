@@ -62,22 +62,22 @@ comments:
     CommentOverPrivateProperty:
         active: false
     DeprecatedBlockTag:
-        active: false
+        active: true
     EndOfSentenceFormat:
         active: false
         endOfSentenceFormat: '([.?!][ \t\n\r\f<])|([.?!:]$)'
     UndocumentedPublicClass:
-        active: true
+        active: false
         excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**',  '**.kts', '**/kotestTest/**', '**/app/**' ]
         searchInNestedClass: true
         searchInInnerClass: true
         searchInInnerObject: true
         searchInInnerInterface: true
     UndocumentedPublicFunction:
-        active: true
+        active: false
         excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**',  '**.kts', '**/kotestTest/**', '**/app/**' ]
     UndocumentedPublicProperty:
-        active: true
+        active: false
         excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**',  '**.kts', '**/kotestTest/**', '**/app/**' ]
 
 complexity:

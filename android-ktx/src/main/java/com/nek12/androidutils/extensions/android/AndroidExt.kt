@@ -55,7 +55,6 @@ inline fun <I> ActivityResultLauncher<I>.launchCatching(
     }
 }
 
-
 inline fun Context.startActivityCatching(intent: Intent, onNotFound: (Exception) -> Unit) {
     try {
         startActivity(intent)
@@ -221,7 +220,6 @@ inline fun <T> Context.withPermission(
     ifGranted(permission) else ifDenied(permission)
 
 fun Uri.intent() = Intent(Intent.ACTION_VIEW, this)
-
 
 /**
  * Allows background activity start for this intent starting with SDK 34 (Upside down cake).

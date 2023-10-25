@@ -52,7 +52,6 @@ class RoomTests {
 
     @Test
     fun testInvalidationSingleTable(): Unit = runTest(timeout = 5000.milliseconds) {
-
         dao.getAllDefault().test {
             assertEquals(0, awaitItem().size)
             dao.add(Entry())
