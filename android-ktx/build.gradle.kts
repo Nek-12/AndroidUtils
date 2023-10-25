@@ -4,4 +4,5 @@ android {
 
 dependencies {
     implementation(libs.androidx.core)
+    implementation(libs.androidx.activity)
 }

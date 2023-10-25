@@ -2,9 +2,11 @@
 
 package com.nek12.androidutils.extensions.preferences
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import java.time.Instant
 import kotlin.properties.ReadWriteProperty
 
 /**
@@ -88,6 +90,31 @@ fun stringPreference(
     preferences
 )
 
+@SuppressLint("NewApi")
+fun instantPreference(
+    preferences: SharedPreferences,
+    defaultValue: Instant,
+    key: String? = null,
+) = ProvidedPreferenceProperty(
+    defaultValue = defaultValue,
+    key = key,
+    setter = { k, v -> putLong(k, v.toEpochMilli()) },
+    getter = { k, v -> Instant.ofEpochMilli(getLong(k, v.toEpochMilli())) },
+    preferences = preferences,
+)
+
+inline fun <reified T : Enum<T>> enumStringPreference(
+    preferences: SharedPreferences,
+    defaultValue: T,
+    key: String? = null,
+) = ProvidedPreferenceProperty(
+    defaultValue = defaultValue,
+    key = key,
+    getter = { k, def -> getString(k, def.name)?.let { enumValueOf<T>(it) } ?: def },
+    setter = { k, v -> putString(k, v.name) },
+    preferences = preferences,
+)
+
 // ------------------  Default preferences
 
 fun intPreference(
@@ -152,4 +179,17 @@ fun stringPreference(
     key,
     { k, default -> getString(k, default) ?: defaultValue },
     SharedPreferences.Editor::putString
+)
+
+@JvmName("enumStringPreferenceNullable")
+inline fun <reified T : Enum<T>> enumStringPreference(
+    preferences: SharedPreferences,
+    defaultValue: T?,
+    key: String? = null,
+) = ProvidedPreferenceProperty(
+    defaultValue = defaultValue,
+    key = key,
+    getter = { k, def -> getString(k, def?.name)?.let { enumValueOf<T>(it) } },
+    setter = { k, v -> putString(k, v?.name) },
+    preferences = preferences,
 )

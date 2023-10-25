@@ -3,6 +3,7 @@
 package com.nek12.androidutils.extensions.android
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.app.Application
 import android.app.DownloadManager
 import android.app.PendingIntent
@@ -10,38 +11,55 @@ import android.content.ActivityNotFoundException
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.provider.Settings
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.autofill.AutofillManager
 import android.webkit.CookieManager
+import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 
 private const val EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key"
 private const val EXTRA_SHOW_FRAGMENT_ARGUMENTS = ":settings:show_fragment_args"
-private const val EXTRA_SYSTEM_ALERT_WINDOW = "system_alert_window"
+
+@PublishedApi
+internal const val EXTRA_SYSTEM_ALERT_WINDOW = "system_alert_window"
 
 /**
  * @param numberUri uri of the form tel:+1234567890, containing countryCode
  */
-fun Context.dialNumber(numberUri: Uri, onNotFound: (e: Exception) -> Unit) {
+inline fun Context.dialNumber(numberUri: Uri, onNotFound: (e: Exception) -> Unit) {
     val intent = Intent(Intent.ACTION_DIAL, numberUri)
     startActivityCatching(intent, onNotFound)
 }
 
-fun Context.startActivityCatching(intent: Intent, onNotFound: (Exception) -> Unit) {
+inline fun <I> ActivityResultLauncher<I>.launchCatching(
+    input: I,
+    options: ActivityOptionsCompat? = null,
+    onNotFound: (ActivityNotFoundException) -> Unit,
+) {
+    try {
+        launch(input, options)
+    } catch (e: ActivityNotFoundException) {
+        onNotFound(e)
+    }
+}
+
+
+inline fun Context.startActivityCatching(intent: Intent, onNotFound: (Exception) -> Unit) {
     try {
         startActivity(intent)
     } catch (expected: Exception) {
-        Log.e("StartActivityCatching", "Exception: ", expected)
         onNotFound(expected)
     }
 }
@@ -53,7 +71,7 @@ fun Context.startActivityCatching(intent: Intent, onNotFound: (Exception) -> Uni
  *     - SecurityException - when permission to write to storage was not granted
  *     - IllegalStateException - when provided parameters are invalid (i.e. download directory can't be created)
  * */
-fun Context.downloadFile(
+inline fun Context.downloadFile(
     url: Uri,
     fileName: String,
     userAgent: String? = null,
@@ -81,14 +99,14 @@ fun Context.downloadFile(
     }
 }
 
-fun Context.openBrowser(url: Uri, onAppNotFound: (e: Exception) -> Unit) {
+inline fun Context.openBrowser(url: Uri, onAppNotFound: (e: Exception) -> Unit) {
     val intent = Intent(Intent.ACTION_VIEW, url).apply {
         addCategory(Intent.CATEGORY_BROWSABLE)
     }
     startActivityCatching(intent, onAppNotFound)
 }
 
-fun Context.shareAsText(text: String, onAppNotFound: (e: Exception) -> Unit) {
+inline fun Context.shareAsText(text: String, onAppNotFound: (e: Exception) -> Unit) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         putExtra(Intent.EXTRA_TEXT, text)
         type = "text/plain"
@@ -97,7 +115,7 @@ fun Context.shareAsText(text: String, onAppNotFound: (e: Exception) -> Unit) {
     startActivityCatching(shareIntent, onAppNotFound)
 }
 
-fun Context.sendEmail(mail: Email, onAppNotFound: (e: Exception) -> Unit) {
+inline fun Context.sendEmail(mail: Email, onAppNotFound: (e: Exception) -> Unit) {
     // Use SENDTO to avoid showing pickers and letting non-email apps interfere
     val sendIntent: Intent = Intent(Intent.ACTION_SENDTO).apply {
         data = Uri.parse("mailto:")
@@ -105,17 +123,12 @@ fun Context.sendEmail(mail: Email, onAppNotFound: (e: Exception) -> Unit) {
         putExtra(Intent.EXTRA_EMAIL, mail.recipients?.toTypedArray())
         putExtra(Intent.EXTRA_SUBJECT, mail.subject)
         putExtra(Intent.EXTRA_TEXT, mail.body)
-        // RFC standard for email
     }
     startActivityCatching(sendIntent, onAppNotFound)
 }
 
 val Context.autofillManager
-    get() = if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
-        getSystemService(AutofillManager::class.java)
-    } else {
-        null
-    }
+    get() = withApiLevel(VERSION_CODES.O, below = { null }) { getSystemService<AutofillManager>() }
 
 fun Application.relaunch() {
     // Obtain the startup Intent of the application with the package name of the application
@@ -127,23 +140,15 @@ fun Application.relaunch() {
 
 val Context.isSystem24Hour get() = DateFormat.is24HourFormat(this)
 
-inline fun <reified T> Context.makeDeeplinkIntent(
-    uri: Uri,
-    requestCode: Int = 0,
-    flags: Int = PendingIntent.FLAG_UPDATE_CURRENT
-): PendingIntent {
-
-    val intent = Intent(
-        Intent.ACTION_VIEW,
-        uri,
-        this,
-        T::class.java
-    )
-
-    return TaskStackBuilder.create(this).run {
-        addNextIntentWithParentStack(intent)
-        getPendingIntent(requestCode, flags)!!
-    }
+fun Uri.asDeeplinkIntent(
+    requestCode: Int,
+    context: Context
+) = TaskStackBuilder.create(context).run {
+    addNextIntentWithParentStack(intent().allowBackgroundActivityStart())
+    getPendingIntent(
+        requestCode,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )!!
 }
 
 /**
@@ -170,8 +175,7 @@ fun Context.openAppDetails(onError: (Exception) -> Unit) = startActivityCatching
     onNotFound = onError,
 )
 
-@RequiresApi(VERSION_CODES.M)
-fun Context.openSystemOverlaysSettings(onError: (Exception) -> Unit) {
+inline fun Context.openSystemOverlaysSettings(onError: (Exception) -> Unit) {
     startActivityCatching(
         Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, packageUri).highlightSetting(EXTRA_SYSTEM_ALERT_WINDOW),
         onNotFound = onError,
@@ -183,24 +187,57 @@ fun Context.openSystemOverlaysSettings(onError: (Exception) -> Unit) {
  * @param settingName: Key for permission:
  * https://cs.android.com/android/platform/superproject/+/master:packages/apps/Settings/res/xml/app_info_settings.xml?q=preferred_settings&ss=android%2Fplatform%2Fsuperproject
  */
-private fun Intent.highlightSetting(settingName: String) = apply {
+@PublishedApi
+internal fun Intent.highlightSetting(settingName: String) = apply {
     putExtra(EXTRA_FRAGMENT_ARG_KEY, settingName)
     val bundle = bundleOf(EXTRA_FRAGMENT_ARG_KEY to settingName)
     putExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS, bundle)
 }
 
-@RequiresApi(VERSION_CODES.M)
 @SuppressLint("BatteryLife")
-fun Context.requestIgnoreBatteryOptimization(onError: (Exception) -> Unit) = startActivityCatching(
+inline fun Context.requestIgnoreBatteryOptimization(onError: (Exception) -> Unit) = startActivityCatching(
     Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, packageUri),
     onNotFound = onError,
 )
 
 @ChecksSdkIntAtLeast(parameter = 0, lambda = 2)
-inline fun withApiLevel(versionCode: Int, below: () -> Unit = {}, since: () -> Unit) {
-    if (Build.VERSION.SDK_INT >= versionCode) since() else below()
+inline fun withApiLevel(versionCode: Int, since: () -> Unit) {
+    if (Build.VERSION.SDK_INT >= versionCode) since()
 }
 
+@ChecksSdkIntAtLeast(parameter = 0, lambda = 2)
+inline fun <R> withApiLevel(versionCode: Int, below: () -> R, since: () -> R) =
+    if (Build.VERSION.SDK_INT >= versionCode) since() else below()
+
 @RequiresApi(VERSION_CODES.S)
-fun Context.requestExactAlarmPermission(onError: (Exception) -> Unit) =
+inline fun Context.requestExactAlarmPermission(onError: (Exception) -> Unit) =
     startActivityCatching(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM), onNotFound = onError)
+
+inline fun <T> Context.withPermission(
+    permission: String,
+    ifDenied: Context.(String) -> T,
+    ifGranted: Context.(String) -> T
+) = if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED)
+    ifGranted(permission) else ifDenied(permission)
+
+fun Uri.intent() = Intent(Intent.ACTION_VIEW, this)
+
+
+/**
+ * Allows background activity start for this intent starting with SDK 34 (Upside down cake).
+ * On previous versions, does nothing.
+ */
+fun Intent.allowBackgroundActivityStart() = apply {
+    withApiLevel(VERSION_CODES.UPSIDE_DOWN_CAKE, {}) {
+        ActivityOptions
+            .makeBasic()
+            .setPendingIntentCreatorBackgroundActivityStartMode(ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED)
+            .toBundle()
+            .let(::putExtras)
+    }
+}
+
+fun Context.getGooglePlayUri() = "https://play.google.com/store/apps/details?id=${applicationInfo.packageName}"
+
+inline fun Context.openAppPlayStorePage(onNotFound: (e: Exception) -> Unit) =
+    startActivityCatching(getGooglePlayUri().toUri().intent(), onNotFound)

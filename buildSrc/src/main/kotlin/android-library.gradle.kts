@@ -1,5 +1,3 @@
-import Config.compileSdk
-
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -8,13 +6,11 @@ plugins {
 
 android {
     compileSdk = Config.compileSdk
-    resourcePrefix = "${Config.name}_"
-    buildToolsVersion = Config.buildToolsVersion
+    resourcePrefix = "${Config.artifact}_"
 
     defaultConfig {
         minSdk = Config.minSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -44,7 +40,6 @@ android {
         prefab = false
         renderScript = false
         mlModelBinding = false
-        resValues = false
         androidResources = true
     }
 
@@ -68,7 +63,7 @@ android {
 publishing {
     publications {
         create<MavenPublication>("release") {
-            artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+            artifact("${layout.buildDirectory.get()}/outputs/aar/${project.name}-release.aar")
             groupId = rootProject.group.toString()
             artifactId = project.name
             version = rootProject.version.toString()

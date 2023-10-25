@@ -7,6 +7,8 @@ import androidx.core.net.MailTo
 
 val Uri.asHttps: Uri get() = if (scheme == "http") buildUpon().scheme("https").build() else this
 
+val Uri.isHttp get() = scheme?.startsWith("http", true) == true
+
 val Uri.linkType
     get() = when (this.scheme) {
         null -> LinkType.Unknown

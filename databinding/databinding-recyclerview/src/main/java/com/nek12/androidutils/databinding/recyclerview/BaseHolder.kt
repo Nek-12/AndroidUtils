@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import com.nek12.androidutils.databinding.BR
 import com.nek12.androidutils.databinding.DEPRECATION_WARNING
 
 /**
@@ -23,7 +22,10 @@ import com.nek12.androidutils.databinding.DEPRECATION_WARNING
  * implementation (i.e. the type of the "data" field).**
  */
 @Deprecated(DEPRECATION_WARNING)
-class BaseHolder(val binding: ViewDataBinding, private val brVariable: Int = BR.data) :
+class BaseHolder(
+    val binding: ViewDataBinding,
+    private val brVariable: Int = com.nek12.androidutils.databinding.BR.data
+) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: Item<*, *>) {
@@ -40,7 +42,7 @@ class BaseHolder(val binding: ViewDataBinding, private val brVariable: Int = BR.
             parent: ViewGroup,
             @LayoutRes layout: Int,
             lifecycleOwner: LifecycleOwner? = null,
-            brVariable: Int = BR.data
+            brVariable: Int = com.nek12.androidutils.databinding.BR.data
         ): BaseHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding: T? = DataBindingUtil.inflate(

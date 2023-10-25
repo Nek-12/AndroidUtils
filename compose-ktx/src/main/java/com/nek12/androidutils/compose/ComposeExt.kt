@@ -17,14 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -38,8 +35,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import com.nek12.androidutils.extensions.android.Text
 import com.nek12.androidutils.extensions.android.Text.Dynamic
 import com.nek12.androidutils.extensions.android.Text.Resource
@@ -161,21 +156,4 @@ inline fun <reified BoundService : Service, reified BoundServiceBinder : Binder>
 fun Text.string(): String = when (this) {
     is Dynamic -> text
     is Resource -> string(LocalContext.current)
-}
-
-@Composable
-fun ObserveLifecycle(onEvent: (event: Lifecycle.Event) -> Unit) {
-    val lifecycle = LocalLifecycleOwner.current
-    val action by rememberUpdatedState(onEvent)
-    DisposableEffect(lifecycle) {
-        val observer = LifecycleEventObserver { _, event ->
-            action(event)
-        }
-
-        lifecycle.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycle.lifecycle.removeObserver(observer)
-        }
-    }
 }

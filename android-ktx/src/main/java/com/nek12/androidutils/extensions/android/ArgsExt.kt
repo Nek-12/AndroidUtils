@@ -54,11 +54,6 @@ abstract class BundleExtra<in T, V>(
 @Suppress("ClassName")
 private object UNINITIALIZED_VALUE
 
-@Deprecated("Use the Tiramisu bundle type-safe api (bundle.serializable)")
-@Suppress("DEPRECATION")
-inline fun <reified T> Intent.requireExtra(key: String) =
-    requireNotNull(extras?.get(key)) { "required extra \"$key\" not provided" } as T
-
 @Suppress("DEPRECATION")
 inline fun <reified T : Serializable> Bundle.serializable(key: String) =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)

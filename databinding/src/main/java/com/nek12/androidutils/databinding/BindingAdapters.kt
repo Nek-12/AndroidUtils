@@ -5,6 +5,7 @@ package com.nek12.androidutils.databinding
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 
+@Deprecated(DEPRECATION_WARNING)
 @BindingAdapter("textResOrString")
 fun textResOrString(view: TextView, data: Any) {
     view.text = when (data) {
