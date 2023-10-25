@@ -21,6 +21,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
@@ -50,8 +51,7 @@ class RoomTests {
     }
 
     @Test
-    fun testInvalidationSingleTable(): Unit = runTest(dispatchTimeoutMs = 5000) {
-
+    fun testInvalidationSingleTable(): Unit = runTest(timeout = 5000.milliseconds) {
         dao.getAllDefault().test {
             assertEquals(0, awaitItem().size)
             dao.add(Entry())
@@ -64,7 +64,7 @@ class RoomTests {
     }
 
     @Test
-    fun testOperations(): Unit = runTest(dispatchTimeoutMs = 5000) {
+    fun testOperations(): Unit = runTest(timeout = 5000.milliseconds) {
         val entities = (1..10).map { Entry() }
         // multiple
         await { dao.add(entities) }

@@ -26,6 +26,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.nek12.extensions.material.R
 
 const val SNACKBAR_MAX_LINES = 3
 
@@ -236,7 +237,7 @@ var MaterialButton.iconTintColor: Int?
 fun View.addBadge(
     gravity: Int = BadgeDrawable.TOP_END,
     number: Int? = null,
-    @ColorInt color: Int = MaterialColors.getColor(this, R.attr.colorPrimary),
+    @ColorInt color: Int = MaterialColors.getColor(this, com.google.android.material.R.attr.colorPrimary),
 ) {
     BadgeUtils.attachBadgeDrawable(
         BadgeDrawable.create(context).apply {

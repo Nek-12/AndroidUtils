@@ -95,7 +95,7 @@ to have any additional knowledge prior using it.
 ## License
 
 ```
-   Copyright 2022 Nikita Vaizin
+   Copyright 2023 Nikita Vaizin
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

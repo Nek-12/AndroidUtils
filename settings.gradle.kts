@@ -22,6 +22,7 @@ dependencyResolutionManagement {
         maven { url = uri("https://jitpack.io") }
     }
 }
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":room")
 include(":android-ktx")
@@ -29,9 +30,8 @@ include(":material-ktx")
 include(":preferences-ktx")
 include(":coroutine-ktx")
 include(":safenavcontroller")
-include(":databinding")
-include(":databinding:databinding-recyclerview")
-include(":databinding:databinding-recyclerview:databinding-genericpagingadapter")
 include(":viewbinding")
 include(":compose-ktx")
 include(":view-ktx")
+
+rootProject.name = "AndroidUtils"

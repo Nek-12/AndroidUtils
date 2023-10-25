@@ -24,7 +24,11 @@ import androidx.annotation.ColorInt
 import androidx.core.text.HtmlCompat
 import com.nek12.androidutils.extensions.android.Text.Dynamic
 import com.nek12.androidutils.extensions.android.Text.Resource
-import java.util.*
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import java.util.Locale
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 val String?.isValid: Boolean
     get() = !isNullOrBlank() && !equals("null", true)
@@ -124,3 +128,21 @@ fun Text.string(context: Context): String = when (this) {
         *args.map { if (it is Text) it.string(context) else it }.toTypedArray()
     )
 }
+
+/**
+ * @param algorithm – the name of the algorithm requested.
+ * See the [MessageDigest] for information about standard algorithm names and supproted API levels
+ */
+fun ByteArray.hash(algorithm: String): ByteArray? = try {
+    MessageDigest.getInstance(algorithm).run {
+        update(this@hash)
+        digest()
+    }
+} catch (expected: NoSuchAlgorithmException) {
+    null
+}
+
+fun String.toBase64(): String = toByteArray().toBase64()
+
+@OptIn(ExperimentalEncodingApi::class)
+fun ByteArray.toBase64(): String = Base64.Default.encode(this)

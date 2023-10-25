@@ -1,18 +1,22 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.nek12.androidutils.extensions.android
 
 import androidx.annotation.StringRes
 
-sealed class Text {
+sealed interface Text {
 
-    abstract override fun equals(other: Any?): Boolean
-    abstract override fun hashCode(): Int
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
 
-    data class Dynamic(val text: String) : Text() {
+    @JvmInline
+    value class Dynamic(val text: String) : Text {
 
         override fun toString() = "Text.Dynamic(text=$text)"
     }
 
-    class Resource(@StringRes val id: Int, vararg val args: Any) : Text() {
+    @Suppress("UseDataClass") // vararg arguments are not supported for data classes
+    class Resource(@StringRes val id: Int, vararg val args: Any) : Text {
 
         fun copy(id: Int, vararg args: Any) = Resource(id, args = args.takeIf { it.isNotEmpty() } ?: this.args)
 
@@ -23,9 +27,7 @@ sealed class Text {
             other as Resource
 
             if (id != other.id) return false
-            if (!args.contentEquals(other.args)) return false
-
-            return true
+            return args.contentEquals(other.args)
         }
 
         override fun hashCode(): Int {
@@ -38,5 +40,5 @@ sealed class Text {
     }
 }
 
-fun String.text() = Text.Dynamic(this)
-fun Int.text(vararg args: Any) = Text.Resource(this, args = args)
+inline fun String.text() = Text.Dynamic(this)
+inline fun Int.text(vararg args: Any) = Text.Resource(this, args = args)

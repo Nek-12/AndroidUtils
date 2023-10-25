@@ -9,13 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -24,31 +20,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-
-/**
- * Execute [block] in parallel using operator async for each element of the collection
- */
-suspend fun <T> Collection<T>.forEachParallel(
-    context: CoroutineContext = EmptyCoroutineContext,
-    start: CoroutineStart = CoroutineStart.DEFAULT,
-    block: suspend CoroutineScope.(T) -> Unit,
-): Unit = withContext(context) {
-    map { async(context, start) { block(it) } }.forEach { it.await() }
-}
-
-/**
- * Execute [block] in parallel using operator async for each element of the collection
- */
-suspend fun <A, B> Collection<A>.mapParallel(
-    context: CoroutineContext = EmptyCoroutineContext,
-    start: CoroutineStart = CoroutineStart.DEFAULT,
-    block: suspend CoroutineScope.(A) -> B,
-): List<B> = withContext(context) {
-    map { async(context, start) { block(it) } }.map { it.await() }
-}
 
 /** Starts a new coroutine that will collect values from a flow while the lifecycle is in a
  * [state].
@@ -135,16 +108,4 @@ fun View.clicks(delay: Long = 1000L) = callbackFlow {
     awaitClose {
         setOnClickListener(null)
     }
-}
-
-fun CoroutineScope.launchCatching(
-    dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    start: CoroutineStart = CoroutineStart.DEFAULT,
-    onError: CoroutineContext.(Throwable) -> Unit,
-    block: suspend CoroutineScope.() -> Unit,
-): Job {
-    val handler = CoroutineExceptionHandler { context, e ->
-        onError(context, e)
-    }
-    return launch(dispatcher + handler, start, block)
 }

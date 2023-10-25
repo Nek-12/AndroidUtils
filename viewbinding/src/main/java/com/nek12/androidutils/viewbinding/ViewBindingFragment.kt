@@ -13,6 +13,7 @@ typealias Inflater<T> = (inflater: LayoutInflater, container: ViewGroup?, attach
 
 const val VB_NOT_AVAILABLE_MESSAGE = "ViewBinding is not available outside view lifecycle"
 
+@Deprecated("Base classes should not be used. Use composition or delegation instead")
 abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
 
     abstract val inflater: Inflater<T>

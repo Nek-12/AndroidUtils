@@ -2,13 +2,14 @@
 
 package com.nek12.androidutils.extensions.android
 
-import android.annotation.SuppressLint
+import android.content.ContentResolver
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.core.content.ContextCompat
 import androidx.core.os.ConfigurationCompat
-import java.util.*
+import java.util.Locale
 
 /**
  * Get dimension dp value from your xml.
@@ -35,15 +36,6 @@ fun Bitmap.scale(maxSize: Int): Bitmap {
 }
 
 /**
- * Returns an id of the resource by its name as you wrote it in the xml
- * @see Resources.getIdentifier
- */
-@SuppressLint("DiscouragedApi")
-@Deprecated("Avoid using reflection for resources")
-fun Context.resIdByName(resIdName: String, resType: String): Int =
-    resources.getIdentifier(resIdName, resType, packageName)
-
-/**
  * Uses the value of this int as a **resource id** to parse an [android.graphics.Color] object
  */
 fun Int.asColor(context: Context) = ContextCompat.getColor(context, this)
@@ -55,3 +47,10 @@ fun Int.asDrawable(context: Context) = ContextCompat.getDrawable(context, this)
 
 val Resources.currentLocale: Locale
     get() = ConfigurationCompat.getLocales(configuration).get(0)!!
+
+fun Context.getResourceUri(resourceId: Int): Uri = Uri.Builder()
+    .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+    .authority(resources.getResourcePackageName(resourceId))
+    .appendPath(resources.getResourceTypeName(resourceId))
+    .appendPath(resources.getResourceEntryName(resourceId))
+    .build()

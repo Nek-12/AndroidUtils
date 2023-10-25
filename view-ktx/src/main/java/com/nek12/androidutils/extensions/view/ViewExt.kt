@@ -56,7 +56,7 @@ fun View.hide(
     animated: Boolean = false,
     gone: Boolean = false,
     duration: Long = DEF_FADE_DURATION,
-    @AnimatorRes animation: Int = R.animator.fade_out,
+    @AnimatorRes animation: Int = com.nek12.extensions.android.R.animator.fade_out,
 ) {
     val targetVisibility = if (gone) View.GONE else View.INVISIBLE
     when {
@@ -78,7 +78,7 @@ fun View.hide(
 fun View.show(
     animated: Boolean = false,
     duration: Long = DEF_FADE_DURATION,
-    @AnimatorRes animation: Int = R.animator.fade_in,
+    @AnimatorRes animation: Int = com.nek12.extensions.android.R.animator.fade_in,
 ) {
     if (isVisible) return
     visibility = View.VISIBLE
@@ -106,7 +106,7 @@ enum class Visibility(val value: Int) {
 
     companion object {
 
-        private val map = values().associateBy(Visibility::value)
+        private val map = entries.associateBy(Visibility::value)
 
         fun of(legacy: Int) = map[legacy]
 

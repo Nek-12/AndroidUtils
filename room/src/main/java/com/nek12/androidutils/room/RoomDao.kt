@@ -1,5 +1,6 @@
 package com.nek12.androidutils.room
 
+import android.annotation.SuppressLint
 import androidx.room.CoroutinesRoom
 import androidx.room.Dao
 import androidx.room.Delete
@@ -162,6 +163,7 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
      * duplicate emissions when unrelated entities are changed
      * Re-emits values when any of the [referencedTables] change
      */
+    @SuppressLint("RestrictedApi")
     fun get(id: I, vararg referencedTables: String): Flow<T?> = CoroutinesRoom.createFlow(
         db,
         false,
@@ -184,6 +186,7 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
      * Re-emits values when any of the [referencedTables] change.
      * ReferencedTables includes [tableName] already.
      */
+    @SuppressLint("RestrictedApi")
     fun get(ids: List<I>, vararg referencedTables: String): Flow<List<T>> =
         CoroutinesRoom.createFlow(db, true, tableNames = arrayOf(tableName) + referencedTables) {
             getBlocking(buildSqlIdQuery(ids)) ?: emptyList()
@@ -194,6 +197,7 @@ abstract class RoomDao<I : Any, T : RoomEntity<I>>(
      * duplicate emissions when unrelated entities are changed.
      * Re-emits values when any of the [referencedTables] change
      */
+    @SuppressLint("RestrictedApi")
     fun getAll(vararg referencedTables: String): Flow<List<T>> =
         CoroutinesRoom.createFlow(db, false, arrayOf(tableName) + referencedTables) {
             getBlocking(SimpleSQLiteQuery("SELECT * FROM `$tableName`;")) ?: emptyList()

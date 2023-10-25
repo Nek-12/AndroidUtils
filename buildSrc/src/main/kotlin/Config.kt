@@ -1,19 +1,22 @@
 @file:Suppress("MissingPackageDeclaration")
 
+import org.gradle.api.JavaVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 // must be top-level
 
 object Config {
 
-    const val group = "com.nek12.androidutils"
-    const val name = "androidutils"
-    const val minSdk = 22
-    const val compileSdk = 33
-    const val targetSdk = 34
+    const val group = "com.nek12"
+    const val artifact = "androidutils"
+    const val artifactId = "$group.$artifact"
+
+    const val minSdk = 23
+    const val compileSdk = 34
     val jvmTarget = JvmTarget.JVM_11
-    const val version = "1.0.4"
-    const val buildToolsVersion = "33.0.0"
+    val javaVersion = JavaVersion.VERSION_11
+    val kotlinVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
+    const val version = "1.1.0"
 
     val kotlinCompilerArgs = listOf(
         "-opt-in=kotlin.RequiresOptIn",

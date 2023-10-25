@@ -1,27 +1,11 @@
 package com.nek12.androidutils.extensions.view
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
-import androidx.core.view.doOnDetach
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.floor
-
-/**
- * Sets an adapter for the recycler view that will be cleared after [View.onDetachedFromWindow], preventing memory leaks
- * from having [RecyclerView.Adapter] that outlives its recyclerview (e.g. when stored as a field in a Fragment)
- */
-@Deprecated("safeAdapter does not play well with Dialog and BottomSheet lifecycles")
-var RecyclerView.safeAdapter
-    get() = adapter
-    set(value) {
-        adapter = value
-        doOnDetach {
-            adapter = null
-        }
-    }
 
 fun ViewGroup.clearRecyclerViewAdapters() {
     children.forEach {
