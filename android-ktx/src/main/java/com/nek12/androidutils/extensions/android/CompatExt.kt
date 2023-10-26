@@ -12,7 +12,7 @@ import androidx.annotation.RequiresPermission
 
 @Suppress("DEPRECATION")
 @RequiresPermission(android.Manifest.permission.VIBRATE)
-internal fun Vibrator.vibrateCompat(lengthMs: Long) {
+fun Vibrator.vibrateCompat(lengthMs: Long) {
     when (Build.VERSION.SDK_INT) {
         Build.VERSION_CODES.TIRAMISU -> vibrate(
             VibrationEffect.createOneShot(lengthMs, VibrationEffect.DEFAULT_AMPLITUDE),
@@ -26,7 +26,7 @@ internal fun Vibrator.vibrateCompat(lengthMs: Long) {
 
 @Suppress("DEPRECATION")
 @RequiresPermission(android.Manifest.permission.VIBRATE)
-internal fun Vibrator.vibrateCompat(waveform: LongArray, repeat: Int = -1) {
+fun Vibrator.vibrateCompat(waveform: LongArray, repeat: Int = -1) {
     when (Build.VERSION.SDK_INT) {
         Build.VERSION_CODES.TIRAMISU -> vibrate(
             VibrationEffect.createWaveform(waveform, repeat),

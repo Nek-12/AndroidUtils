@@ -65,15 +65,15 @@ fun SpannableString.withClickableSpan(
  */
 fun CharSequence.span(span: Any): SpannableString = SpannableString(this).setSpan(span)
 
-private fun CharSequence.buildSpan() = SpannableStringBuilder(this)
+fun CharSequence.buildSpan() = SpannableStringBuilder(this)
 
-private val CharSequence.spannable get() = SpannableString(this)
+val CharSequence.spannable get() = SpannableString(this)
 
 /**
  * [span] is a ..Span object like a [ForegroundColorSpan] or a [SuperscriptSpan]
  * Spans this whole string
  */
-private fun SpannableString.setSpan(span: Any?) = apply {
+fun SpannableString.setSpan(span: Any?) = apply {
     setSpan(span, 0, length, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE)
 }
 
