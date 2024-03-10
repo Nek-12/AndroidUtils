@@ -20,10 +20,15 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
+private const val Deprecation = """
+coroutine-ktx module is going to be removed soon. Please copy and paste the extensions into your project.
+"""
+
 /**
  * Convert this flow to a stateflow that will be observed on this scope and sharing is going to
  * continue while there are active subscribers. Most similar to livedata
  */
+@Deprecated(Deprecation, ReplaceWith("stateIn(scope, SharingStarted.WhileSubscribed(), null)"))
 fun <T> Flow<T?>.toState(scope: CoroutineScope): StateFlow<T?> = stateIn(scope, SharingStarted.WhileSubscribed(), null)
 
 /**
@@ -31,12 +36,14 @@ fun <T> Flow<T?>.toState(scope: CoroutineScope): StateFlow<T?> = stateIn(scope, 
  * continue while there are active subscribers. Instead of null like in live data, has an
  * [initialValue]
  */
+@Deprecated(Deprecation, ReplaceWith("stateIn(scope, SharingStarted.WhileSubscribed(), initialValue)"))
 fun <T> Flow<T>.toState(scope: CoroutineScope, initialValue: T): StateFlow<T> =
     stateIn(scope, SharingStarted.WhileSubscribed(), initialValue)
 
 /**
  * Launches the specified block as a coroutine
  */
+@Deprecated(Deprecation, ReplaceWith("viewModelScope.launch(context, start, block)"))
 fun ViewModel.launch(
     context: CoroutineContext = EmptyCoroutineContext,
     start: CoroutineStart = CoroutineStart.DEFAULT,
@@ -48,6 +55,7 @@ fun ViewModel.launch(
  * dangerous, buggy and outdated. The action is cancelled if the lifecycle is in a destroyed state. Use
  * [Fragment.getViewLifecycleOwner] for best safety with this method.
  */
+@Deprecated(Deprecation, ReplaceWith("lifecycleScope.launch { delay(delayMs) ; action() } "))
 fun LifecycleOwner.delayOnLifecycle(
     delayMs: Long,
     action: suspend () -> Unit,
@@ -58,6 +66,7 @@ fun LifecycleOwner.delayOnLifecycle(
     }
 }
 
+@Deprecated(Deprecation)
 fun View.clicks(delay: Long = 1000L) = callbackFlow {
     var lastTime = 0L
     setOnClickListener {
