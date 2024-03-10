@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.version.catalog.update)
-    alias(libs.plugins.versions)
 }
 
 rootProject.group = Config.group
@@ -19,7 +18,6 @@ buildscript {
     dependencies {
         classpath(libs.android.gradle)
         classpath(libs.kotlin.gradle)
-        classpath(libs.version.gradle)
     }
 }
 
@@ -80,26 +78,6 @@ tasks {
     register<io.gitlab.arturbosch.detekt.Detekt>("detektAll") {
         description = "Run detekt on whole project"
         autoCorrect = false
-    }
-
-    withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask>().configureEach {
-        outputFormatter = "json"
-    }
-
-    withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask>().configureEach {
-        // outputFormatter = "json"
-
-        fun stabilityLevel(version: String): Int {
-            Config.stabilityLevels.forEachIndexed { index, postfix ->
-                val regex = """.*[.\-]$postfix[.\-\d]*""".toRegex(RegexOption.IGNORE_CASE)
-                if (version.matches(regex)) return index
-            }
-            return Config.stabilityLevels.size
-        }
-
-        rejectVersionIf {
-            stabilityLevel(currentVersion) > stabilityLevel(candidate.version)
-        }
     }
 }
 
