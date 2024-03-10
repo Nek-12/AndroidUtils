@@ -3,15 +3,12 @@
 package com.nek12.androidutils.extensions.coroutines
 
 import android.view.View
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -22,41 +19,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-
-/** Starts a new coroutine that will collect values from a flow while the lifecycle is in a
- * [state].
- *
- * This function is most useful in Fragments or other components with a [lifecycleOwner]
- * Your [Flow] will be collected as long as the [lifecycleOwner] is in the specified state,
- * automatically stopping when it leaves the scope.
- *
- * example for a [Fragment]:
- * ```
- *  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
- *      viewModel.myDataFlow.collectOnLifecycle(viewLifecycleOwner) {
- *          //safely process your data using suspend lambda
- *      }
- *  }
- * ```
- *
- * **/
-fun <T> Flow<T>.collectOnLifecycle(
-    lifecycleOwner: LifecycleOwner,
-    state: Lifecycle.State = Lifecycle.State.STARTED,
-    collector: suspend CoroutineScope.(T) -> Unit,
-): Job = lifecycleOwner.lifecycleScope.launch {
-    flowWithLifecycle(lifecycleOwner.lifecycle, state).collect { collector(it) }
-}
-
-fun <T> Flow<T?>.collectNotNullOnLifecycle(
-    lifecycleOwner: LifecycleOwner,
-    state: Lifecycle.State = Lifecycle.State.RESUMED,
-    collector: suspend CoroutineScope.(T) -> Unit,
-) {
-    collectOnLifecycle(lifecycleOwner, state) {
-        if (it != null) collector(it)
-    }
-}
 
 /**
  * Convert this flow to a stateflow that will be observed on this scope and sharing is going to
