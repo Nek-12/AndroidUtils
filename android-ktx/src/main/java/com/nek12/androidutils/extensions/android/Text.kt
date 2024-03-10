@@ -49,7 +49,7 @@ sealed interface Text {
 }
 
 @Deprecated(Deprecation)
-inline fun String.text() = Text.Dynamic(this)
+fun String.text() = Text.Dynamic(this)
 
 @Deprecated(Deprecation)
-inline fun Int.text(vararg args: Any) = Text.Resource(this, args = args)
+fun Int.text(vararg args: Any) = Text.Resource(this, args = args)

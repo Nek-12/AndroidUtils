@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
 
 package com.nek12.androidutils.extensions.view
 

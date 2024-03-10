@@ -47,7 +47,7 @@ subprojects {
 
     when (name) {
         "app" -> apply(plugin = "com.android.application")
-        else -> apply(plugin = "android-library")
+        else -> apply(plugin = "com.nek12.android-library")
     }
 }
 
