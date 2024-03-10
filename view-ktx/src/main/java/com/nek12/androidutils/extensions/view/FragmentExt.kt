@@ -8,7 +8,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import com.nek12.androidutils.extensions.android.BundleExtra
 import com.nek12.androidutils.extensions.android.Email
 import com.nek12.androidutils.extensions.android.autofillManager
@@ -63,18 +62,6 @@ fun Fragment.dialNumber(numberUri: Uri, onNotFound: (e: Exception) -> Unit) =
     requireContext().dialNumber(numberUri, onNotFound)
 
 val Fragment.autofillManager get() = requireContext().autofillManager
-
-@Deprecated("LiveData is deprecated")
-fun <T> Fragment.observe(data: LiveData<T>, block: (value: T?) -> Unit) {
-    data.observe(viewLifecycleOwner, block)
-}
-
-@Deprecated("LiveData is deprecated")
-fun <T> Fragment.observeNotNull(data: LiveData<T>, observer: (value: T) -> Unit) {
-    data.observe(viewLifecycleOwner) {
-        if (it != null) observer(it)
-    }
-}
 
 val Fragment.screenWidthPx get() = requireActivity().resources.displayMetrics.widthPixels
 val Fragment.screenHeightPx get() = requireActivity().resources.displayMetrics.heightPixels
