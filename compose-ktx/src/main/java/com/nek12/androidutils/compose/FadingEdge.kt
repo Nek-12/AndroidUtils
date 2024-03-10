@@ -41,14 +41,14 @@ fun Modifier.fadingEdge(
         val brush = when (edge) {
             FadingEdge.Start -> Brush.horizontalGradient(colors, startX = 0f, endX = sizePx)
             FadingEdge.End -> Brush.horizontalGradient(
-                colors,
+                colors.reversed(),
                 startX = this.size.width - sizePx,
                 endX = this.size.width
             )
 
             FadingEdge.Top -> Brush.verticalGradient(colors, startY = 0f, endY = sizePx)
             FadingEdge.Bottom -> Brush.verticalGradient(
-                colors,
+                colors.reversed(),
                 startY = this.size.height - sizePx,
                 endY = this.size.height
             )
