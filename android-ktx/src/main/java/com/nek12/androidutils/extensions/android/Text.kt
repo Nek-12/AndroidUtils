@@ -4,18 +4,26 @@ package com.nek12.androidutils.extensions.android
 
 import androidx.annotation.StringRes
 
+internal const val Deprecation = """
+Resource wrappers are now deprecated as they are not compatible with KMP and are leaky abstractions
+Please use multiplatform-resources or a similar library. Don't pass resources to the business logic.
+"""
+
+@Deprecated(Deprecation)
 sealed interface Text {
 
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
 
     @JvmInline
+    @Deprecated(Deprecation)
     value class Dynamic(val text: String) : Text {
 
         override fun toString() = "Text.Dynamic(text=$text)"
     }
 
     @Suppress("UseDataClass") // vararg arguments are not supported for data classes
+    @Deprecated(Deprecation)
     class Resource(@StringRes val id: Int, vararg val args: Any) : Text {
 
         fun copy(id: Int, vararg args: Any) = Resource(id, args = args.takeIf { it.isNotEmpty() } ?: this.args)
@@ -40,5 +48,8 @@ sealed interface Text {
     }
 }
 
+@Deprecated(Deprecation)
 inline fun String.text() = Text.Dynamic(this)
+
+@Deprecated(Deprecation)
 inline fun Int.text(vararg args: Any) = Text.Resource(this, args = args)

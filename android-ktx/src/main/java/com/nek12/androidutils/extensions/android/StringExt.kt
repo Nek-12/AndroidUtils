@@ -120,6 +120,7 @@ fun Int.colorToHexString() = String.format(Locale.ROOT, "#%06X", -0x1 and this).
 val String.asHTML: Spanned
     get() = HtmlCompat.fromHtml(this, 0)
 
+@Deprecated(Deprecation)
 @Suppress("SpreadOperator")
 fun Text.string(context: Context): String = when (this) {
     is Dynamic -> text
