@@ -33,7 +33,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
-import androidx.annotation.RequiresApi
 import androidx.core.animation.doOnEnd
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -298,7 +297,6 @@ fun EditText.doAfterTextChangedInFocus(action: (String?) -> Unit) = doAfterTextC
  * The animation runs in loops and never stops.
  */
 @SuppressLint("UseCompatLoadingForDrawables")
-@RequiresApi(Build.VERSION_CODES.M)
 // Requires M api and does not use AppCompat because the animation won't work when using appcompat drawable, tested
 fun ImageView.applyLoopingAVD(@DrawableRes avdResId: Int) {
     val animated = resources.getDrawable(
@@ -308,7 +306,6 @@ fun ImageView.applyLoopingAVD(@DrawableRes avdResId: Int) {
     applyLoopingAVD(animated)
 }
 
-@RequiresApi(Build.VERSION_CODES.M)
 fun ImageView.applyLoopingAVD(avd: AnimatedVectorDrawable) {
     avd.registerAnimationCallback(object : Animatable2.AnimationCallback() {
         override fun onAnimationEnd(drawable: Drawable?) {

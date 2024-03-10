@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.DownloadListener
 import android.webkit.URLUtil
@@ -152,11 +151,9 @@ open class WebClient(
         CookieManager.getInstance().flush()
     }
 
-    override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-        Log.d(TAG, "ShouldOverrideUrlLoading, url: $url")
-        val uri = url?.toUri()
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest): Boolean {
+        val uri = request.url ?: return false
         return when {
-            uri == null -> false
             uri.host in allowedHosts && uri.linkType == LinkType.Web -> false
             else -> {
                 listener?.onForeignUrlEncountered(uri, uri.linkType)
@@ -166,7 +163,6 @@ open class WebClient(
     }
 
     override fun onPageFinished(view: WebView?, url: String?) {
-        Log.d(TAG, "onPageFinished, url: $url")
         super.onPageFinished(view, url)
         // workaround bug when onPageFinished is triggered 3 times, last one is for 100%
         if (view?.progress == 100) {
@@ -175,7 +171,6 @@ open class WebClient(
     }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-        Log.d(TAG, "onPageStarted, url: $url")
         super.onPageStarted(view, url?.toUri()?.asHttps.toString(), favicon)
         listener?.onStartedLoading(url?.toUri())
     }
@@ -187,7 +182,6 @@ open class WebClient(
         error: WebResourceError?
     ) {
         super.onReceivedError(view, request, error)
-        Log.e(TAG, "Webview error: $error")
         // only handle the main frame because we get a bunch of errors from images, ads etc.
         if (request?.isForMainFrame == true) {
             if (request.url.scheme == "http") {
@@ -211,10 +205,5 @@ open class WebClient(
         if (url?.toUri() != null && fileName != null) {
             listener?.onRequestedFileDownload(url.toUri(), fileName, mimetype)
         }
-    }
-
-    companion object {
-
-        protected const val TAG = "WebClient"
     }
 }

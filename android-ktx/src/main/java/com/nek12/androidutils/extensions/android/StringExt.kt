@@ -30,7 +30,8 @@ import java.util.Locale
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
-val String?.isValid: Boolean
+@Suppress("Use KMPUtils isValid")
+internal val String?.isValid: Boolean
     get() = !isNullOrBlank() && !equals("null", true)
 
 val String?.isValidEmail: Boolean
