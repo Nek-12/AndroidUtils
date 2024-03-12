@@ -45,10 +45,7 @@ subprojects {
     group = rootProject.group
     version = rootProject.version
 
-    when (name) {
-        "app" -> apply(plugin = "com.android.application")
-        else -> apply(plugin = "com.nek12.android-library")
-    }
+    apply(plugin = "com.nek12.android-library")
 }
 
 tasks {

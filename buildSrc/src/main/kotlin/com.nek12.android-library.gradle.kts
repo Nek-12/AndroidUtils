@@ -69,8 +69,13 @@ publishing {
             version = rootProject.version.toString()
 
             pom.withXml {
+                val deps = configurations.implementation
+                    .orNull
+                    ?.allDependencies
+                    .orEmpty()
+                    .ifEmpty { return@withXml }
                 val dependenciesNode = asNode().appendNode("dependencies")
-                configurations.implementation.get().allDependencies.forEach {
+                deps.forEach {
                     if (it.name != "unspecified") {
                         val dependencyNode = dependenciesNode.appendNode("dependency")
                         dependencyNode.appendNode("groupId", it.group)
