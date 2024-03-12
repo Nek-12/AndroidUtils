@@ -8,6 +8,13 @@ android {
     compileSdk = Config.compileSdk
     resourcePrefix = "${Config.artifact}_"
 
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+
     defaultConfig {
         minSdk = Config.minSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -62,7 +69,7 @@ android {
 
 publishing {
     publications {
-        create<MavenPublication>("release") {
+        maybeCreate<MavenPublication>("release").apply {
             artifact("${layout.buildDirectory.get()}/outputs/aar/${project.name}-release.aar")
             groupId = rootProject.group.toString()
             artifactId = project.name
