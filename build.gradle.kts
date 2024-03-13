@@ -82,6 +82,7 @@ allprojects {
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
             jvmTarget = Config.jvmTarget.target
+            languageVersion = Config.kotlinVersion.version
         }
     }
 }
